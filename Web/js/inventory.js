@@ -3,7 +3,6 @@
 var invArr = [];
 //inventory table snapshot
 function invsnapshotToArray() {
-
     inventoryRef.once("value").then(function(snapshot){
     // <!-- snapshot of childs of root of database-->
         snapshot.forEach(function(childSnapshot) {
