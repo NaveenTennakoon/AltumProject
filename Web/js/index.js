@@ -7,7 +7,7 @@ function login(usertype){
           snapshot.forEach(function(childSnapshot) {
             if(childSnapshot.val().Username == user){
               if(childSnapshot.val().Password == pwd){
-                location.href="dashboard.html";
+                location.href="cus_dashboard.html";
               }
             }
           });
@@ -36,27 +36,6 @@ function logout(){
     let errorMessage = error.message;
     window.alert(errorMessage);
   });
-}
-
-function signup(){  
-    // Get input values from each of the form elements
-    var parentkey = $("#company").val();
-    var telephone = $("#tel").val();
-    var email = $("#email").val();
-    var uname = $("#uname").val();
-    var pwd = $("#password").val();
-  
-    // Push the new customer to the database using those values
-    if($("#password").val() == $("#cpassword").val()){
-      customerRef.child(parentkey).set({
-        "Customer Name": parentkey,
-        "Telephone Number": telephone,
-        "Email": email,
-        "Username": uname,
-        "Password": pwd 
-      });
-      console.log("Success");
-    }
 }
 
 function resetMail(){
