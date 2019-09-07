@@ -12048,11 +12048,11 @@ body.sidebar-toggled footer.sticky-footer {
   border:0px;
   color:#fff;
   box-shadow: 0 0 1px #ccc;
-  box-shadow:0px 0 0 #31708f inset;
+  box-shadow:0px 0 0 #9b0101 inset;
 }
 
 .btn-change:hover{
-  box-shadow:140px 0 0 #31708f inset;
+  box-shadow:280px 0 0 #9b0101 inset;
 }
 
 .btn-change-2{
@@ -12060,9 +12060,9 @@ body.sidebar-toggled footer.sticky-footer {
   border:0px;
   color:#fff;
   box-shadow: 0 0 1px #ccc;
-  box-shadow:140px 0 0 #31708f inset;
+  box-shadow:280px 0 0 #9b0101 inset;
 }
 
 .btn-change-2:hover{
-  box-shadow:0px 0 0 #31708f inset;
+  box-shadow:0px 0 0 #9b0101 inset;
 }

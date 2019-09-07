@@ -42,10 +42,22 @@ function resetMail(){
   let email = document.getElementById("Email").value;
   firebase.auth().sendPasswordResetEmail(email).then(function() {
     // Email sent.
-    location.href = "index.html";
+    location.href = "admin_login.html";
   }).catch(function(error) {
     // An error happened.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    switch (error.code) {
+      case 'auth/user-not-found':
+        customerRef.once("value").then(function(snapshot){
+          snapshot.forEach(function(childSnapshot) {
+            if(childSnapshot.val().Email == email){
+              window.alert("Customer Password Reset is not implemeted yet")
+             }
+          });
+        });
+        break;
+      default:
+        let errorMessage = error.message;
+        window.alert(errorMessage);
+    }
   });
 }
