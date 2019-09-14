@@ -3,19 +3,19 @@ inventoryRef.once("value").then(function(snapshot){
         document.getElementById("product-items").insertAdjacentHTML(
             'beforeend',
             "<div class='shop-item'>"+
-                "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
-                "<div class='shop-item-details'>"+
-        // );
-        // childSnapshot.forEach(function(ccSnapshot){
-        //     document.getElementById("product-items").insertAdjacentHTML(
-        //         'beforeend',
-        //         "<p>"+ccSnapshot.val()+"</p>"
-        //     );
-        // });
-        // document.getElementById("product-items").insertAdjacentHTML(
-        //         'beforeend',
+                "<span class='shop-item-title font-weight-bold font-size-20 h5'>"+childSnapshot.key+"</span>"+
+                "<div class='shop-item-details'>"
+        );
+        childSnapshot.forEach(function(ccSnapshot){
+            document.getElementById("product-items").insertAdjacentHTML(
+                'beforeend',
+                "<b>"+ccSnapshot.key+" : </b>"+ccSnapshot.val()+"<br/>"
+            );
+        });
+        document.getElementById("product-items").insertAdjacentHTML(
+                'beforeend',
                     "<span class='shop-item-price'>$19.99</span>"+
-                    "<button class='btn btn-primary shop-item-button' type='button'>ADD TO CART</button>"+
+                    "<button class='btn btn-primary shop-item-button float-right' type='button'>Add to Order</button><hr/>"+
                 "</div>"+
             "</div>"
         );
@@ -49,7 +49,6 @@ function ready() {
 }
 
 function purchaseClicked() {
-    alert('Thank you for your purchase')
     let cartItems = document.getElementsByClassName('cart-items')[0]
     while (cartItems.hasChildNodes()) {
         cartItems.removeChild(cartItems.firstChild)

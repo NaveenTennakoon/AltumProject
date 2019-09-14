@@ -64,6 +64,14 @@
               </a>
             </li>
 
+             <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+              <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
     </ul>
     <!-- End of Sidebar -->
 
@@ -80,18 +88,6 @@
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
           </button>
-
-          <!-- Topbar Search -->
-          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <div class="input-group">
-              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
-                  <i class="fas fa-search fa-sm"></i>
-                </button>
-              </div>
-            </div>
-          </form>
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
@@ -161,25 +157,27 @@
                   <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                      <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                      <h6 class="m-0 font-weight-bold text-primary">Products</h6>
                       <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                          <div class="dropdown-header">Dropdown Header:</div>
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
+                          <div class="dropdown-header">Filter by Type:</div>
+                          <a class="dropdown-item" href="#">Bulbs</a>
+                          <a class="dropdown-item" href="#">Circuit Breakers</a>
                           <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Something else here</a>
+                          <a class="dropdown-item" href="#">Clear filters</a>
                         </div>
                       </div>
                     </div>
                     <!-- Card Body -->
-                    <div class="card-body">
-                      <div class="chart-area">
-                        <canvas id="myAreaChart"></canvas>
-                      </div>
+                    <div class="card-body overflow-auto" style="height:450px">
+                      <section class="container content-section">
+                          <div class="shop-items">
+                            <div id="product-items"></div>
+                          </div>
+                      </section>
                     </div>
                   </div>
                 </div>
@@ -189,7 +187,7 @@
                   <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                      <h6 class="m-0 font-weight-bold text-primary">Order</h6>
+                      <h6 class="m-0 font-weight-bold text-primary">Order Details</h6>
                       <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -204,63 +202,18 @@
                     <!-- Card Body -->
                     <div class="card-body">
                         <section class="container content-section">
-                            <div class="cart-row">
-                                <span class="">ITEM</span>
-                                <span class="">PRICE</span>
-                                <span class="">QUANTITY</span>
-                            </div>
                             <div class="cart-items">
                             </div>
                             <div class="cart-total">
                                 <strong class="cart-total-title">Total</strong>
                                 <span class="cart-total-price">$0</span>
                             </div>
-                            <button class="btn btn-primary btn-purchase" type="button">Submit</button>
+                            <button class="btn btn-primary btn-purchase" data-toggle="modal" data-target="#paymentModal" type="button">Submit Order</button>
                         </section>
                     </div>
                   </div>
                 </div>
               </div>
-
-            <section class="container content-section">
-                <h2 class="section-header">MUSIC</h2>
-                <div class="shop-items">
-                    <div class="shop-item">
-                        <span class="shop-item-title">Album 1</span>
-                        <div class="shop-item-details">
-                            <span class="shop-item-price">$12.99</span>
-                            <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <span class="shop-item-title">Album 2</span>
-                        <div class="shop-item-details">
-                            <span class="shop-item-price">$14.99</span>
-                            <button class="btn btn-primary shop-item-button"type="button">ADD TO CART</button>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <span class="shop-item-title">Album 3</span>
-                        <div class="shop-item-details">
-                            <span class="shop-item-price">$9.99</span>
-                            <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <span class="shop-item-title">Album 4</span>
-                        <div class="shop-item-details">
-                            <span class="shop-item-price">$19.99</span>
-                            <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section class="container content-section">
-                <h2 class="section-header">DATABASE</h2>
-                <div class="shop-items">
-                  <div id="product-items"></div>
-                </div>
-            </section>
 
         </div>
         <!-- /.container-fluid -->
@@ -288,6 +241,21 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
+
+  <!-- Payment Modal-->
+  <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="height: 60%;">
+        <div class="modal-header">
+          <h5 class="modal-title">Set a Payment method</h5>
+        </div>
+        <div class="modal-body p-4">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="cancel()">Pay on Delivery</button>
+            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="confirm()">Pay online</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Logout Modal-->
   <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
