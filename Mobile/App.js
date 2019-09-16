@@ -1,34 +1,19 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import Login from './src/components/Login/Login'
+import {StyleSheet} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { Router, Scene } from 'react-native-router-flux';
+import Login from './src/components/Login/Login';
+import Dashboard from './src/components/Dashboard/Dasboard';
 
 class App extends Component {
   render(){
     return (
-        <Login/>
+      <Router hideNavBar= "true">
+        <Scene key="root">
+          <Scene key="login" component={Login} hideNavBar="true" initial={true} />
+          <Scene key="dashboard" component={Dashboard} title="Dashboard" />
+        </Scene>
+      </Router>
     );
   }
 };

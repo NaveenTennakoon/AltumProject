@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import FBconfig from '../../firebase/fbconf';
+import { Actions } from 'react-native-router-flux';
 
 export default class Login extends Component {
+
 	constructor(props){
 		super(props)
 		this.state = {
@@ -15,17 +17,13 @@ export default class Login extends Component {
 		let user = this.state.username;
 		let pwd = this.state.password;
 		FBconfig.auth().signInWithEmailAndPassword(user, pwd).then(function(){
-			alert(this.state.username);
+			Actions.dashboard();
 		  }).catch(function(error){
 			  // Handle Errors here.
 			  var errorMessage = error.message;
 			  window.alert(errorMessage);
 		  });
 	} 
-
-	alertf(){
-		alert("fuck");
-	}
 
   render() {
 	return (
@@ -40,18 +38,19 @@ export default class Login extends Component {
 				keyboardType="email-address"
 				autoCapitalize="none"
 				autoCorrect={false}
-				onChangeText={username => this.setState({username})}
+				onChangeText={(username) => this.setState({username})}
 				onSubmitEditing={() => this.passwordInput.focus()}
 				style={styles.input}></TextInput>
 			<TextInput
 				placeholder="Password" 
 				secureTextEntry
 				returnKeyType="go"
+				onChangeText={(password) => this.setState({password})}
 				ref={(input) => this.passwordInput = input}
 				style={styles.input}></TextInput>
 			<TouchableOpacity
-				onPress={()=>alertf()} 
-				style={styles.buttonContainer}>
+				style={styles.buttonContainer}
+				onPress={()=>this.login()}>
 				<Text style={styles.buttonText}>LOGIN</Text>
 			</TouchableOpacity>
 		</View>
