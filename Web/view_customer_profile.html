@@ -122,7 +122,7 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="view_customer_profile.html">
+                <a class="dropdown-item" href="#">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
@@ -148,79 +148,56 @@
         <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
+          
+          
+        <div class="content">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-xl-10 col-lg-12 col-md-9">
+                  <div class="card o-hidden border-0 shadow-lg my-0">
+                    <div class="card-body p-0">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="p-5">
+                            <h1 class="text-center h3 mb-1 text-gray-800">Hi! WELCOME TO YOUR PROFILE</h1>
+                            <div class="box m-4">
+                              <p>
+                                <i class="fa fa-user"></i>
+                                Name
+                                <p id="name"></p>
+                              </p>     
 
-            <div class="row">
-
-                <!-- Area Chart -->
-                <div class="col-xl-8 col-lg-7">
-                  <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                      <h6 class="m-0 font-weight-bold text-primary">Products</h6>
-                      <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                          <div class="dropdown-header">Filter by Type:</div>
-                          <a class="dropdown-item" href="#">Bulbs</a>
-                          <a class="dropdown-item" href="#">Circuit Breakers</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Clear filters</a>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body overflow-auto" style="height:450px">
-                      <section class="container content-section">
-                          <div class="shop-items">
-                            <div id="product-items"></div>
+                              <p>
+                                <i class="fa fa-phone"></i>
+                                Contact Number
+                              </p>            
+                      
+                              <p>
+                                <i  class="fa fa-envelope"></i>
+                                Email Address
+                              </p>                
+                      
+                              <p>
+                                <i class="fa fa-home"></i>
+                                Address 
+                              </p>                
+                      
+                            </div> 
+                          
+                          <div class= "col-xl-12 col-md-6 mb-4 m-2 p-2">
+                            <a href="edit_customer_profile.html" class="btn btn-primary btn-user btn-block">Edit Details</a>
                           </div>
-                      </section>
-                    </div>
-                  </div>
-                </div>
-    
-                <!-- Pie Chart -->
-                <div class="col-xl-4 col-lg-5">
-                  <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                      <h6 class="m-0 font-weight-bold text-primary">Order Details</h6>
-                      <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                          <div class="dropdown-header">Options:</div>
-                          <a class="dropdown-item" href="#">Clear order</a>
-                          <a class="dropdown-item" href="#">Descriptive view</a>
-                        </div>
+                        
                       </div>
                     </div>
-                    <!-- Card Body -->
-                    <div class="card-body">
-                        <section class="container content-section">
-                            <div class="cart-items">
-                            </div>
-                            <div class="cart-total">
-                                <strong class="cart-total-title">Total</strong>
-                                <span class="cart-total-price">$0</span>
-                            </div>
-                            <button class="btn btn-primary btn-purchase" data-toggle="modal" data-target="#paymentModal" type="button">Submit Order</button>
-                        </section>
-                    </div>
                   </div>
-                </div>
-              </div>
+                </div>    
+              </div>                  
+            </div>                 
+          </div>                  
+        </div>                 
 
-        </div>
-        <!-- /.container-fluid -->
-
-      </div>
-      <!-- End of Main Content -->
-
+    
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">

@@ -12066,3 +12066,29 @@ body.sidebar-toggled footer.sticky-footer {
 .btn-change-2:hover{
   box-shadow:0px 0 0 #9b0101 inset;
 }
+
+.content {
+  margin-top: 60px;
+}
+
+.box{
+display:block; 
+padding:14px;
+margin: 8px 0;
+background:white;
+width:100%;
+box-shadow:0 0 5px rgba(25,25,25,0.3), 0 0 8px rgba(25,25,25,0.1) ;
+}
+
+
+.button1 {
+    background-color: white;
+    color: black ;
+    border: 2px solid black ; 
+    padding: 3px 10px;
+    text-align: center;
+    text-decoration: none;
+    float: center; 
+  }
+
+
