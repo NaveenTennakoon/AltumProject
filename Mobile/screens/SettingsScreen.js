@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
+
 import NavHeader from "../components/NavHeader";
 
 const SettingsScreen = props => {
