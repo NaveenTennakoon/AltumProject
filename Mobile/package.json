@@ -1,5 +1,5 @@
 {
-  "name": "Mobile",
+  "name": "MobileApp",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,14 +10,20 @@
   "dependencies": {
     "firebase": "^6.6.1",
     "react": "16.8.6",
-    "react-native": "0.60.5"
+    "react-native": "0.60.5",
+    "react-native-elements": "^1.2.0",
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-reanimated": "^1.2.0",
+    "react-native-vector-icons": "^6.6.0",
+    "react-navigation": "^4.0.5",
+    "react-navigation-drawer": "^2.2.1"
   },
   "devDependencies": {
     "@babel/core": "7.6.0",
     "@babel/runtime": "7.6.0",
     "@react-native-community/eslint-config": "0.0.3",
     "babel-jest": "24.9.0",
-    "eslint": "6.3.0",
+    "eslint": "6.4.0",
     "jest": "24.9.0",
     "metro-react-native-babel-preset": "0.54.1",
     "react-test-renderer": "16.8.6"
