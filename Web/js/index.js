@@ -1,6 +1,14 @@
 function login(usertype){
   let user = document.getElementById("Email").value;
   let pwd = document.getElementById("Password").value;
+  firebase.database().ref("orders").once('value', function(snapshot) {
+    snapshot.forEach(function (childSnapshot){
+      if (childSnapshot.val().Salesperson == "Sachini Nayanathara") {
+        console.log(childSnapshot.val().Salesperson);
+      }
+    });
+  });
+      
 
   if(usertype == "customer"){
     customerRef.once("value").then(function(snapshot){

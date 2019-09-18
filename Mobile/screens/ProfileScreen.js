@@ -30,34 +30,22 @@ export default class ProfileScreen extends Component {
                 global.address = snapshot.val().address;
             }	
         });
-        FB.database().ref("orders").once('value', function(snapshot) {
-          snapshot.forEach(function (childSnapshot){
-            if (childSnapshot.val().Salesperson == global.username) {
-              // Code to pending orders will be shown here
-            }
-          });
-        });
     }
     
     render(){
         this.loadDetails();
         return (
         <View style={styles.container}>
-            <NavHeader navigation={this.props.navigation} title="Home"/>
+            <NavHeader navigation={this.props.navigation} title="Profile"/>
             <View style={styles.header}></View>
             <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
             <View style={styles.body}>
                 <View style={styles.bodyContent}>
-                  <Text style={styles.name}>{global.username}</Text>
-                  <Text style={styles.info}>Salesperson</Text>
-                  <Text style={styles.description}>{global.telephone}</Text>
-                  <Text style={styles.description}>{global.address}</Text> 
-                  <View style={styles.ordersContainer}>
-                    <View style={styles.orders}>
-                      <Text>Pending Orders</Text>
-                    </View>
-                  </View>       
-                </View>        
+                    <Text style={styles.name}>{global.username}</Text>
+                    <Text style={styles.info}>Salesperson</Text>
+                    <Text style={styles.description}>{global.telephone}</Text>
+                    <Text style={styles.description}>{global.address}</Text>      
+                </View>
             </View>
         </View>
         );
@@ -86,7 +74,7 @@ const styles = StyleSheet.create({
     fontWeight:'600',
   },
   body:{
-    marginTop:10,
+    marginTop:40,
   },
   bodyContent: {
     flex: 1,
@@ -95,13 +83,13 @@ const styles = StyleSheet.create({
   },
   name:{
     fontSize:28,
-    color: "#595959",
+    color: "#696969",
     fontWeight: "600"
   },
   info:{
-    fontSize:20,
+    fontSize:16,
     color: "#00BFFF",
-    marginTop:5
+    marginTop:10
   },
   description:{
     fontSize:16,
@@ -109,20 +97,15 @@ const styles = StyleSheet.create({
     marginTop:10,
     textAlign: 'center'
   },
-  ordersContainer: {
-    marginTop:35,
-    height:150,
+  buttonContainer: {
+    marginTop:10,
+    height:45,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom:20,
-    width:300,
-    borderRadius:5,
-    borderTopWidth: 5,
-    borderBottomWidth: 5,
-    borderColor: "#999999",
-  },
-  orders: {
-    alignItems: 'center',
+    width:250,
+    borderRadius:30,
+    backgroundColor: "#00BFFF",
   },
 });

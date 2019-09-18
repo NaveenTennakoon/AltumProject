@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+
 import FB from '../components/FB';
 
 export default class Login extends Component {
@@ -8,15 +9,27 @@ export default class Login extends Component {
 		super(props)
 		this.state = {
 			username : '',
-			password : ''
-		}
+			password : '',
+		},
+		global.username = '';
 	}
 
 	login(){
+		const {navigate} = this.props.navigation;
 		let user = this.state.username;
 		let pwd = this.state.password;
 		FB.auth().signInWithEmailAndPassword(user, pwd).then(function(){
-            alert(user+pwd);
+			let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
+			userdetails.on('value', function(snapshot) {
+				if (snapshot.val().type != 'salesperson'){
+					alert("This email is not registered to a Salesperson");
+				}
+				else{
+					global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
+					alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
+					navigate('dNav');
+				}	
+			});
 		  }).catch(function(error){
 			  // Handle Errors here.
 			  var errorMessage = error.message;

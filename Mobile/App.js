@@ -1,19 +1,18 @@
 import { createAppContainer } from "react-navigation";
-import { createDrawerNavigator } from "react-navigation-drawer";
+import { createStackNavigator } from "react-navigation-stack";
 
-import HomeScreen from "./screens/HomeScreen";
-import SettingsScreen from "./screens/SettingsScreen";
 import LoginScreen from "./screens/LoginScreen";
+import DrawerNavigator from "./components/DrawerNavigator";
+// import HomeScreen from "./screens/HomeScreen";
 
-const AppNavigator = createDrawerNavigator(
+const AppNavigator = createStackNavigator(
   {
-  Home: {screen: HomeScreen},
-  Settings: {screen: SettingsScreen},
-  Login: {screen: LoginScreen}
+  Login: {screen: LoginScreen, navigationOptions: {header: null,}},
+  dNav: {screen: DrawerNavigator, navigationOptions: {header: null,}}
   },
   {
     initialRouteName: 'Login',
-  }
+  },
 );
 
 export default createAppContainer(AppNavigator);
