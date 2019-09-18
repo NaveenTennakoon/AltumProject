@@ -52,13 +52,13 @@
           </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" aria-expanded="true">
+            <a class="nav-link" href="feedback.html" aria-expanded="true">
               <i class="fas fa-fw fa-cog"></i>
               <span>Feedback</span>
             </a>
           </li>
           <li class="nav-item">
-              <a class="nav-link" href="#" aria-expanded="true">
+              <a class="nav-link" href="customer_payment.html" aria-expanded="true">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Online Payment</span>
               </a>
@@ -148,44 +148,53 @@
         <!-- End of Topbar -->
 
                 
-        <!-- Begin Page Content -->
-          
-          
+        <!-- Begin Page Content -->         
         <div class="content">
             <div class="container">
               <div class="row justify-content-center">
-                <div class="col-xl-8 col-lg-12 col-md-9">
+                <div class="col-xl-8">
                   <div class="card o-hidden border-0 shadow-lg my-0">
                     <div class="card-body p-0">  
                       <div class="row">
                         <div class="col-lg-12">
                           <div class="p-5">
-                              <h1 class="text-center h3 mb-1 text-gray-800 p-3">EDIT PROFILE</h1>
-                              <form class="user">
-                              <div class="form-group input-group">
-                                 <div class="input-group-prepend">
-                                  <span class="input-group-text"> <i class="fa fa-user"></i></span>
-                                 </div>                                    
-                                <input id="company" class="form-control" placeholder="Name" type="text">
-                              </div>
-                              <div class="form-group input-group">
-                                  <div class="input-group-prepend">
-                                  <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                              <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">EDIT PROFILE</h1>
+                              <form class="editCustomerForm"> 
+                                  <div class="form-row">
+                                    <div class="col-lg-3">
+                                      <input class="form-control-plaintext" value="Name"><br/>
+                                    </div>
+                                    <div class="col-lg-9">
+                                      <input class="form-control" id="cus_name">
+                                    </div>
                                   </div>
-                                  <input id="email" class="form-control" placeholder="Email address" type="email">
-                              </div>
-                              <div class="form-group input-group">
-                                  <div class="input-group-prepend">
-                                  <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
-                                  </div> 
-                                  <input id="tel" class="form-control" placeholder="Phone number" type="text">
-                              </div>
-                              <div class="form-group input-group">
-                                  <div class="input-group-prepend">
-                                  <span class="input-group-text"> <i class="fa fa-home"></i> </span>
-                                  </div> 
-                                  <input id="address" class="form-control" placeholder="Address" type="text">
+              
+                                  <div class="form-row">
+                                    <div class="col-lg-3">
+                                      <input class="form-control-plaintext" value="Email"><br/>
+                                    </div>
+                                    <div class="col-lg-9">
+                                      <input class="form-control" id="cus_email">
+                                    </div>
                                   </div>
+              
+                                  <div class="form-row">
+                                    <div class="col-lg-3">
+                                      <input class="form-control-plaintext" value="Phone Number"><br/>
+                                    </div>
+                                    <div class="col-lg-9">
+                                      <input class="form-control" id="cus_telephone">
+                                    </div>
+                                  </div>
+              
+                                  <div class="form-row">
+                                    <div class="col-lg-3">
+                                      <input class="form-control-plaintext" value="Address"><br/>
+                                    </div>
+                                    <div class="col-lg-9">
+                                      <input class="form-control" id="cus_address">
+                                    </div>
+                                  </div>                                                              
                               <div class= "col-xl-12 col-md-6 mb-4 m-2 p-2">
                                 <a class="btn btn-primary btn-user btn-block" onclick="" style="color: #fff">Update Details</a>
                               </div>    
