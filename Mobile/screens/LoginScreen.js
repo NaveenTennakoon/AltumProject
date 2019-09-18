@@ -9,8 +9,9 @@ export default class Login extends Component {
 		super(props)
 		this.state = {
 			username : '',
-			password : ''
-		}
+			password : '',
+		},
+		global.username = '';
 	}
 
 	login(){
@@ -24,7 +25,8 @@ export default class Login extends Component {
 					alert("This email is not registered to a Salesperson");
 				}
 				else{
-					alert("Welcome"+" "+snapshot.val().firstName);
+					global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
+					alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
 					navigate('dNav');
 				}	
 			});
