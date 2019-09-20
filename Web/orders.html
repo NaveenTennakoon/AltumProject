@@ -61,7 +61,6 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Stock Management:</h6>
             <a class="collapse-item" href="stock.html">Stock Management</a>
-            <a class="collapse-item" href="pending.html">Pending Orders</a>
             <a class="collapse-item" href="newitem.html">Add New Item</a>
           </div>
         </div>
@@ -118,7 +117,6 @@
             <h6 class="collapse-header">Customer Related activities:</h6>
             <a class="collapse-item" href="customer.html">Customer Profiles</a>
             <a class="collapse-item" href="orders.html">Orders</a>
-            <a class="collapse-item" href="newcustomer.html">Add New Customer</a>
           </div>
         </div>
       </li>
@@ -170,18 +168,6 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          <!-- Topbar Search -->
-          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <div class="input-group">
-              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
-                  <i class="fas fa-search fa-sm"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto">
 
@@ -218,11 +204,46 @@
         </nav>
         <!-- End of Topbar -->
 
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
+       <!-- Begin Page Content -->
+        <div class="container-fluid" style="color:black">
 
-          <!-- Page Heading -->
-          <h1 class="h3 mb-1 text-gray-800">Orders</h1>
+            <div class="row">
+
+                <!-- Area Chart -->
+                <div class="col-xl-6 col-lg-7">
+                  <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                      <h6 class="m-0 font-weight-bold text-primary">Pending Orders</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body overflow-auto" style="height:450px">
+                      <section class="container content-section">
+                          <div class="shop-items">
+                            <div id="product-items"></div>
+                          </div>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+    
+                <!-- Pie Chart -->
+                <div class="col-xl-6 col-lg-5">
+                  <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                      <h6 class="m-0 font-weight-bold text-primary"> Past Orders</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body overflow-auto" style="height:450px">
+                        <section class="container content-section">
+                            <div class="cart-items">
+                            </div>                         
+                        </section>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
         </div>
         <!-- /.container-fluid -->
