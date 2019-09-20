@@ -1,4 +1,4 @@
-// Search box functions
+ // Search box functions
 
 var cusArr = [];
 // customer table snapshot
@@ -18,7 +18,7 @@ cussnapshotToArray();
 autocomplete(document.getElementById("cusSearch"), cusArr);
 // end of Search box functions
 
-// <!-- function to retrieve the employee data in database according to the selection in the search box-->
+// <!-- function to retrieve the salesperson data in database according to the selection in the search box-->
 function retrieveCustomer(){
     var iteration = 0;
     var inputvalue = document.getElementById("cusSearch").value;
@@ -44,7 +44,7 @@ function retrieveCustomer(){
           document.getElementById("maincon").insertAdjacentHTML(
             'beforeend', 
                 "<br/><button type='button' class='btn btn-primary col-lg-3' data-toggle='modal' data-target='#upCon'>Update Details <i class='fa fa-edit' aria-hidden='true'></i></button><tabspace>"+
-                "<button type='button' class='btn btn-danger col-lg-3 ml-3' data-toggle='modal' data-target='#delCon'>Delete Employee <i class='far fa-trash-alt'></i></button>"+
+                "<button type='button' class='btn btn-danger col-lg-3 ml-3' data-toggle='modal' data-target='#delCon'>Delete Salesperson <i class='far fa-trash-alt'></i></button>"+
                 //<!-- Update Modal -->
               "<div class='modal fade' id='upCon' role='dialog'>"+
               "<div class='modal-dialog'>"+
@@ -58,7 +58,7 @@ function retrieveCustomer(){
                     "<p>Do you want to update the set changes to the database?</p>"+
                   "</div>"+
                   "<div class='modal-footer'>"+
-                    "<button type='button' id='update' class='btn btn-primary btn-ok' onclick='updateEmployee()'>Yes</button>"+
+                    "<button type='button' id='update' class='btn btn-primary btn-ok' onclick='updateSalesperson()'>Yes</button>"+
                     "<button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>"+
                   "</div>"+
                 "</div>"+
@@ -80,7 +80,7 @@ function retrieveCustomer(){
                       "<p>Do you want to remove this product from the database?</p>"+
                     "</div>"+
                     "<div class='modal-footer'>"+
-                      "<button type='button' id='remove' class='btn btn-primary btn-ok' onclick='remEmployee()'>Yes</button>"+
+                      "<button type='button' id='remove' class='btn btn-primary btn-ok' onclick='remSalesperson()'>Yes</button>"+
                       "<button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>"+
                     "</div>"+
                   "</div>"+

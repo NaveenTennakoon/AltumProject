@@ -11,7 +11,7 @@ var config = {
 firebase.initializeApp(config); 
 
 var inventoryRef = firebase.database().ref("inventory");
-var employeeRef = firebase.database().ref("employees");
+var salespersonRef = firebase.database().ref("salespersons");
 var customerRef = firebase.database().ref("customers");
 var gpsRef = firebase.database().ref("tracking");
 var feedbackRef = firebase.database().ref("feedback");
