@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
-import { View, Text } from "react-native";
-import ToggleSwitch from 'toggle-switch-react-native'
+import { View, Text, StyleSheet, PermissionsAndroid } from "react-native";
 import SettingsList from 'react-native-settings-list';
+import Geolocation from 'react-native-geolocation-service';
 
 import NavHeader from "../components/NavHeader";
+import FB from '../components/FB'
 
 export default class SettingsScreen extends Component {
   
   constructor(){
     super();
     this.onValueChange = this.onValueChange.bind(this);
-    this.state = {switchValue: false};
+    this.state = {
+      switchValue: false,
+      lat: 0,
+      lng: 0,
+      timer: 0,
+    };
   }
   render() {
     return (
@@ -86,8 +92,60 @@ export default class SettingsScreen extends Component {
       </View>
     );
   }
+
   onValueChange(value){
     this.setState({switchValue: value});
+    if(!this.state.switchValue) {
+      async function requestCameraPermission() {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
+                'title': 'Location Access Required',
+                'message': 'This App needs to Access your location'
+            }
+        );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('You can use the camera');
+          } else {
+            console.log('Camera permission denied');
+          }
+        } catch (err) {
+          console.warn(err);
+        }
+      }
+      requestCameraPermission();
+      this.onStart();
+    }
+    else this.onStop();
+  }
+
+  onStart() {
+    this.state.timer = setInterval(() => {
+      Geolocation.getCurrentPosition(
+        position => {
+          FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          this.setState({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          alert("Latitude : " + this.state.lat+" Longitude : " + this.state.lng);
+        },
+        error => alert(error.message),
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 1000,
+          distanceFilter: 1
+        }
+      );
+    }, 5000);
+  }
+
+  onStop() {
+    clearInterval(this.state.timer);
   }
 
 }
