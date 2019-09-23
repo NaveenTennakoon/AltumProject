@@ -15,6 +15,7 @@ export default class Login extends Component {
 	}
 
 	login(){
+		const {navigate} = this.props.navigation;
 		let user = this.state.username;
 		let pwd = this.state.password;
 		FB.auth().signInWithEmailAndPassword(user, pwd).then(function(){
@@ -26,7 +27,7 @@ export default class Login extends Component {
 				else{
 					global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
 					alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
-					navigate('dNav');
+					navigate('tNav');
 				}	
 			});
 		  }).catch(function(error){

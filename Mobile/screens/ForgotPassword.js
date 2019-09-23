@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 import FB from '../components/FB';
 
@@ -14,7 +14,7 @@ export default class Login extends Component {
 
 	reset(){
 		let user = this.state.username;
-		firebase.auth().sendPasswordResetEmail(user).then(function() {
+		FB.auth().sendPasswordResetEmail(user).then(function() {
             // Email sent.
             alert("Link is successfully sent to your email address. Check your inbox");
             navigate('Login');

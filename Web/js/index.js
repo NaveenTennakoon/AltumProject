@@ -9,7 +9,6 @@ function login(usertype){
     });
   });
       
-
   if(usertype == "customer"){
     customerRef.once("value").then(function(snapshot){
           snapshot.forEach(function(childSnapshot) {

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, PermissionsAndroid } from "react-native";
 import SettingsList from 'react-native-settings-list';
 import Geolocation from 'react-native-geolocation-service';
 
-import NavHeader from "../components/NavHeader";
 import FB from '../components/FB'
 
 export default class SettingsScreen extends Component {
@@ -17,12 +16,13 @@ export default class SettingsScreen extends Component {
       lng: 0,
       timer: 0,
     };
+    global.location = 'off';
   }
   render() {
+    const {navigate} = this.props.navigation;
     return (
       <View style={styles.container}>
         <View style={styles.container}>
-        <NavHeader navigation={this.props.navigation} title="Settings"/>
           <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
             <SettingsList.Item
               // icon={
@@ -36,56 +36,35 @@ export default class SettingsScreen extends Component {
             />
             <SettingsList.Item
               // icon={<Image style={styles.imageStyle} source={require('./images/wifi.png')}/>}
-              title='Password'
-              titleInfo='Change the Password'
+              title='My Locations'
               // titleInfoStyle={styles.titleInfoStyle}
               onPress={() => alert('Route to Wifi Page')}
+            /> 
+            <SettingsList.Header headerStyle={{marginTop:15}}/>
+            <SettingsList.Item
+              // icon={<Image style={styles.imageStyle} source={require('./images/control.png')}/>}
+              title='Order'
+              titleInfo='View Pending order'
+              onPress={() => alert('Route To Control Center Page')}
             />
+            <SettingsList.Item
+              // icon={<Image style={styles.imageStyle} source={require('./images/wifi.png')}/>}
+              title='Change Password'
+              // titleInfoStyle={styles.titleInfoStyle}
+              onPress={() => alert('Route to Wifi Page')}
+            /> 
+            <SettingsList.Header headerStyle={{marginTop:15}}/>
             <SettingsList.Item
               // icon={<Image style={styles.imageStyle} source={require('./images/blutooth.png')}/>}
               title='Profile'
               titleInfo='Edit Info'
               // titleInfoStyle={styles.titleInfoStyle}
-              onPress={() => alert('Route to Bluetooth Page')}
+              onPress={() => navigate('Edit')}
             />
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/cellular.png')}/>}
-              title='Cellular'
-              onPress={() => alert('Route To Cellular Page')}
-            />
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/hotspot.png')}/>}
-              title='Personal Hotspot'
-              titleInfo='Off'
-              // titleInfoStyle={styles.titleInfoStyle}
-              onPress={() => alert('Route To Hotspot Page')}
-            />
-            <SettingsList.Header headerStyle={{marginTop:15}}/>
             <SettingsList.Item
               // icon={<Image style={styles.imageStyle} source={require('./images/notifications.png')}/>}
-              title='Notifications'
+              title='Log out'
               onPress={() => alert('Route To Notifications Page')}
-            />
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/control.png')}/>}
-              title='Control Center'
-              onPress={() => alert('Route To Control Center Page')}
-            />
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/dnd.png')}/>}
-              title='Do Not Disturb'
-              onPress={() => alert('Route To Do Not Disturb Page')}
-            />
-            <SettingsList.Header headerStyle={{marginTop:15}}/>
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/general.png')}/>}
-              title='General'
-              onPress={() => alert('Route To General Page')}
-            />
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/display.png')}/>}
-              title='Display & Brightness'
-              onPress={() => alert('Route To Display Page')}
             />
           </SettingsList>
         </View>
@@ -131,7 +110,7 @@ export default class SettingsScreen extends Component {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           });
-          alert("Latitude : " + this.state.lat+" Longitude : " + this.state.lng);
+          global.location = "on";
         },
         error => alert(error.message),
         {
@@ -146,6 +125,7 @@ export default class SettingsScreen extends Component {
 
   onStop() {
     clearInterval(this.state.timer);
+    global.location = "off";
   }
 
 }
