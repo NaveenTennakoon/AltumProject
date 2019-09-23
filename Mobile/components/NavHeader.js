@@ -9,7 +9,7 @@ const NavHeader = props => {
       leftComponent={<MenuIcon navigation={props.navigation} />}
       centerComponent={{
         text: props.title,
-        style: { color: "#fff", fontWeight: "bold" }
+        style: { color: "#fff", fontWeight: "bold", fontSize: 19 }
       }}
       statusBarProps={{ barStyle: "light-content" }}
     />

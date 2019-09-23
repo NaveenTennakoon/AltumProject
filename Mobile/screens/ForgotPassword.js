@@ -9,65 +9,41 @@ export default class Login extends Component {
 		super(props)
 		this.state = {
 			username : '',
-			password : '',
-		},
-		global.username = '';
+		}
 	}
 
-	login(){
+	reset(){
 		let user = this.state.username;
-		let pwd = this.state.password;
-		FB.auth().signInWithEmailAndPassword(user, pwd).then(function(){
-			let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
-			userdetails.on('value', function(snapshot) {
-				if (snapshot.val().type != 'salesperson'){
-					alert("This email is not registered to a Salesperson");
-				}
-				else{
-					global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
-					alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
-					navigate('dNav');
-				}	
-			});
-		  }).catch(function(error){
-			  // Handle Errors here.
-			  var errorMessage = error.message;
-			  window.alert(errorMessage);
-		  });
+		firebase.auth().sendPasswordResetEmail(user).then(function() {
+            // Email sent.
+            alert("Link is successfully sent to your email address. Check your inbox");
+            navigate('Login');
+          }).catch(function(error) {
+            // An error happened.
+            let errorMessage = error.message;
+            alert(errorMessage);
+          });
 	} 
 
   render() {
-	const {navigate} = this.props.navigation;
+    const {navigate} = this.props.navigation;
 	return (
 		<KeyboardAvoidingView behaviour="padding" style={styles.container}>
 				<Image style={styles.bgImage} source={{ uri: "https://lorempixel.com/900/1400/nightlife/2/" }}/>
+				<Text style={styles.textByReset}>We get it. Things do happen. Have you forgot your password? Enter the email address below and we will email a password reset link</Text>   
 				<View style={styles.inputContainer}>
 					<TextInput style={styles.inputs}
-						placeholder="Email"
-						keyboardType="email-address"
-						underlineColorAndroid='transparent'
-						autoCapitalize="none"
-						returnKeyType="next"
-						autoCorrect={false}
-						onSubmitEditing={() => this.passwordInput.focus()}
-						onChangeText={(username) => this.setState({username})}></TextInput>
-					<Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/email.png'}}/>
-				</View>       
-				<View style={styles.inputContainer}>
-					<TextInput style={styles.inputs}
-						placeholder="Password"
-						secureTextEntry={true}
+						placeholder="Email Address"
 						underlineColorAndroid='transparent'
 						returnKeyType="go"
-						ref={(input) => this.passwordInput = input}
-						onChangeText={(password) => this.setState({password})}></TextInput>
+						onChangeText={(username) => this.setState({username})}></TextInput>
 					<Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}/>
 				</View>
-				<TouchableOpacity style={styles.btnForgotPassword} onPress={() => navigate('Reset')}>
-					<Text style={styles.btnText}>Forgot your password?</Text>
+				<TouchableOpacity style={[styles.buttonContainer, styles.resetButton]} onPress={()=>this.reset()}>
+				<Text style={styles.loginText}>Submit Request</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={()=>this.login()}>
-				<Text style={styles.loginText}>Login</Text>
+                <TouchableOpacity style={styles.btnRevert} onPress={() => navigate('Login')}>
+					<Text style={styles.btnText}>back to Login</Text>
 				</TouchableOpacity>
       	</KeyboardAvoidingView>
 	);
@@ -124,16 +100,16 @@ const styles = StyleSheet.create({
     borderRadius:30,
     backgroundColor:'transparent'
   },
-  btnForgotPassword: {
+  btnRevert: {
     height:15,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     marginBottom:10,
     width:300,
     backgroundColor:'transparent'
   },
-  loginButton: {
+  resetButton: {
     backgroundColor: "#00b5ec",
 
     shadowColor: "#808080",
@@ -159,6 +135,17 @@ const styles = StyleSheet.create({
   btnText:{
     color:"white",
 	fontSize: 15,
+  },
+  textByReset:{
+    color:"white",
+    textAlign:'center',
+    marginHorizontal: 30,
+    marginBottom: 30,
+    fontSize: 18,
+
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10
   }
 }); 
 

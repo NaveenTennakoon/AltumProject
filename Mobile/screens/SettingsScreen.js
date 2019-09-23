@@ -32,19 +32,19 @@ export default class SettingsScreen extends Component {
               switchState={this.state.switchValue}
               switchOnValueChange={this.onValueChange}
               hasNavArrow={false}
-              title='Airplane Mode'
+              title='GPS Location'
             />
             <SettingsList.Item
               // icon={<Image style={styles.imageStyle} source={require('./images/wifi.png')}/>}
-              title='Wi-Fi'
-              titleInfo='Bill Wi The Science Fi'
+              title='Password'
+              titleInfo='Change the Password'
               // titleInfoStyle={styles.titleInfoStyle}
               onPress={() => alert('Route to Wifi Page')}
             />
             <SettingsList.Item
               // icon={<Image style={styles.imageStyle} source={require('./images/blutooth.png')}/>}
-              title='Bluetooth'
-              titleInfo='Off'
+              title='Profile'
+              titleInfo='Edit Info'
               // titleInfoStyle={styles.titleInfoStyle}
               onPress={() => alert('Route to Bluetooth Page')}
             />
