@@ -237,70 +237,23 @@
                           <div class="col-lg-12 p-5">  
                             <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">NEW PRODUCT DETAILS</h1>
                             <form id="addProductForm">
-
-                              <div class="form-row">                                      
-                                <div class="col-lg-4">
-                                  <input class="form-control" id="parentkey" placeholder="Product Number"><br/>
-                                </div>
-                              </div>
-                
-                              <div class="form-row">
-                                <div class="col-lg-4">
-                                  <input class="form-control" id="key1" placeholder="Enter key field"><br/>
-                                </div>
-                                <div class="col-lg-7">
-                                  <input class="form-control" id="value1" placeholder="Value of key">
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="col-lg-4">
-                                  <input class="form-control" id="key2" placeholder="Enter key field"><br/>
-                                </div>
-                                <div class="col-lg-7">
-                                  <input class="form-control" id="value2" placeholder="Value of key">
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="col-lg-4">
-                                  <input class="form-control" id="key3" placeholder="Enter key field"><br/>
-                                </div>
-                                <div class="col-lg-7">
-                                  <input class="form-control" id="value3" placeholder="Value of key">
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="col-lg-4">
-                                  <input class="form-control" id="key4" placeholder="Enter key field"><br/>
-                                </div>
-                                <div class="col-lg-7">
-                                  <input class="form-control" id="value4" placeholder="Value of key">
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="col-lg-4">
-                                  <input class="form-control" id="key5" placeholder="Enter key field"><br/>
-                                </div>
-                                <div class="col-lg-7">
-                                  <input class="form-control" id="value5" placeholder="Value of key">
-                                </div>
-                              </div>
                       
-                              <div class="form-row">
-                                <div class="col-lg-4">
-                                  <input class="form-control" id="key6" placeholder="Enter key field"><br/>
-                                </div>
-                                <div class="col-lg-7">
-                                  <input class="form-control" id="value6" placeholder="Value of key">
-                                </div>
+                              <div id="dynamicAddInput">
                               </div>
-                      
-                              <div class= "col-xl-12 col-md-6 mb-4 m-1 p-4">
+
+                              <div class="form-row m-5">                                      
+                                <div class="col-lg-6">
+                                <input type="button" class="btn btn-primary btn-user btn-block" value="Add input field" onClick="addInput('dynamicAddInput');">
+                                </div>
+                                <div class="col-lg-6">                 
+                                <input type="button" class="btn btn-primary btn-user btn-block" value="Delete input field" onClick="deleteInput('dynamicAddInput');">
+                                </div>  
+                                                         
+                              <div class= "col-lg-12 p-4">
                                   <button type="button" id="new_product" class="btn btn-primary btn-user btn-block">Add Product</button>                             
                               </div> 
+                            </div>
+
                             </form>
                           </div>
                       </div>    
@@ -357,10 +310,12 @@
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script src="js/fbconf.js"></script>
   <script src="js/write.js"></script>
+  <script src="js/new_input_field.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/sb-admin-2.min.js"></script>
+ 
 
 </body>
 
