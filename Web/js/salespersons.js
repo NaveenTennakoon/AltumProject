@@ -1,4 +1,4 @@
-// Search box functions
+// Search box functions 
 var spArr = [];
 //salesperson table snapshot
 function spsnapshotToArray() {
