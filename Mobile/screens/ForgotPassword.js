@@ -13,6 +13,7 @@ export default class Login extends Component {
 	}
 
 	reset(){
+    const {navigate} = this.props.navigation;
 		let user = this.state.username;
 		FB.auth().sendPasswordResetEmail(user).then(function() {
             // Email sent.
@@ -26,7 +27,7 @@ export default class Login extends Component {
 	} 
 
   render() {
-    const {navigate} = this.props.navigation;
+  const {navigate} = this.props.navigation;
 	return (
 		<KeyboardAvoidingView behaviour="padding" style={styles.container}>
 				<Image style={styles.bgImage} source={{ uri: "https://lorempixel.com/900/1400/nightlife/2/" }}/>

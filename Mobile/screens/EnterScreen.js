@@ -1,29 +1,62 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableHighlight, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; 
+import Geolocation from 'react-native-geolocation-service';
+
+import FB from '../components/FB';
 
 export default class EnterScreen extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      address: '',
-      shop_name: '',
-      customer_name: '',
+      address: null,
+      shop_name: null,
+      customer_name: null,
     }
   }
 
   enterLocation() {
     if(!global.location){
-        global.location = "off";
+      global.location = "off";
     }
     const {navigate} = this.props.navigation;
     if(global.location == "off"){
-        alert("Please turn on GPS location");
-        navigate('Settings');
+      alert("Please turn on GPS location");
+      navigate('Settings');
     }   
     else{
-        
+      if(!this.state.address || !this.state.shop_name || !this.state.customer_name){
+        alert("All fields are required");
+      }
+      else{
+        Geolocation.getCurrentPosition(
+          position => {
+            FB.database().ref("tracking/locations/").push({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              shopname: this.state.shop_name,
+              customer: this.state.customer_name,
+              address : this.state.address,
+              salesperson: FB.auth().currentUser.uid,
+            });
+            Alert.alert("Success", "Location entered successfully");
+            this.setState({
+              address: null,
+              shop_name: null,
+              customer_name: null
+            })
+            this.shopInput.focus()
+          },
+          error => alert(error.message),
+          {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 1000,
+            distanceFilter: 1
+          }
+        );  
+      }
     }
   }
 
@@ -37,14 +70,22 @@ export default class EnterScreen extends Component {
           <TextInput style={styles.inputs}
               placeholder="Shop Name"
               underlineColorAndroid='transparent'
-              onChangeText={(shop_name) => this.setState({shop_name})}/>
+              ref={(input) => this.shopInput = input}
+              returnKeyType="next"
+              onChangeText={(shop_name) => this.setState({shop_name})}
+              value={this.state.shop_name}
+              onSubmitEditing={() => this.customerInput.focus()}/>
         </View>      
         <View style={styles.inputContainer}>
         <Icon style={styles.inputIcon} size={25} name={'ios-peron'}/>
           <TextInput style={styles.inputs}
               placeholder="Customer Name"
               underlineColorAndroid='transparent'
-              onChangeText={(customer_name) => this.setState({customer_name})}/>
+              ref={(input) => this.customerInput = input}
+              returnKeyType="next"
+              onChangeText={(customer_name) => this.setState({customer_name})}
+              value={this.state.customer_name}
+              onSubmitEditing={() => this.addressInput.focus()}/>
         </View>     
         <View style={styles.inputContainer}>
         <Icon style={styles.inputIcon} size={25} name={'ios-pin'}/>
@@ -52,7 +93,9 @@ export default class EnterScreen extends Component {
               placeholder="Address"
               underlineColorAndroid='transparent'
               multiline = {true}
-              onChangeText={(address) => this.setState({address})}/>
+              ref={(input) => this.addressInput = input}
+              onChangeText={(address) => this.setState({address})}
+              value={this.state.address}/>
         </View>
 
         <TouchableHighlight style={[styles.buttonContainer, styles.sendButton]} onPress={() => this.enterLocation()}>

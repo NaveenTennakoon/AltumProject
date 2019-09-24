@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, PermissionsAndroid } from "react-native";
+import { View, StyleSheet, PermissionsAndroid, AsyncStorage, Alert } from "react-native";
 import SettingsList from 'react-native-settings-list';
 import Geolocation from 'react-native-geolocation-service';
 
@@ -38,7 +38,7 @@ export default class SettingsScreen extends Component {
               // icon={<Image style={styles.imageStyle} source={require('./images/wifi.png')}/>}
               title='My Locations'
               // titleInfoStyle={styles.titleInfoStyle}
-              onPress={() => alert('Route to Wifi Page')}
+              onPress={() => navigate('Locations')}
             /> 
             <SettingsList.Header headerStyle={{marginTop:15}}/>
             <SettingsList.Item
@@ -64,7 +64,20 @@ export default class SettingsScreen extends Component {
             <SettingsList.Item
               // icon={<Image style={styles.imageStyle} source={require('./images/notifications.png')}/>}
               title='Log out'
-              onPress={() => alert('Route To Notifications Page')}
+              onPress={()=>
+                Alert.alert(
+                  'Log out',
+                  'Do you want to logout?',
+                  [
+                    {text: 'Cancel', onPress: () => {return null}},
+                    {text: 'Confirm', onPress: () => {
+                      AsyncStorage.clear();
+                      navigate('Login')
+                    }},
+                  ],
+                  { cancelable: false }
+                )  
+              }
             />
           </SettingsList>
         </View>
