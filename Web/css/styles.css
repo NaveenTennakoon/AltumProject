@@ -11591,9 +11591,9 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("https://kinon.com/wp-content/uploads/2019/01/M198-X0263C-LNX03750-half-panel-detail-web-600x800.jpg");
+  background: url("https://media.licdn.com/dms/image/C561BAQGrA1zhhiG83Q/company-background_10000/0?e=2159024400&v=beta&t=YHmxoNTheBApG0h10vhdluylaMzYpEXd7UmudsssJn8");
   background-position: center;
-  background-size: cover;
+  background-size:100% 60%;
 }
 
 .bg-register-image {
