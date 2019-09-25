@@ -1,5 +1,5 @@
 // Initialize Firebase
-var config = {
+let config = {
     apiKey: "AIzaSyB0ezZy5YT-6pSdmrZEXbK70AIE5SJl_BI",
     authDomain: "altum-46a17.firebaseapp.com",
     databaseURL: "https://altum-46a17.firebaseio.com",
@@ -10,9 +10,10 @@ var config = {
   };
 firebase.initializeApp(config); 
 
-var inventoryRef = firebase.database().ref("inventory");
-var salespersonRef = firebase.database().ref("salespersons");
-var customerRef = firebase.database().ref("customers");
-var gpsRef = firebase.database().ref("tracking");
-var feedbackRef = firebase.database().ref("feedback");
-var usersRef = firebase.database().ref("users");
+let inventoryRef = firebase.database().ref("inventory");
+let salespersonRef = firebase.database().ref("salespersons");
+let customerRef = firebase.database().ref("customers");
+let gpsRef = firebase.database().ref("tracking");
+let feedbackRef = firebase.database().ref("feedback");
+let usersRef = firebase.database().ref("users");
+let ordersRef = firebase.database().ref("orders");

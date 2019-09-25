@@ -155,7 +155,7 @@
             <div class="row">
 
                 <!-- Area Chart -->
-                <div class="col-xl-8 col-lg-7">
+                <div class="col-xl-7 col-lg-7">
                   <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -185,7 +185,7 @@
                 </div>
     
                 <!-- Pie Chart -->
-                <div class="col-xl-4 col-lg-5">
+                <div class="col-xl-5 col-lg-5">
                   <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -196,24 +196,23 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                           <div class="dropdown-header">Options:</div>
-                          <a class="dropdown-item" href="#">Clear order</a>
-                          <a class="dropdown-item" href="#">Descriptive view</a>
+                          <a class="dropdown-item" onclick="clearOrder()">Clear order</a>
+                          <a class="dropdown-item" >Descriptive view</a>
                         </div>
                       </div>
                     </div>
                     <!-- Card Body -->
-                    <div class="card-body">
+                    <div class="card-body overflow-auto" style="height: 300px">
                         <section class="container content-section">
-                            <div class="cart-items">
-                            </div>
-                            <div class="cart-total">
-                                <strong class="cart-total-title">Total</strong>
-                                <span class="cart-total-price">$0</span>
-                            </div>
-                            <button class="btn btn-primary btn-purchase" data-toggle="modal" data-target="#paymentModal" type="button">Submit Order</button>
+                            <div class="cart-items"></div>
                         </section>
                     </div>
                   </div>
+                  <div class="cart-total">
+                      <strong class="cart-total-title">Total</strong>
+                      <span class="cart-total-price">$0</span>
+                  </div>
+                  <button class="btn btn-primary" data-toggle="modal" data-target="#paymentModal" type="button">Submit Order</button>
                 </div>
               </div>
 
@@ -252,8 +251,8 @@
           <h5 class="modal-title">Set a Payment method</h5>
         </div>
         <div class="modal-body p-4">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="cancel()">Pay on Delivery</button>
-            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="confirm()">Pay online</button>
+            <button class="btn btn-secondary btn-purchase" type="button" data-dismiss="modal">Pay on Delivery</button>
+            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="$('#logoutModal').modal('show')">Pay online</button>
         </div>
       </div>
     </div>
@@ -277,6 +276,24 @@
       </div>
     </div>
   </div>
+
+  <!-- View Item Modal-->
+  <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="item-title"></h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body" id="item-body"></div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="clearViewModal()">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>

@@ -55,10 +55,11 @@ function additem(){
     inventoryRef.push({
         Name: $("#defaultval1").val(),
         Type: $("#defaultval2").val(),
-        Description: $("#defaultval3").val(),     
+        Description: $("#defaultval3").val(),
+        Price: $("#defaultval4").val(),   
+        Quantity: $("#defaultval5").val(),      
       }).then((snap) => {
         const key = snap.key;
-        console.log(key);
         while (i<=counter) {
             inventoryRef.child(key).update({
                 [$("#addedkey"+i).val()]: $("#addedval"+i).val(),
