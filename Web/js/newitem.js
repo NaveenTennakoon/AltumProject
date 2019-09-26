@@ -51,24 +51,35 @@ function deleteInput(divName){
 }
 
 function additem(){
-    let i = 1;
-    inventoryRef.push({
-        Name: $("#defaultval1").val(),
-        Type: $("#defaultval2").val(),
-        Description: $("#defaultval3").val(),
-        Price: $("#defaultval4").val(),   
-        Quantity: $("#defaultval5").val(),      
-      }).then((snap) => {
-        const key = snap.key;
-        while (i<=counter) {
-            inventoryRef.child(key).update({
-                [$("#addedkey"+i).val()]: $("#addedval"+i).val(),
+    let i = temp = 1;
+    inventoryRef.once("value").then(function(snapshot){ 
+        snapshot.forEach(function(childSnapshot) {
+            if(childSnapshot.val().ID == $("#defaultval1").val()){
+                temp = 0;
+                window.alert('This Product is already available in the stock');
+            }
+        });
+        if(temp == 1){
+            inventoryRef.push({
+                ID: $("#defaultval1").val(),
+                Name: $("#defaultval2").val(),
+                Type: $("#defaultval3").val(),
+                Description: $("#defaultval4").val(),
+                Price: $("#defaultval5").val(),   
+                Quantity: $("#defaultval6").val(),      
+              }).then((snap) => {
+                const key = snap.key;
+                while (i<=counter) {
+                    inventoryRef.child(key).update({
+                        [$("#addedkey"+i).val()]: $("#addedval"+i).val(),
+                    });
+                    i++;
+                }
+            }).catch(function(error){
+                // Handle Errors here.
+                let errorMessage = error.message;
+                window.alert(errorMessage);
             });
-            i++;
         }
-    }).catch(function(error){
-        // Handle Errors here.
-        let errorMessage = error.message;
-        window.alert(errorMessage);
     });
 }
