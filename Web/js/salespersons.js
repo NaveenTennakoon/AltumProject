@@ -134,38 +134,4 @@ function updateSalesperson(){
 // <!-- end of the update function-->
 
 
-// Save a new Salesperson to the database, using the input in the form
-var addSalesperson = function () {
-
-  // Get input values from each of the form elements
-  var value1 = $("#value1").val();
-  var value2 = $("#value2").val();
-  var value3 = $("#value3").val();
-  var value4 = $("#value4").val();
-
-  // Push the new salesperson to the database using those values
-  salespersonRef.push({
-      "Name": value1,
-      "Email": value2,
-      "Phone Number": value3,
-      "Address": value4 
-  });
-};
-// Find the HTML element with the id addnew, and when the submit
-// event is triggered on that element, call addProduct.
-$("#new_salesperson").click(addSalesperson);
-// End of saving new Salesperson
-
-
-// Load the Profile of tracking customer when clicked on view profile
-function loadFromTracking(){
-  if(localStorage.getItem("clickflag")){
-    document.getElementById("spSearch").value = localStorage.getItem("salesperson_name");
-    retrieveSalesperson();
-    var clickFlag = false;
-    localStorage.setItem("clickflag", clickFlag);
-  } 
-}
-
-
 

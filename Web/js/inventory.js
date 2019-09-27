@@ -1,22 +1,80 @@
-// Search box functions
+let i = 0;
 
-var invArr = [];
-//inventory table snapshot
-function invsnapshotToArray() {
-    inventoryRef.once("value").then(function(snapshot){
-    // <!-- snapshot of childs of root of database-->
-        snapshot.forEach(function(childSnapshot) {
-            var item = childSnapshot.key;
-            invArr.push(item);
-        });
+inventoryRef.once("value").then(function(snapshot){
+  snapshot.forEach(function(childSnapshot){
+      document.getElementById("product-items").insertAdjacentHTML(
+          'beforeend',
+          "<div class='shop-item'>"+
+              "<b>Unique ID: </b>"+
+              "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
+              "<b class='ml-5'>Product ID: </b>"+childSnapshot.val().ID+
+              "<div class='shop-item-details'>"+
+              "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+                  "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
+              "</div>"+
+          "</div>"
+      );
+  });
+  if (document.readyState == 'loading'){
+      document.addEventListener('DOMContentLoaded', ready)
+  } 
+  else{
+      ready()
+  }
+});
+
+function ready() {
+  let viewItemButtons = document.getElementsByClassName('view-item-button');
+  for (let i = 0; i < viewItemButtons.length; i++) {
+      let button = viewItemButtons[i]
+      button.addEventListener('click', viewItemClicked)
+  }
+}
+
+function viewItemClicked(event) {
+  let button = event.target
+  let shopItem = button.parentElement.parentElement
+  let title = shopItem.getElementsByClassName('shop-item-title')[0].innerText
+  inventoryRef.child(title).once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+          document.getElementById("item-body").insertAdjacentHTML(
+              'beforeend',
+              "<div class='form-row my-3 mx-5'>"+
+                "<div class='col-lg-4'>"+
+                  "<input class='form-control' id='key"+i+"' value='"+childSnapshot.key+"' readonly>"+
+                "</div>"+
+                "<div class='col-lg-8'>"+
+                  "<input class='form-control' id='value"+i+"' value='"+childSnapshot.val()+"'>"+
+                "</div>"+
+              "</div>"
+          );
+          i++;
+      });
+  });
+  document.getElementById("item-title").innerHTML = title;
+  $('#viewModal').modal('show')
+}
+
+function clearViewModal(){
+  document.getElementById("item-body").innerHTML = '';
+}
+
+function update(){
+  let title = document.getElementById('item-title').innerText;
+  while(i>0){
+    i--;
+    inventoryRef.child(title).update({
+      [$("#key"+i).val()]: $("#value"+i).val(),
+    }).then(()=>{
+      clearViewModal();
+      window.alert("Product updated successfully");
+    }).catch(function(error){
+        // Handle Errors here.
+        let errorMessage = error.message;
+        window.alert(errorMessage);
     });
-    return invArr;
-};
-//end of snapshot
-invsnapshotToArray();
-//   initiate the auto complete function on the input field
-autocomplete(document.getElementById("invSearch"), invArr);
-// end of Search box functions
+  }
+}
 
 // <!-- function to retrieve the product data in database according to the selection in the search box-->
 function retrieveProduct(){

@@ -226,12 +226,18 @@
                               <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">NEW SALESPERSON DETAILS</h1>
                               <form id="addSalespersonForm">
 
-                                  <div class="form-row">
-                                    <div class="col-lg-3">
-                                      <input class="form-control-plaintext" value="Name"><br/>
+                                  <div class="form-row input-group mt-3">
+                                    <div class="col-lg-2">
+                                      <input class="form-control-plaintext" value=" First Name"><br/>
                                     </div>
-                                    <div class="col-lg-9">
-                                      <input class="form-control" id="value1">
+                                    <div class="col-lg-4">
+                                      <input class="form-control" id="fname" required>
+                                    </div>
+                                    <div class="col-lg-2">
+                                      <input class="form-control-plaintext" value="Last Name"><br/>
+                                    </div>
+                                    <div class="col-lg-4">
+                                      <input class="form-control" id="lname" required>
                                     </div>
                                   </div>
 
@@ -240,7 +246,7 @@
                                       <input class="form-control-plaintext" value="Email"><br/>
                                     </div>
                                     <div class="col-lg-9">
-                                      <input class="form-control" id="value2">
+                                      <input class="form-control" id="email" required>
                                     </div>
                                   </div>
 
@@ -248,8 +254,8 @@
                                     <div class="col-lg-3">
                                       <input class="form-control-plaintext" value="Phone Number"><br/>
                                     </div>
-                                    <div class="col-lg-9">
-                                      <input class="form-control" id="value3">
+                                    <div class="col-lg-6">
+                                      <input class="form-control" id="tel" required>
                                     </div>
                                   </div>
 
@@ -258,12 +264,30 @@
                                       <input class="form-control-plaintext" value="Address"><br/>
                                     </div>
                                     <div class="col-lg-9">
-                                      <input class="form-control" id="value4">
+                                      <textarea class="form-control" id="address" style="height: 100px" required></textarea>
                                     </div>
                                   </div>
 
-                                  <div class= "col-xl-12 col-md-6 mb-4 m-1 p-4">
-                                      <button type="button" id="new_salesperson" class="btn btn-primary btn-user btn-block">Add Salesperson</button>                             
+                                  <div class="form-row pt-4">
+                                    <div class="col-lg-3">
+                                      <input class="form-control-plaintext" value="Password"><br/>
+                                    </div>
+                                    <div class="col-lg-6">
+                                      <input type="password" class="form-control" id="password" required>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-row">
+                                    <div class="col-lg-3">
+                                      <input class="form-control-plaintext" value="Confirm Password"><br/>
+                                    </div>
+                                    <div class="col-lg-6">
+                                      <input type="password" class="form-control" id="cpassword" required>
+                                    </div>
+                                  </div>
+
+                                  <div class= "col-xl-12 col-md-6 m-1 p-4">
+                                      <button type="button" id="new_salesperson" class="btn btn-primary btn-user btn-block" onclick="addSalesperson()">Add Salesperson</button>                             
                                   </div> 
                               </form>
                             </div>
@@ -314,7 +338,7 @@
         <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+          <a class="btn btn-primary" href="index.html">Logout</a>
         </div>
       </div>
     </div>
@@ -323,11 +347,11 @@
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script src="js/fbconf.js"></script>
-  <script src="js/salespersons.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/altum.min.js"></script>
+  <script src="js/addemployee.js"></script>
 
 </body>
 
