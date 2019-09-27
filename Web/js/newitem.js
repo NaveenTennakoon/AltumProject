@@ -9,17 +9,19 @@ function typesnapshotToArray() {
                 let item = childSnapshot.val().Type;
                 typeArr.push(item);
             }
-            let flag = i = 0;
-            while(i<typeArr.length){
-                if(childSnapshot.val().Type != typeArr[i]){
-                    flag = 1;
+            else{
+                let flag = i = 0;
+                while(i<typeArr.length){
+                    if(childSnapshot.val().Type == typeArr[i]){
+                        flag = 1;
+                    }
+                    i++;
                 }
-                i++;
+                if(flag == 0){
+                    let item = childSnapshot.val().Type;
+                    typeArr.push(item);
+                }     
             }
-            if(flag == 1){
-                let item = childSnapshot.val().Type;
-                typeArr.push(item);
-            }     
         });
     }).catch(function(error){
         // Handle Errors here.
@@ -29,7 +31,7 @@ function typesnapshotToArray() {
     return typeArr;
 };
 typesnapshotToArray();
-autocomplete(document.getElementById("defaultval2"), typeArr);
+autocomplete(document.getElementById("defaultval3"), typeArr);
 
 function addInput(divName){
     counter++;

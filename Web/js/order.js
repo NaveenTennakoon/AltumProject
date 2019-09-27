@@ -56,11 +56,9 @@ function purchaseClicked() {
         Status: 'Pending',
     }).then((snap) => {
         const key = snap.key;
-        console.log(cartItem,length);
         for(let i = 0; i < cartItem.length; i++){
             let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
             let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
-            console.log(key);
             ordersRef.child(key+'/Products').update({
                 [cartItemName]: cartItemQuantity,
             })

@@ -158,30 +158,33 @@
                   <div class="card o-hidden border-0 shadow-lg my-0">
                     <div class="card-body p-0">  
                       <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12" style="height: 500px">
                           <div class="p-5">
                               <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">Feedback Form</h1>
                               <form class="feedbackForm"> 
                               <div class="form-row">
-                                  <div class="col-lg-3">
-                                    <input class="form-control-plaintext" value="Name"><br/>
-                                  </div>
-                                  <div class="col-lg-9">
-                                    <input class="form-control" id="cus_name">
-                                  </div>
+                                <div class="col-lg-3">
+                                  <input class="form-control-plaintext" value="Order ID"><br/>
                                 </div>
+                                <div class="col-lg-9 input-group">
+                                  <select class="form-control mr-4" id="order_id" required></select>
+                                  <span class="input-group-btn">
+                                    <button type="button" id="viewOrder" class="btn btn-primary btn-user" onclick="view()">View Order</button> 
+                                  </span>
+                                </div>
+                              </div>
             
                                 <div class="form-row">
                                   <div class="col-lg-3">
                                     <input class="form-control-plaintext" value="Feedback"><br/>
                                   </div>
                                   <div class="col-lg-9">
-                                    <textarea class="form-control" id="cus_feedback" style="height: 100px" placeholder="Enter your feedback here"></textarea>
+                                    <textarea class="form-control" id="cus_feedback" style="height: 200px" placeholder="Enter your feedback here"></textarea>
                                   </div>
                                 </div>
 
                                 <div class= "col-xl-12 col-md-6 mb-4 m-2 p-3">
-                                <button type="button" id="feedback" class="btn btn-primary btn-user btn-block">Submit</button>                             
+                                <button type="button" id="feedback" class="btn btn-primary btn-user btn-block" onclick="submitFeedback()">Submit</button>                             
                               </div>                                                                  
                               </form>                                      
                           </div>    
@@ -216,16 +219,16 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Payment Modal-->
-  <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- viewOrder Modal-->
+  <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content" style="height: 60%;">
         <div class="modal-header">
-          <h5 class="modal-title">Set a Payment method</h5>
+          <h5 class="modal-title">This is your order details</h5>
         </div>
-        <div class="modal-body p-4">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="cancel()">Pay on Delivery</button>
-            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="confirm()">Pay online</button>
+        <div class="modal-body" id="order_content"></div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
         </div>
       </div>
     </div>
@@ -256,7 +259,7 @@
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/altum.min.js"></script>
   <script src="js/fbconf.js"></script>
-  <script src="js/order.js"></script>
+  <script src="js/search.js"></script>
   <script src="js/feedback.js"></script>
   
 
