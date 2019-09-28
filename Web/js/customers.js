@@ -1,22 +1,21 @@
-  // Search box functions
-
-var cusArr = [];
 // customer table snapshot
 function cussnapshotToArray() {
-
-    customerRef.once("value").then(function(snapshot){
-    // <!-- snapshot of childs of root of database-->
-        snapshot.forEach(function(childSnapshot) {
-            var item = childSnapshot.key;
-            cusArr.push(item);
-        });
-    });
-    return cusArr;
+  var cusArr = [];
+  customerRef.once("value").then(function(snapshot){
+  // <!-- snapshot of childs of root of database-->
+      snapshot.forEach(function(childSnapshot) {
+          var item = childSnapshot.key;
+          cusArr.push(item);
+      });
+  });
+  return cusArr;
 };
 // end of snapshot
-cussnapshotToArray();
-autocomplete(document.getElementById("cusSearch"), cusArr);
-// end of Search box functions
+
+function loadCustomers(){
+  cussnapshotToArray();
+  autocomplete(document.getElementById("cusSearch"), cusArr);
+}
 
 // <!-- function to retrieve the salesperson data in database according to the selection in the search box-->
 function retrieveCustomer(){
@@ -93,4 +92,114 @@ function retrieveCustomer(){
     });
   }
   // <!-- end of the retrieve function-->
+
+  function getProfile(){
+    document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email;
+    usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
+      document.getElementById("view-profile-body").insertAdjacentHTML(
+        'beforeend',
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<input class='form-control' value='Name' readonly>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<input class='form-control' id='name' value='"+snapshot.val().name+"' readonly>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<input class='form-control' value='Company' readonly>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<input class='form-control' id='name' value='"+snapshot.val().company+"' readonly>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-5'>"+
+            "<input class='form-control' value='Contact Number' readonly>"+
+          "</div>"+
+          "<div class='col-lg-7'>"+
+            "<input class='form-control' id='name' value='"+snapshot.val().telephone+"' readonly>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<input class='form-control' value='Address' readonly>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<textarea class='form-control' id='name' readonly>"+snapshot.val().address+"</textarea>"+
+          "</div>"+
+        "</div>"
+      );
+    });
+    $('#viewProfileModal').modal('show')
+  }
+
+  function populateEditModal(){
+    document.getElementById("view-profile-body").innerHTML = '';
+    document.getElementById("edit-profile-title").innerText = firebase.auth().currentUser.email;
+    usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
+      document.getElementById("edit-profile-body").insertAdjacentHTML(
+        'beforeend',
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<input class='form-control' value='Name' readonly>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<input class='form-control' id='name' value='"+snapshot.val().name+"'>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<input class='form-control' value='Company' readonly>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<input class='form-control' id='company' value='"+snapshot.val().company+"'>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-5'>"+
+            "<input class='form-control' value='Contact Number' readonly>"+
+          "</div>"+
+          "<div class='col-lg-7'>"+
+            "<input class='form-control' id='tel' value='"+snapshot.val().telephone+"'>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<input class='form-control' value='Address' readonly>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<textarea class='form-control' id='address'>"+snapshot.val().address+"</textarea>"+
+          "</div>"+
+        "</div>"
+      );
+    });
+    $('#editProfileModal').modal('show')
+  }
+
+  function updateProfile(){
+    usersRef.child(firebase.auth().currentUser.uid).update({
+      name: $("#name").val(),
+      company: $("#company").val(),
+      telephone: $("#tel").val(),
+      address: $("#address").val(),
+    }).then(()=>{
+      window.alert("Profile updated successfully");
+    }).catch(function(error){
+        // Handle Errors here.
+        let errorMessage = error.message;
+        window.alert(errorMessage);
+    });
+  }
+
+  function signout(){
+    usersRef.child(firebase.auth().currentUser.uid).remove().then(() => {
+      firebase.auth().currentUser.delete().then(() => {
+        location.href = 'index.html';
+      }).catch(function(error){
+        window.alert(error.message);
+      })
+    })
+  }
 
