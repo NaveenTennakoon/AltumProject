@@ -4,7 +4,7 @@ inventoryRef.once("value").then(function(snapshot){
             'beforeend',
             "<div class='shop-item'>"+
                 "<b>Product ID: </b>"+
-                "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
+                "<span class='shop-item-title'>"+childSnapshot.val().ID+"</span>"+
                 "<div class='shop-item-details'>"+
                 "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
                 "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
