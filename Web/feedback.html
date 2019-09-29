@@ -11,16 +11,13 @@
 
   <title>Customer - Feedback</title>
 
-  <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-  <!-- Custom styles for this template-->
   <link href="css/styles.min.css" rel="stylesheet">
 
 </head>
 
-<body id="page-top">
+<body id="page-top" onload="userid();ordersnapshotToArray()">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -30,8 +27,8 @@
 
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+        <div class="sidebar-brand-icon">
+          <i class="fab fa-adn"></i>
         </div>
         <div class="sidebar-brand-text mx-3">Altum</div>
       </a>
@@ -41,37 +38,31 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="cus_dashboard.html" aria-expanded="true">
-          <i class="fas fa-fw fa-cog"></i>
+          <i class="fas fa-coins"></i>
           <span>Order Now</span>
         </a>
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="#" aria-expanded="true">
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Past Orders</span>
-          </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#" aria-expanded="true">
-              <i class="fas fa-fw fa-cog"></i>
-              <span>Feedback</span>
-            </a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="customer_payment.html" aria-expanded="true">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Online Payment</span>
-              </a>
-            </li>
+        <a class="nav-link" href="personal_orders.html" aria-expanded="true">
+          <i class="fas fa-clipboard-list"></i>
+          <span>Orders</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="feedback.html" aria-expanded="true">
+          <i class="fas fa-copy"></i>
+          <span>Feedback</span>
+        </a>
+      </li>
+  
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
 
-             <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-              <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+  
     </ul>
     <!-- End of Sidebar -->
 
@@ -89,61 +80,33 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          <h1 class="h4 mb-0 text-gray-800">Provide Feedback</h1>
+          <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">FEEDBACK</h1>
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
-
-            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-            <li class="nav-item dropdown no-arrow d-sm-none">
-              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
-              </a>
-              <!-- Dropdown - Messages -->
-              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
-                  <div class="input-group">
-                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                      <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </li>
-
             <div class="topbar-divider d-none d-sm-block"></div>
-
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Customer</span>
-                <img class="img-profile rounded-circle" src="https://cdn3.iconfinder.com/data/icons/business-vol-21/100/Artboard_9-512.png">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small" id="uid"></span>
+                <img class="img-profile rounded-circle" src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male-512.png">
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="view_customer_profile.html">
+                <a class="dropdown-item text-dark btn" onclick="getProfile()">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Settings
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Activity Log
-                </a>
-                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
                 </a>
+                <a class="dropdown-item"href="#" data-toggle="modal" data-target="#signoutModal">
+                  <i class="fas fa-door-open fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Sign Out
+                  </a>
               </div>
             </li>
-
           </ul>
 
         </nav>
@@ -199,10 +162,16 @@
         </div>       
           
       <!-- Footer -->
-      <footer class="sticky-footer bg-white">
+      <footer class="sticky-footer bg-white border-top">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
+            <span><strong>Copyright &copy; Altum Engineering 2019</strong></span>
+          </div>
+          <div class="float-left my-auto">
+            <span><strong class="text-primary">Email </strong>info@altum.com <i class="fas fa-envelope"></i></span>
+          </div>
+          <div class="float-right my-auto">
+            <span><strong class="text-primary">Contact Us </strong>(+94) 112-0911-123-123 <i class="fas fa-phone"></i></span>
           </div>
         </div>
       </footer>
@@ -247,11 +216,31 @@
         <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="index.html">Logout</a>
+          <a class="btn btn-primary text-white" onclick="logout()">Logout</a>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Signout Modal-->
+  <div class="modal fade" id="signoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to Leave us?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Signout" below if you are ready to end your journey with us.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary text-white" onclick="signout()">Signout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
@@ -259,10 +248,9 @@
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/altum.min.js"></script>
   <script src="js/fbconf.js"></script>
-  <script src="js/search.js"></script>
+  <script src="js/customers.js"></script>
   <script src="js/feedback.js"></script>
-  
-
+  <script src="js/admin.js"></script>
 </body>
 
 </html>

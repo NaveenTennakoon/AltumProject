@@ -18,18 +18,6 @@ function login(){
   });
 }
 
-
-function logout(){
-  firebase.auth().signOut().then(function(){
-    // Sign-out successful.
-    location.href = "index.html";
-  }).catch(function(error) {
-    // An error happened.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
-  });
-}
-
 function resetMail(){
   let email = document.getElementById("Email").value;
   firebase.auth().sendPasswordResetEmail(email).then(function() {

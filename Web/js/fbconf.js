@@ -11,9 +11,6 @@ let config = {
 firebase.initializeApp(config); 
 
 let inventoryRef = firebase.database().ref("inventory");
-let salespersonRef = firebase.database().ref("salespersons");
-let customerRef = firebase.database().ref("customers");
 let gpsRef = firebase.database().ref("tracking");
-let feedbackRef = firebase.database().ref("feedback");
 let usersRef = firebase.database().ref("users");
 let ordersRef = firebase.database().ref("orders");
