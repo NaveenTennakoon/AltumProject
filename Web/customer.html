@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Altum - Sales history</title>
+  <title>Altum - Salespersons</title>
 
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -17,7 +17,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" onload="customerkeysnapshotToArray()">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -168,7 +168,7 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">SALES HISTORY</h1>
+          <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">CUSTOMER PROFILES</h1>
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
@@ -193,20 +193,72 @@
         <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
-
-          <!-- Page Heading -->
-          <h1 class="h3 mb-1 text-gray-800">Sales History</h1>
-
-        </div>
-        <!-- /.container-fluid -->
-
-      </div>
+        <div class="content">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-xl-10">
+                  <div class="card o-hidden border-0 shadow-lg my-0">
+                    <div class="card-body p-4">
+                      <div class="row">
+                        <div class="col-lg-12 p-3">                                                              
+                          <h1 class="text-center h3 text-gray-800 font-weight-bold">Customer Details</h1><br>
+                          <!-- Search -->
+                          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div class="input-group">
+                              <input type="text" class="form-control border-0 small" id="customer-search" placeholder="Search for ID" aria-label="Search" aria-describedby="basic-addon2">
+                              <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="customerDetails()">
+                                  <i class="fas fa-search fa-sm"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>                                                                         
+                          <div class="box mx-3" id="customerSearch">    
+                            <div class="form-group input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text px-4"><i class="fa fa-user mr-2"></i>Name</span>
+                              </div>
+                              <input id="name" class="form-control bg-white" type="text" readonly>
+                            </div>
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text px-4"><i class="fa fa-user mr-2"></i>Company</span>
+                                </div>
+                                <input id="company" class="form-control bg-white" type="text" readonly>
+                            </div>
+                            <div class="form-group input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text px-4"><i class="fa fa-envelope mr-2"></i>Email Address</span>
+                              </div>
+                              <input id="email" class="form-control bg-white" type="text" readonly>
+                            </div> 
+                            <div class="form-group input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text px-4"><i class="fa fa-phone mr-2"></i>Contact Number</span>
+                              </div>
+                              <input id="tel" class="form-control bg-white" type="text" readonly>
+                            </div>
+                            <div class="form-group input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text px-4"><i class="fa fa-home mr-2"></i>Address</span>
+                              </div>
+                              <input id="address" class="form-control bg-white" type="text" readonly>
+                            </div>             
+                          </div>   
+                        </div>                                                        
+                      </div>
+                    </div>
+                  </div>
+                </div>    
+              </div>                  
+            </div>                 
+          </div> 
       <!-- End of Main Content -->
 
       <!-- Footer -->
       <footer class="sticky-footer bg-white border-top">
-          <div class="container my-auto">
+        <div class="container my-auto">
           <div class="copyright text-center my-auto">
             <span><strong>Copyright &copy; Your Website 2019</strong></span>
           </div>
@@ -244,6 +296,10 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script src="js/fbconf.js"></script>
+  <script src="js/search.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>

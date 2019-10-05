@@ -17,7 +17,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" onload="typesnapshotToArray()">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -90,7 +90,6 @@
         <div id="collapseSales" class="collapse" aria-labelledby="headingSales" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Sales related activities:</h6>
-            <a class="collapse-item" href="shistory.html">Sales History</a>
             <a class="collapse-item" href="salespersons.html">Sales Persons</a>
             <a class="collapse-item" href="payment.html">Payments</a>
             <a class="collapse-item" href="new_salesperson.html">Add New Salesperson</a>
@@ -345,9 +344,7 @@
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script src="js/fbconf.js"></script>
-  <script src="js/write.js"></script>
   <script src="js/search.js"></script>
-  <script src="js/newitem.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>

@@ -17,7 +17,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" onload="loadOrders()">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -90,7 +90,6 @@
         <div id="collapseSales" class="collapse" aria-labelledby="headingSales" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Sales related activities:</h6>
-            <a class="collapse-item" href="shistory.html">Sales History</a>
             <a class="collapse-item" href="salespersons.html">Sales Persons</a>
             <a class="collapse-item" href="payment.html">Payments</a>
             <a class="collapse-item" href="new_salesperson.html">Add New Salesperson</a>
@@ -195,43 +194,25 @@
        <!-- Begin Page Content -->
         <div class="container-fluid" style="color:black">
 
-            <div class="row">
+          <div class="row">
 
-                <!-- Area Chart -->
-                <div class="col-xl-6 col-lg-7">
-                  <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                      <h6 class="m-0 font-weight-bold text-primary">Pending Orders</h6>
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body overflow-auto" style="height:450px">
-                      <section class="container content-section">
-                          <div class="shop-items">
-                            <div id="product-items"></div>
-                          </div>
-                      </section>
-                    </div>
-                  </div>
-                </div>
-    
-                <!-- Pie Chart -->
-                <div class="col-xl-6 col-lg-5">
-                  <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                      <h6 class="m-0 font-weight-bold text-primary"> Past Orders</h6>
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body overflow-auto" style="height:450px">
-                        <section class="container content-section">
-                            <div class="cart-items">
-                            </div>                         
-                        </section>
-                    </div>
-                  </div>
-                </div>
+          <!-- Pending Orders -->
+          <div class="col-xl-12 col-lg-7">
+            <div class="card shadow mb-4">
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Pending Orders</h6>
               </div>
+              <!-- Card Body -->
+              <div class="card-body overflow-auto" style="height:450px">
+                <section class="container content-section">
+                  <div class="pending-items">
+                    <div id="pending-orders"></div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
 
         </div>
         <!-- /.container-fluid -->
@@ -260,6 +241,25 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
+  <!-- View Order Modal-->
+  <div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="order-title"></h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body" id="order-body"></div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="clearOrderModal()">Cancel</button>
+            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="assign()">Set As Assigned</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   <!-- Logout Modal-->
   <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -279,10 +279,12 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/altum.min.js"></script>
+  <script src="js/fbconf.js"></script>
   <script src="js/admin.js"></script>
 </body>
 

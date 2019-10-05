@@ -136,26 +136,21 @@ function updateProfile(){
 
 function loadProducts(){
   inventoryRef.once("value").then(function(snapshot){
-      snapshot.forEach(function(childSnapshot){
-          document.getElementById("product-items").insertAdjacentHTML(
-              'beforeend',
-              "<div class='shop-item'>"+
-                  "<p><b>Product ID: </b><a>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a class='shop-item-title'>"+childSnapshot.key+"</a></p>"+
-                  "<div class='shop-item-details'>"+
-                  "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
-                  "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
-                      "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
-                      "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
-                  "</div>"+
-              "</div>"
-          );
-      });
-      if (document.readyState == 'loading'){
-          document.addEventListener('DOMContentLoaded', ready)
-      } 
-      else{
-          populateProducts()
-      }
+    snapshot.forEach(function(childSnapshot){
+      document.getElementById("product-items").insertAdjacentHTML(
+        'beforeend',
+        "<div class='shop-item'>"+
+          "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
+          "<div class='shop-item-details'>"+
+          "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+          "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
+            "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
+            "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
+          "</div>"+
+        "</div>"
+      );
+    });
+    populateProducts()
   });
 }
 
@@ -187,10 +182,13 @@ function purchaseClicked() {
   let cartItem = document.getElementsByClassName('cart-item')
   let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText
   let cartItems = document.getElementsByClassName('cart-items')[0]
+  let date = new Date();
   ordersRef.push({
       Customer: firebase.auth().currentUser.uid,
       Total: cartTotal,
       Status: 'Pending',
+      payment: 'Cash',
+      orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
   }).then((snap) => {
       const key = snap.key;
       for(let i = 0; i < cartItem.length; i++){
@@ -345,8 +343,6 @@ function loadOrders(){
           }
         });
       });
-    } else {
-      // No user is signed in.
     }
   });
 }

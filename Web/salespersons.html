@@ -17,7 +17,7 @@
 
 </head>
 
-<body id="page-top" onload="loadFromTracking()">
+<body id="page-top" onload="spkeysnapshotToArray()">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -90,7 +90,6 @@
         <div id="collapseSales" class="collapse" aria-labelledby="headingSales" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Sales related activities:</h6>
-            <a class="collapse-item" href="shistory.html">Sales History</a>
             <a class="collapse-item" href="salespersons.html">Sales Persons</a>
             <a class="collapse-item" href="payment.html">Payments</a>
             <a class="collapse-item" href="new_salesperson.html">Add New Salesperson</a>
@@ -201,28 +200,49 @@
                     <div class="card-body p-4">
                       <div class="row">
                         <div class="col-lg-12 p-3">                                                              
-                            <h1 class="text-center h3 text-gray-800 font-weight-bold">SALESPERSON DETAILS</h1><br>                                                                         
-                            <div class="box m-0">
-                              <p>
-                                <i class="fa fa-user"></i>
-                                Name
-                              </p>     
-
-                              <p>
-                                <i class="fa fa-phone"></i>
-                                Contact Number
-                              </p>            
-                      
-                              <p>
-                                <i  class="fa fa-envelope"></i>
-                                Email Address
-                              </p>                
-                      
-                              <p>
-                                <i class="fa fa-home"></i>
-                                Address 
-                              </p> 
-                            </div>   
+                          <h1 class="text-center h3 text-gray-800 font-weight-bold">Salesperson Details</h1><br>
+                          <!-- Search -->
+                          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div class="input-group">
+                              <input type="text" class="form-control border-0 small" id="salesperon-search" placeholder="Search for ID" aria-label="Search" aria-describedby="basic-addon2">
+                              <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="spDetails()">
+                                  <i class="fas fa-search fa-sm"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>                                                                         
+                          <div class="box mx-3" id="spSearch">    
+                            <div class="form-group input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text px-3"><i class="fa fa-user mr-2"></i>First Name</span>
+                              </div>
+                              <input id="fname" class="form-control bg-white" type="text" readonly>
+                              <div class="input-group-prepend ml-2">
+                                  <span class="input-group-text px-3"><i class="fa fa-user mr-2"></i>Last Name</span>
+                                </div>
+                                <input id="lname" class="form-control bg-white" type="text" readonly>
+                            </div>
+                            <div class="form-group input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text px-4"><i class="fa fa-envelope mr-2"></i>Email Address</span>
+                              </div>
+                              <input id="email" class="form-control bg-white" type="text" readonly>
+                            </div> 
+                            <div class="form-group input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text px-4"><i class="fa fa-phone mr-2"></i>Contact Number</span>
+                              </div>
+                              <input id="tel" class="form-control bg-white" type="text" readonly>
+                            </div>
+                            <div class="form-group input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text px-4"><i class="fa fa-home mr-2"></i>Address</span>
+                              </div>
+                              <input id="address" class="form-control bg-white" type="text" readonly>
+                            </div>             
+                          </div>   
                         </div>                                                        
                       </div>
                     </div>
@@ -273,10 +293,10 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script src="js/fbconf.js"></script>
   <script src="js/search.js"></script>
-  <script src="js/salespersons.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
