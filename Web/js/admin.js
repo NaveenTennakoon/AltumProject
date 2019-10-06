@@ -226,8 +226,8 @@ function loadLocations(){
             "<b>Location ID: </b>"+
             "<span class='location-item-title'>"+childSnapshot.key+"</span><br/><br/>"+
             "<b class='col-lg-3'>Salesperson ID: </b>"+childSnapshot.val().salesperson+
-            "<b class='ml-5'>Latitude: </b>"+childSnapshot.val().lat+
-            "<b class='ml-3'>Longitude: </b>"+childSnapshot.val().lng+"<br/>"+
+            "<b class='ml-5'>Latitude: </b><a class='location-lat'>"+childSnapshot.val().lat+"</a>"+
+            "<b class='ml-3'>Longitude: </b><a class='location-lng'>"+childSnapshot.val().lng+"</a><br/>"+
             "<b class='col-lg-3'>Time Stamp: </b>"+childSnapshot.val().timestamp+"<br/>"+
             "<b class='col-lg-3'>Customer Name: </b>"+childSnapshot.val().customer+"<br/>"+
             "<b class='col-lg-3'>Shop: </b>"+childSnapshot.val().shopname+"<br/>"+
@@ -258,8 +258,8 @@ function loadLocations(){
               "<b>Location ID: </b>"+
               "<span class='location-item-title'>"+childSnapshot.key+"</span><br/><br/>"+
               "<b class='col-lg-3'>Salesperson ID: </b>"+childSnapshot.val().salesperson+
-              "<b class='ml-5'>Latitude: </b>"+childSnapshot.val().lat+
-              "<b class='ml-3'>Longitude: </b>"+childSnapshot.val().lng+"<br/>"+
+              "<b class='ml-5'>Latitude: </b><a class='location-lat'>"+childSnapshot.val().lat+"<a/>"+
+              "<b class='ml-3'>Longitude: </b><a class='location-lng'>"+childSnapshot.val().lng+"</a><br/>"+
               "<b class='col-lg-3'>Time Stamp: </b>"+childSnapshot.val().timestamp+"<br/>"+
               "<b class='col-lg-3'>Customer Name: </b>"+childSnapshot.val().customer+"<br/>"+
               "<b class='col-lg-3'>Shop: </b>"+childSnapshot.val().shopname+"<br/>"+
@@ -283,11 +283,32 @@ function locationButtons() {
   }
 }
 
+let history_map;
+
 function viewLocationClicked(event){
   let button = event.target
   let locationItem = button.parentElement;
   let title = locationItem.getElementsByClassName('location-item-title')[0].innerText;
+  let loc_lat = parseFloat(locationItem.getElementsByClassName('location-lat')[0].innerHTML);
+  let loc_lng = parseFloat(locationItem.getElementsByClassName('location-lng')[0].innerHTML);
   document.getElementById('location-modal-title').innerHTML = title;
+  history_map = new google.maps.Map(document.getElementById('map'), {
+    streetViewControl: false,
+    mapTypeControl: false,
+    center: {lat: loc_lat, lng: loc_lng},
+    zoom: 9
+  });
+  let position = {
+    lat: loc_lat,
+    lng: loc_lng
+  };
+  marker = new google.maps.Marker({
+    icon: {
+      url: './img/marker.png',
+    },
+    position: position,
+    map: history_map
+  });
   $('#locationModal').modal('show');
 }
 
@@ -473,7 +494,7 @@ function initMap() {
     streetViewControl: false,
     mapTypeControl: false,
     center: {lat: -34.397, lng: 150.644},
-    zoom: 8
+    zoom: 9
   });
   map.addListener('click', function(e) {
     lat = e.latLng.lat();
@@ -502,6 +523,9 @@ function initMap() {
 function placeMarker(position, map) {
   if (marker == null){
     marker = new google.maps.Marker({
+      icon: {
+        url: './img/marker.png',
+      },
       position: position,
       map: map
     });
