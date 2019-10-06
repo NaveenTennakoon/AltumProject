@@ -42,13 +42,13 @@ function loadProducts(){
       document.getElementById("product-items").insertAdjacentHTML(
         'beforeend',
         "<div class='shop-item'>"+
-            "<b>Unique ID: </b>"+
-            "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
-            "<b class='ml-5'>Product ID: </b>"+childSnapshot.val().ID+
-            "<div class='shop-item-details'>"+
+          "<b>Unique ID: </b>"+
+          "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
+          "<b class='ml-5'>Product ID: </b>"+childSnapshot.val().ID+
+          "<div class='shop-item-details'>"+
             "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
-                "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
-            "</div>"+
+            "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
+          "</div>"+
         "</div>"
       );
     });
@@ -223,8 +223,8 @@ function loadLocations(){
         document.getElementById("locations").insertAdjacentHTML(
           'beforeend',
           "<div class='location-item'>"+
-            "<p><b>Location ID: </b>"+
-            "<span class='location-item-title'>"+childSnapshot.key+"</span><p>"+
+            "<b>Location ID: </b>"+
+            "<span class='location-item-title'>"+childSnapshot.key+"</span><br/><br/>"+
             "<b class='col-lg-3'>Salesperson ID: </b>"+childSnapshot.val().salesperson+
             "<b class='ml-5'>Latitude: </b>"+childSnapshot.val().lat+
             "<b class='ml-3'>Longitude: </b>"+childSnapshot.val().lng+"<br/>"+
@@ -255,8 +255,8 @@ function loadLocations(){
           document.getElementById("locations").insertAdjacentHTML(
             'beforeend',
             "<div class='location-item'>"+
-              "<p><b>Location ID: </b>"+
-              "<span class='location-item-title'>"+childSnapshot.key+"</span><p>"+
+              "<b>Location ID: </b>"+
+              "<span class='location-item-title'>"+childSnapshot.key+"</span><br/><br/>"+
               "<b class='col-lg-3'>Salesperson ID: </b>"+childSnapshot.val().salesperson+
               "<b class='ml-5'>Latitude: </b>"+childSnapshot.val().lat+
               "<b class='ml-3'>Longitude: </b>"+childSnapshot.val().lng+"<br/>"+
@@ -286,9 +286,8 @@ function locationButtons() {
 function viewLocationClicked(event){
   let button = event.target
   let locationItem = button.parentElement;
-  console.log(locationItem)
-  let title = locationItem.getElementsByClassName('location-item-title')[0].innerText
-  document.getElementById("location-modal-title").innerHTML = title;
+  let title = locationItem.getElementsByClassName('location-item-title')[0].innerText;
+  document.getElementById('location-modal-title').innerHTML = title;
   $('#locationModal').modal('show');
 }
 
@@ -374,7 +373,7 @@ function loadOrders(){
             "<span class='view-order-title'>"+childSnapshot.key+"</span>"+
             "<div class='view-order-details'>"+
               "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/></br/>"+
-              "<button class='btn btn-primary view-order-button float-right ml-2' type='button'>View Products</button>"+
+              "<button class='btn btn-primary view-order-button float-right ml-3' type='button'>Assign</button>"+
               "<button class='btn btn-danger reject-order-button float-right' type='button'>Reject Order</button><hr class='mt-5'/>"+
             "</div"+
           "</div>"
@@ -418,7 +417,7 @@ function viewOrderClicked(event) {
               "<p><b>"+tempKey+"</b><br/>"+
               "<b id='key"+x+"'>"+childSnapshot.key+"</b></p>"+
               "<p class='ml-4'><b>Order Amount: </b><a id='quantity"+x+"'>"+tempVal+"</a></p>"+
-              "<p class='ml-4'><b>Available Quantity: </b><a id='val"+x+"'>"+ childSnapshot.val().Quantity +"</a></p>"           
+              "<p class='ml-4'><b>Available Quantity: </b><a id='val"+x+"'>"+ childSnapshot.val().Quantity +"</a></p><hr/>"           
             );     
           }
         })
@@ -465,3 +464,85 @@ function assign(){
 function clearOrderModal(){
   document.getElementById("order-body").innerHTML = '';
 }
+
+// signup page functions
+let map, marker, lat, lng;
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    streetViewControl: false,
+    mapTypeControl: false,
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 8
+  });
+  map.addListener('click', function(e) {
+    lat = e.latLng.lat();
+    lng = e.latLng.lng();
+    placeMarker(e.latLng, map);
+  });
+
+  // Try HTML5 geolocation.
+  if (navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(position) {
+      let pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      lat = position.coords.latitude;
+      lng = position.coords.longitude;
+      placeMarker(pos, map);
+      map.setCenter(pos);
+    });
+  } 
+  else{
+    window.alert("Something went wrong with location Access");
+  }
+}
+
+function placeMarker(position, map) {
+  if (marker == null){
+    marker = new google.maps.Marker({
+      position: position,
+      map: map
+    });
+  }
+  else{   
+    marker.setPosition(position); 
+  }
+  map.panTo(position);
+}
+
+function signup(){
+  // Get input values from each of the form elements
+  let company = $("#company").val();
+  let telephone = $("#tel").val();
+  let email = $("#email").val();
+  let name = $("#name").val();
+  let pwd = $("#password").val();
+  let address = $("#address").val();
+
+  if(pwd == $("#cpassword").val()){
+    firebase.auth().createUserWithEmailAndPassword(email, pwd).catch(function(error) {
+      var errorMessage = error.message;
+      window.alert(errorMessage);
+    }).then(()=>{
+      // Push the new customer to the database using those values
+        usersRef.child(firebase.auth().currentUser.uid).set({
+          company: company,
+          telephone: telephone,
+          email: email,
+          name: name,
+          address: address,
+          type: 'customer',
+          longitude: lng,
+          latitude: lat
+        });
+        window.alert("You have successfully signed in to Altum")
+      location.href='cus_dashboard.html'
+    });
+  }
+  else{
+    window.alert("Password Mismatch");
+  }
+}
+

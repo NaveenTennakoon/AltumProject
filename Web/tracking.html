@@ -166,7 +166,7 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">STOCK MANAGEMENT</h1>
+          <h1 class="text-center h3 mb-1 text-gray-800 p-3 font-weight-bold">TRACKING</h1>
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
@@ -191,19 +191,10 @@
         <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
+        <div class="container-fluid h-100">
 
-          <!-- Page Heading -->
-          <h1 class="h3 mb-1 text-gray-800">Online Tracking</h1>
           <!-- Map container -->
-          <div id="map" class="map">
-            <div class="w-100 position-absolute" style="z-index: 10000">
-                <button type="button" id="map_profile" class="p-2 m-2 float-right btn btn-primary dropdown-toggle" style="display: none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <button type="button" class="dropdown-item" onclick="getEmpName()">View Profile</button>
-                </div>
-            </div>
-          </div>
+          <div id="map" style="height: 100%"></div>
 
         </div>
         <!-- /.container-fluid -->
@@ -252,14 +243,13 @@
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
-  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7_RjkIVHXwvzgI7Y6BQ3aCY2jAbMw7x0&callback=initMap" async defer></script>
   <script src="js/fbconf.js"></script>
   <script src="js/search.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/altum.min.js"></script>
-  <script src="js/map.js"></script>
   <script src="js/admin.js"></script>
 </body>
 

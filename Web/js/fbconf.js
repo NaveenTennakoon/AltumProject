@@ -1,6 +1,6 @@
 // Initialize Firebase
 let config = {
-    apiKey: "AIzaSyB0ezZy5YT-6pSdmrZEXbK70AIE5SJl_BI",
+    apiKey: " AIzaSyB7_RjkIVHXwvzgI7Y6BQ3aCY2jAbMw7x0",
     authDomain: "altum-46a17.firebaseapp.com",
     databaseURL: "https://altum-46a17.firebaseio.com",
     projectId: "altum-46a17",
