@@ -34,6 +34,22 @@ function signout(){
 }
 
 // Customer dashboard page functions
+function loadPaypal(){
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText;
+      console.log(cartTotal);
+      // Set up the transaction
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: cartTotal
+          }
+        }]
+      });
+    }
+  }).render('#paypal-button-container');
+}
 function getProfile(){
   document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email;
   usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
@@ -291,11 +307,12 @@ function updateCartTotal() {
       let priceElement = cartRow.getElementsByClassName('cart-price')[0]
       let quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
       let price = parseFloat(priceElement.innerText.replace('$', ''))
+      console.log(price);
       let quantity = quantityElement.value
       total = total + (price * quantity)
   }
   total = Math.round(total * 100) / 100
-  document.getElementsByClassName('cart-total-price')[0].innerText = '$' + total
+  document.getElementsByClassName('cart-total-price')[0].innerText = total
 }
 
 function clearViewModal(){
