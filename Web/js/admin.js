@@ -25,7 +25,7 @@ function addSalesperson() {
         email: email,
         telephone: $("#tel").val(),
         address: $("#address").val(),
-        type: 'Salesperson',
+        type: 'salesperson',
       });
     });
     window.alert("Salesperson added succesfully");
@@ -494,7 +494,7 @@ function initMap() {
     streetViewControl: false,
     mapTypeControl: false,
     center: {lat: -34.397, lng: 150.644},
-    zoom: 9
+    zoom: 11
   });
   map.addListener('click', function(e) {
     lat = e.latLng.lat();
@@ -502,7 +502,6 @@ function initMap() {
     placeMarker(e.latLng, map);
   });
 
-  // Try HTML5 geolocation.
   if (navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(position) {
       let pos = {
@@ -568,5 +567,92 @@ function signup(){
   else{
     window.alert("Password Mismatch");
   }
+}
+
+// track now page functions
+function spkeysToArray() {
+  let spKeyArr = [];
+  gpsRef.child("live").once("value").then(function(snapshot){
+  // <!-- snapshot of childs of root of database-->
+    snapshot.forEach(function(childSnapshot) {
+      let item = childSnapshot.key;
+      spKeyArr.push(item); 
+    });
+  }).catch(function(error){
+    // Handle Errors here.
+    let errorMessage = error.message;
+    window.alert(errorMessage);
+  });
+  autocomplete(document.getElementById("track_id"), spKeyArr);
+};
+
+let markers = [];
+
+function initTrackMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    streetViewControl: false,
+    mapTypeControl: false,
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 15
+  });
+
+  if (navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(position) {
+      let pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      lat = position.coords.latitude;
+      lng = position.coords.longitude;
+      map.setCenter(pos);
+    });
+  } 
+  else{
+    window.alert("Something went wrong with location Access");
+  }
+
+  gpsRef.child('live').on('child_added', function (snapshot) {
+    AddMarker(snapshot);
+    if(snapshot.val().status == 'inactive'){
+      markers[snapshot.key].setMap(null);
+    }
+  });
+  
+  gpsRef.child('live').on('child_changed', function (snapshot) {
+      markers[snapshot.key].setMap(null);
+      AddMarker(snapshot);
+      if(snapshot.val().status == 'inactive'){
+        markers[snapshot.key].setMap(null);
+      }
+  });
+}
+
+function AddMarker(snapshot) {
+  let uluru = { lat: snapshot.val().lat, lng: snapshot.val().lng };
+  let marker = new google.maps.Marker({
+      position: uluru,
+      icon: {
+        url: '../marker.svg',
+      },
+      map: map,
+      title: snapshot.key,
+  });
+  markers[snapshot.key] = marker;
+}
+
+function searchClicked(){
+  child = document.getElementById("track_id").value;
+  gpsRef.child('live/'+child).once('value').then(function(snapshot){
+    if(snapshot.val().status == 'inactive'){
+      window.alert("Sales person's location is inactive");
+    }
+    else if(snapshot.val().status == 'active'){
+      let pos = {
+        lat: snapshot.val().lat,
+        lng: snapshot.val().lng
+      }; 
+      map.panTo(pos);
+    }
+  })
 }
 

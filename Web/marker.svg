@@ -1,0 +1,26 @@
+<svg width="25px" height="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+    <animate 
+        href="#back"
+        attributeName="r"
+        from="5.3"
+        to="10"
+        dur="1.5s"
+        begin="0s"
+        repeatCount="indefinite"
+        fill="freeze" 
+        id="circ-anim"
+        />
+    <animate 
+        href="#back"
+        attributeType="CSS" attributeName="opacity"
+        from="1"
+        to="0"
+        dur="1.5s"
+        begin="0s"
+        repeatCount="indefinite"
+        fill="freeze" 
+        id="circ-anim"
+        />
+    <circle id="back" cx="10" cy="10" r="6.5" stroke-width="1" stroke="#0033ff" fill="transparent" opacity="0.7"/>
+    <circle id="front" cx="10" cy="10" r="5.5" fill="#0033ff" opacity="0.9"/>
+</svg>

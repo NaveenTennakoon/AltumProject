@@ -16,7 +16,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" onload="spkeysToArray()">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -193,6 +193,18 @@
         <!-- Begin Page Content -->
         <div class="container-fluid h-100">
 
+          <div class="mb-3">
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100">
+              <div class="input-group">
+                <input type="text" id="track_id" class="form-control bg-white border-0 small" placeholder="Search for ID" aria-label="Search" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="button" onclick="searchClicked()">
+                  <i class="fas fa-search fa-sm"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
           <!-- Map container -->
           <div id="map" style="height: 100%"></div>
 
@@ -243,7 +255,7 @@
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7_RjkIVHXwvzgI7Y6BQ3aCY2jAbMw7x0&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7_RjkIVHXwvzgI7Y6BQ3aCY2jAbMw7x0&callback=initTrackMap" async defer></script>
   <script src="js/fbconf.js"></script>
   <script src="js/search.js"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
