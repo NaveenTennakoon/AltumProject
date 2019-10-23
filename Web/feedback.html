@@ -189,15 +189,15 @@
   </a>
 
   <!-- viewOrder Modal-->
-  <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal fade" id="viewfbModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content" style="height: 60%;">
         <div class="modal-header">
-          <h5 class="modal-title">This is your order details</h5>
+          <h5 class="modal-title">This is your order</h5>
         </div>
         <div class="modal-body" id="order_content"></div>
         <div class="modal-footer">
-          <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+          <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="clearViewOrderModal()">OK</button>
         </div>
       </div>
     </div>

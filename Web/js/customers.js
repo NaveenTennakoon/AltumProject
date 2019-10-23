@@ -57,7 +57,7 @@ function getProfile(){
       'beforeend',
       "<div class='form-row my-3 mx-3'>"+
         "<div class='col-lg-3'>"+
-          "<input class='form-control' value='Name' readonly>"+
+          "<a value='Name'><strong>Name</strong></a>"+
         "</div>"+
         "<div class='col-lg-9'>"+
           "<input class='form-control' id='name' value='"+snapshot.val().name+"' readonly>"+
@@ -65,15 +65,15 @@ function getProfile(){
       "</div>"+
       "<div class='form-row my-3 mx-3'>"+
         "<div class='col-lg-3'>"+
-          "<input class='form-control' value='Company' readonly>"+
+          "<a value='Name'><strong>Company</strong></a>"+
         "</div>"+
         "<div class='col-lg-9'>"+
           "<input class='form-control' id='name' value='"+snapshot.val().company+"' readonly>"+
         "</div>"+
       "</div>"+
       "<div class='form-row my-3 mx-3'>"+
-        "<div class='col-lg-5'>"+
-          "<input class='form-control' value='Contact Number' readonly>"+
+        "<div class='col-lg-3'>"+
+          "<a value='Name'><strong>Contact Number</strong></a>"+
         "</div>"+
         "<div class='col-lg-7'>"+
           "<input class='form-control' id='name' value='"+snapshot.val().telephone+"' readonly>"+
@@ -81,7 +81,7 @@ function getProfile(){
       "</div>"+
       "<div class='form-row my-3 mx-3'>"+
         "<div class='col-lg-3'>"+
-          "<input class='form-control' value='Address' readonly>"+
+          "<a value='Name'><strong>Address</strong></a>"+
         "</div>"+
         "<div class='col-lg-9'>"+
           "<textarea class='form-control' id='name' readonly>"+snapshot.val().address+"</textarea>"+
@@ -101,7 +101,7 @@ function populateEditModal(){
       'beforeend',
       "<div class='form-row my-3 mx-3'>"+
         "<div class='col-lg-3'>"+
-          "<input class='form-control' value='Name' readonly>"+
+          "<a value='Name'><strong>Name</strong></a>"+
         "</div>"+
         "<div class='col-lg-9'>"+
           "<input class='form-control' id='name' value='"+snapshot.val().name+"'>"+
@@ -109,15 +109,15 @@ function populateEditModal(){
       "</div>"+
       "<div class='form-row my-3 mx-3'>"+
         "<div class='col-lg-3'>"+
-          "<input class='form-control' value='Company' readonly>"+
+          "<a value='Name'><strong>Company</strong></a>"+
         "</div>"+
         "<div class='col-lg-9'>"+
           "<input class='form-control' id='company' value='"+snapshot.val().company+"'>"+
         "</div>"+
       "</div>"+
       "<div class='form-row my-3 mx-3'>"+
-        "<div class='col-lg-5'>"+
-          "<input class='form-control' value='Contact Number' readonly>"+
+        "<div class='col-lg-3'>"+
+          "<a value='Name'><strong>Contact Number</strong></a>"+
         "</div>"+
         "<div class='col-lg-7'>"+
           "<input class='form-control' id='tel' value='"+snapshot.val().telephone+"'>"+
@@ -125,7 +125,7 @@ function populateEditModal(){
       "</div>"+
       "<div class='form-row my-3 mx-3'>"+
         "<div class='col-lg-3'>"+
-          "<input class='form-control' value='Address' readonly>"+
+          "<a value='Name'><strong>Address</strong></a>"+
         "</div>"+
         "<div class='col-lg-9'>"+
           "<textarea class='form-control' id='address'>"+snapshot.val().address+"</textarea>"+
@@ -253,13 +253,17 @@ function viewItemClicked(event) {
   let button = event.target
   let shopItem = button.parentElement.parentElement
   let title = shopItem.getElementsByClassName('shop-item-title')[0].innerText
-  inventoryRef.child(title).once("value").then(function(snapshot){
-      snapshot.forEach(function(childSnapshot){
+  inventoryRef.once("value").then(function(snapshot){
+    snapshot.forEach(function(childSnapshot){
+      if(childSnapshot.val().ID == title){
+        childSnapshot.forEach(function(ccSnapshot){
           document.getElementById("item-body").insertAdjacentHTML(
-              'beforeend',
-              "<p><b>"+childSnapshot.key+"</b>: "+childSnapshot.val()+"</p>"
+            'beforeend',
+            "<p><b>"+ccSnapshot.key+"</b>: "+ccSnapshot.val()+"</p>"
           );
-      });
+        })
+      }
+    });
   });
   document.getElementById("item-title").innerHTML = title;
   $('#viewProductModal').modal({backdrop: 'static', keyboard: false});
@@ -310,7 +314,6 @@ function updateCartTotal() {
       let priceElement = cartRow.getElementsByClassName('cart-price')[0]
       let quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
       let price = parseFloat(priceElement.innerText.replace('$', ''))
-      console.log(price);
       let quantity = quantityElement.value
       total = total + (price * quantity)
   }
@@ -434,18 +437,26 @@ function view(){
         });
     }).then(() => {
         for(let i = 0; i < productArr.length; i++){
-            inventoryRef.child(productArr[i]).once("value").then(function(snapshot){
-                document.getElementById("order_content").insertAdjacentHTML(
+            inventoryRef.once("value").then(function(snapshot){
+              snapshot.forEach(function(childSnapshot){
+                if(childSnapshot.val().ID == productArr[i]){
+                  document.getElementById("order_content").insertAdjacentHTML(
                     'beforeend',
-                    "<p>Name : "+snapshot.val().Name+"</p>"+
-                    "<p>Product ID : "+snapshot.val().ID+"</p>"+
+                    "<p>Name : "+childSnapshot.val().Name+"</p>"+
+                    "<p>Product ID : "+childSnapshot.val().ID+"</p>"+
                     "<b>Quantity : "+quantityArr[i]+"</b><hr/>"
                 );
+                }
+              })
             });
         }
-        $('#viewModal').modal({backdrop: 'static', keyboard: false});
-        $('#viewModal').modal('show')
+        $('#viewfbModal').modal({backdrop: 'static', keyboard: false});
+        $('#viewfbModal').modal('show')
     })
+}
+
+function clearViewOrderModal(){
+  document.getElementById("order_content").innerHTML = '';
 }
 
 function submitFeedback() {

@@ -160,7 +160,7 @@ function viewItemClicked(event) {
       document.getElementById("item-body").insertAdjacentHTML(
         'beforeend',
         "<div class='form-row my-3 mx-5'>"+
-          "<div class='col-lg-4'>"+
+          "<div class=''>"+
             "<input class='form-control' id='key"+itemNo+"' value='"+childSnapshot.key+"' readonly>"+
           "</div>"+
           "<div class='col-lg-8'>"+
@@ -445,7 +445,7 @@ function customerkeysnapshotToArray() {
   // <!-- snapshot of childs of root of database-->
     snapshot.forEach(function(childSnapshot) {
       if(childSnapshot.val().type == 'customer'){
-        let item = childSnapshot.key;
+        let item = childSnapshot.val().name;
         customerArr.push(item); 
       }
     });
@@ -458,13 +458,17 @@ function customerkeysnapshotToArray() {
 };
 
 function customerDetails(){
-  let userid = document.getElementById("customer-search").value;
-  usersRef.child(userid).once("value").then(function(snapshot){
-    document.getElementById("name").value = snapshot.val().name;
-    document.getElementById("company").value = snapshot.val().company;
-    document.getElementById("email").value = snapshot.val().email;
-    document.getElementById("tel").value = snapshot.val().telephone;
-    document.getElementById("address").value = snapshot.val().address;
+  let userName = document.getElementById("customer-search").value;
+  usersRef.once("value").then(function(snapshot){
+    snapshot.forEach(function(childSnapshot){
+      if(childSnapshot.val().name == userName){
+        document.getElementById("name").value = childSnapshot.val().name;
+        document.getElementById("company").value = childSnapshot.val().company;
+        document.getElementById("email").value = childSnapshot.val().email;
+        document.getElementById("tel").value = childSnapshot.val().telephone;
+        document.getElementById("address").value = childSnapshot.val().address;
+      }
+    })
   }).catch(function(error){
     window.alert(error.message);
   })
@@ -534,6 +538,22 @@ function viewOrderClicked(event) {
       })
     });
   });
+  usersRef.once("value").then(function(snapshot){
+  // <!-- snapshot of childs of root of database-->
+    snapshot.forEach(function(childSnapshot) {
+      if(childSnapshot.val().type == 'salesperson'){
+        let item = childSnapshot.val().firstName+" "+childSnapshot.val().lastName;
+        document.getElementById("spSelect").insertAdjacentHTML(
+          'beforeend',
+          "<option>"+item+"</option>"
+        )
+      }
+    });
+  }).catch(function(error){
+    // Handle Errors here.
+    let errorMessage = error.message;
+    window.alert(errorMessage);
+  });
   document.getElementById("order-title").innerHTML = title;
   $('#viewOrderModal').modal({backdrop: 'static', keyboard: false});
   $('#viewOrderModal').modal('show')
@@ -553,22 +573,33 @@ function rejectOrderClicked(){
 
 function assign(){
   let title = document.getElementById("order-title").innerHTML
-  ordersRef.child(title).update({
-    Status: 'Assigned'
-  }).then(()=>{
-    inventoryRef.once("value").then(function(snapshot){
-      snapshot.forEach(function(childSnapshot){
-        if(childSnapshot.key==document.getElementById("key"+x).innerHTML){
-          let deduce = document.getElementById("val"+x).innerHTML - document.getElementById("quantity"+x).innerHTML;
-          inventoryRef.child(childSnapshot.key).update({
-            Quantity: deduce
-          })
-          x--;
-        }
-      })
+  let sp = document.getElementById("spSelect").value
+  let key = ''
+  usersRef.once("value").then(function(snapshot){
+    snapshot.forEach(function(childSnapshot){
+      if(childSnapshot.val().firstName+" "+childSnapshot.val().lastName == sp){
+        key = childSnapshot.key;
+      }
     })
-    window.alert("Order Has been assigned and the stock has been updated");
-    loadOrders();
+  }).then(()=>{
+    ordersRef.child(title).update({
+      Status: 'Assigned',
+      salesperson: key,
+    }).then(()=>{
+      inventoryRef.once("value").then(function(snapshot){
+        snapshot.forEach(function(childSnapshot){
+          if(childSnapshot.key==document.getElementById("key"+x).innerHTML){
+            let deduce = document.getElementById("val"+x).innerHTML - document.getElementById("quantity"+x).innerHTML;
+            inventoryRef.child(childSnapshot.key).update({
+              Quantity: deduce
+            })
+            x--;
+          }
+        })
+      });
+      window.alert("Order Has been assigned and the stock has been updated");
+      loadOrders();
+    })
   })
 }
 
@@ -726,6 +757,14 @@ function AddMarker(snapshot) {
       },
       map: map,
       title: snapshot.key,
+  });
+  usersRef.child(snapshot.key).once("value").then(function(snap){
+    var infowindow = new google.maps.InfoWindow({
+      content: snap.val().firstName+" "+snap.val().lastName
+    });
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
   });
   markers[snapshot.key] = marker;
 }

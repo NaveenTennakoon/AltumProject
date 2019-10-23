@@ -224,7 +224,7 @@
       <footer class="sticky-footer bg-white border-top">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span><strong>Copyright &copy; Your Website 2019</strong></span>
+            <span><strong>Copyright &copy; Altum Engineering 2019</strong></span>
           </div>
         </div>
       </footer>
@@ -245,16 +245,16 @@
   <div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header bg-light">
             <h5 class="modal-title" id="order-title"></h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick="clearOrderModal()">
               <span aria-hidden="true">×</span>
             </button>
           </div>
           <div class="modal-body" id="order-body"></div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="clearOrderModal()">Cancel</button>
-            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="assign()">Set As Assigned</button>
+            <select id="spSelect" class="browser-default custom-select"></select>
+            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="assign()">Assign</button>
           </div>
         </div>
       </div>
@@ -264,7 +264,7 @@
   <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-light">
           <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
