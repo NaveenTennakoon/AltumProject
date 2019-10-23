@@ -207,10 +207,9 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <div class="dropdown-header">Filter by Type:</div>
-                      <a class="dropdown-item" href="#">Bulbs</a>
-                      <a class="dropdown-item" href="#">Circuit Breakers</a>
+                      <div id="product-type"></div>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Clear filters</a>
+                      <a class="dropdown-item" type="button" onclick="filterbyType('all')">Clear filters</a>
                     </div>
                   </div>
                 </div>
@@ -259,7 +258,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="item-title"></h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick="clearViewModal()">
             <span aria-hidden="true">×</span>
           </button>
         </div>

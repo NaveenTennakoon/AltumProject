@@ -88,7 +88,7 @@ export default class SettingsScreen extends Component {
   onValueChange(value){
     this.setState({switchValue: value});
     if(!this.state.switchValue) {
-      async function requestCameraPermission() {
+      async function requestLocationPermission() {
         try {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
@@ -97,15 +97,13 @@ export default class SettingsScreen extends Component {
             }
         );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('You can use the camera');
-          } else {
-            console.log('Camera permission denied');
+            alert("Location services are now active")
           }
         } catch (err) {
           console.warn(err);
         }
       }
-      requestCameraPermission();
+      requestLocationPermission();
       this.onStart();
     }
     else this.onStop();
@@ -117,7 +115,8 @@ export default class SettingsScreen extends Component {
         position => {
           FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
             lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lng: position.coords.longitude,
+            status: 'active'
           });
           this.setState({
             lat: position.coords.latitude,
@@ -137,6 +136,9 @@ export default class SettingsScreen extends Component {
   }
 
   onStop() {
+    FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
+      status: 'inactive'
+    });
     clearInterval(this.state.timer);
     global.location = "off";
   }

@@ -89,6 +89,7 @@ function getProfile(){
       "</div>"
     );
   });
+  $('#viewProfileModal').modal({backdrop: 'static', keyboard: false});
   $('#viewProfileModal').modal('show')
 }
 
@@ -132,6 +133,7 @@ function populateEditModal(){
       "</div>"
     );
   });
+  $('#editProfileModal').modal({backdrop: 'static', keyboard: false});
   $('#editProfileModal').modal('show')
 }
 
@@ -260,6 +262,7 @@ function viewItemClicked(event) {
       });
   });
   document.getElementById("item-title").innerHTML = title;
+  $('#viewProductModal').modal({backdrop: 'static', keyboard: false});
   $('#viewProductModal').modal('show')
 }
 
@@ -385,6 +388,7 @@ function viewOrderItemClicked(event){
       });
   });
   document.getElementById("order-title").innerHTML = title;
+  $('#viewModal').modal({backdrop: 'static', keyboard: false});
   $('#viewModal').modal('show')
 }
 
@@ -439,6 +443,7 @@ function view(){
                 );
             });
         }
+        $('#viewModal').modal({backdrop: 'static', keyboard: false});
         $('#viewModal').modal('show')
     })
 }

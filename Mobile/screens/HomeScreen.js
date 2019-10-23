@@ -8,7 +8,14 @@ export default class ProfileScreen extends Component {
     constructor(props){
 		super(props)
 		this.state = {
-
+      pending: ['hi1'
+        // {
+        // id: '1',
+        // customer: '11',
+        // total: '111',
+        // payment: '111',
+        // }
+      ]
 		},
         global.firstname = '';
         global.lastname = '';
@@ -31,8 +38,8 @@ export default class ProfileScreen extends Component {
         });
         FB.database().ref("orders").once('value', function(snapshot) {
           snapshot.forEach(function (childSnapshot){
-            if (childSnapshot.val().Salesperson == global.username) {
-              // Code to pending orders will be shown here
+            if (childSnapshot.val().Salesperson == global.username && childSnapshot.val().Status == 'Pending') {
+              this.setState({ pending: [...this.state.pending, 'hi2'] }) 
             }
           });
         });
@@ -42,17 +49,17 @@ export default class ProfileScreen extends Component {
         this.loadDetails();
         return (
         <View style={styles.container}>
-            <View style={styles.header}></View>
-            <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
-            <View style={styles.body}>
-                <View style={styles.bodyContent}>
-                  <Text style={styles.name}>{global.username}</Text>
+            <View style={styles.header}>
+            <Text style={styles.name}>{global.username}</Text>
                   <Text style={styles.info}>Salesperson</Text>
                   <Text style={styles.description}>{global.telephone}</Text>
                   <Text style={styles.description}>{global.address}</Text> 
+            </View>
+            <View style={styles.body}>
+                <View style={styles.bodyContent}>
                   <View style={styles.ordersContainer}>
                     <View style={styles.orders}>
-                      <Text>Pending Orders</Text>
+                      <Text>{this.state.pending[0]}</Text>
                     </View>
                   </View>       
                 </View>        
@@ -66,6 +73,8 @@ const styles = StyleSheet.create({
   header:{
     backgroundColor: "#00BFFF",
     height:200,
+    alignItems: 'center',
+    padding: 30,
   },
   avatar: {
     width: 130,
@@ -98,13 +107,14 @@ const styles = StyleSheet.create({
   },
   info:{
     fontSize:20,
-    color: "#00BFFF",
-    marginTop:5
+    color: "#FFF",
+    marginTop: 5,
+    marginBottom: 10
   },
   description:{
     fontSize:16,
-    color: "#696969",
-    marginTop:10,
+    color: "#FFF",
+    marginTop: 3,
     textAlign: 'center'
   },
   ordersContainer: {

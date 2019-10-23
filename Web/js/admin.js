@@ -37,8 +37,26 @@ function addSalesperson() {
 let itemNo = 0;
 
 function loadProducts(){
+  let typesArr = [];
   inventoryRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
+      if(typesArr.length == 0){
+        let item = childSnapshot.val().Type;
+        typesArr.push(item);
+      }
+      else{
+        let flag = i = 0;
+        while(i<typesArr.length){
+          if(childSnapshot.val().Type == typesArr[i]){
+            flag = 1;
+          }
+          i++;
+        }
+        if(flag == 0){
+          let item = childSnapshot.val().Type;
+          typesArr.push(item);
+        }
+      }
       document.getElementById("product-items").insertAdjacentHTML(
         'beforeend',
         "<div class='shop-item'>"+
@@ -58,7 +76,71 @@ function loadProducts(){
     else{
       ready()
     }
-  });
+  }).then(()=>{
+    let x = 0
+    while(x<typesArr.length){
+      document.getElementById("product-type").insertAdjacentHTML(
+        'beforeend',
+        "<a class='dropdown-item' type='button' onclick='filterbyType(\""+typesArr[x]+"\")'>"+typesArr[x]+"</a>"
+      );
+      x++;
+    }
+  })
+}
+
+function filterbyType(type){
+  document.getElementById("product-items").innerHTML = '';
+  if(type == 'all'){
+    inventoryRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        document.getElementById("product-items").insertAdjacentHTML(
+          'beforeend',
+          "<div class='shop-item'>"+
+            "<b>Unique ID: </b>"+
+            "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
+            "<b class='ml-5'>Product ID: </b>"+childSnapshot.val().ID+
+            "<div class='shop-item-details'>"+
+              "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+              "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
+            "</div>"+
+          "</div>"
+        );
+      });
+      if (document.readyState == 'loading'){
+        document.addEventListener('DOMContentLoaded', ready)
+      } 
+      else{
+        ready()
+      }
+    });
+  }
+  else{
+    inventoryRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        console.log(type)
+        if(childSnapshot.val().Type == type){
+          document.getElementById("product-items").insertAdjacentHTML(
+            'beforeend',
+            "<div class='shop-item'>"+
+              "<b>Unique ID: </b>"+
+              "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
+              "<b class='ml-5'>Product ID: </b>"+childSnapshot.val().ID+
+              "<div class='shop-item-details'>"+
+                "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+                "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
+              "</div>"+
+            "</div>"
+          );
+        }
+      });
+      if (document.readyState == 'loading'){
+        document.addEventListener('DOMContentLoaded', ready)
+      } 
+      else{
+        ready()
+      }
+    });
+  }
 }
 
 function ready() {
@@ -90,7 +172,8 @@ function viewItemClicked(event) {
     });
   });
   document.getElementById("item-title").innerHTML = title;
-  $('#viewModal').modal('show')
+  $('#viewModal').modal({backdrop: 'static', keyboard: false});
+  $('#viewModal').modal('show');
 }
 
 function clearViewModal(){
@@ -309,6 +392,7 @@ function viewLocationClicked(event){
     position: position,
     map: history_map
   });
+  $('#locationModal').modal({backdrop: 'static', keyboard: false});
   $('#locationModal').modal('show');
 }
 
@@ -324,7 +408,7 @@ function spkeysnapshotToArray() {
   // <!-- snapshot of childs of root of database-->
     snapshot.forEach(function(childSnapshot) {
       if(childSnapshot.val().type == 'salesperson'){
-        let item = childSnapshot.key;
+        let item = childSnapshot.val().firstName+" "+childSnapshot.val().lastName;
         spArr.push(item); 
       }
     });
@@ -333,17 +417,22 @@ function spkeysnapshotToArray() {
     let errorMessage = error.message;
     window.alert(errorMessage);
   });
-  autocomplete(document.getElementById("salesperon-search"), spArr);
+  autocomplete(document.getElementById("salesperson-search"), spArr);
 };
 
 function spDetails(){
-  let userid = document.getElementById("salesperon-search").value;
-  usersRef.child(userid).once("value").then(function(snapshot){
-    document.getElementById("fname").value = snapshot.val().firstName;
-    document.getElementById("lname").value = snapshot.val().lastName;
-    document.getElementById("email").value = snapshot.val().email;
-    document.getElementById("tel").value = snapshot.val().telephone;
-    document.getElementById("address").value = snapshot.val().address;
+  let userName = document.getElementById("salesperson-search").value;
+  usersRef.once("value").then(function(snapshot){
+    snapshot.forEach(function(childSnapshot){
+      let tempName = childSnapshot.val().firstName+" "+childSnapshot.val().lastName
+      if(tempName == userName){
+          document.getElementById("fname").value = childSnapshot.val().firstName;
+          document.getElementById("lname").value = childSnapshot.val().lastName;
+          document.getElementById("email").value = childSnapshot.val().email;
+          document.getElementById("tel").value = childSnapshot.val().telephone;
+          document.getElementById("address").value = childSnapshot.val().address;
+      }
+    })
   }).catch(function(error){
     window.alert(error.message);
   })
@@ -446,6 +535,7 @@ function viewOrderClicked(event) {
     });
   });
   document.getElementById("order-title").innerHTML = title;
+  $('#viewOrderModal').modal({backdrop: 'static', keyboard: false});
   $('#viewOrderModal').modal('show')
 }
 
