@@ -30,7 +30,7 @@ export default class Login extends Component {
   const {navigate} = this.props.navigation;
 	return (
 		<KeyboardAvoidingView behaviour="padding" style={styles.container}>
-				<Image style={styles.bgImage} source={{ uri: "https://lorempixel.com/900/1400/nightlife/2/" }}/>
+				<Image style={styles.bgImage} source={{ uri: "https://cdn2.f-cdn.com/contestentries/68791/9261050/5337f7fab2996_thumb900.jpg" }}/>
 				<Text style={styles.textByReset}>We get it. Things do happen. Have you forgot your password? Enter the email address below and we will email a password reset link</Text>   
 				<View style={styles.inputContainer}>
 					<TextInput style={styles.inputs}

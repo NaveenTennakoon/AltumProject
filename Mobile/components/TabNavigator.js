@@ -18,9 +18,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View>  
               <Icon style={[{color: tintColor}]} size={25} name={'ios-home'}/>  
             </View>),
-            activeColor: '#615af6',  
+            activeColor: '#ffffff',  
             inactiveColor: '#46f6d7',  
-            barStyle: { backgroundColor: '#67baf6' },    
+            barStyle: { backgroundColor: '#00bbff' },    
         }  
       },  
       Profile: { screen: ProfileScreen,  
@@ -30,9 +30,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View>  
               <Icon style={[{color: tintColor}]} size={25} name={'ios-person'}/>  
             </View>), 
-            activeColor: '#615af6',  
+            activeColor: '#ffffff',  
             inactiveColor: '#46f6d7',  
-            barStyle: { backgroundColor: '#67baf6' },     
+            barStyle: { backgroundColor: '#00bbff' },     
         }  
       },  
       Settings: { screen: SettingsNavigator,  
@@ -42,9 +42,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View>  
               <Icon style={[{color: tintColor}]} size={25} name={'ios-settings'}/>  
             </View>),  
-          activeColor: '#615af6',  
+          activeColor: '#ffffff',  
           inactiveColor: '#46f6d7',  
-          barStyle: { backgroundColor: '#67baf6' },  
+          barStyle: { backgroundColor: '#00bbff' },  
         }  
       },  
       location: { screen: EnterScreen,  
@@ -54,9 +54,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View>  
               <Icon style={[{color: tintColor}]} size={25} name={'ios-send'}/>  
             </View>),  
-          activeColor: '#615af6',  
+          activeColor: '#ffffff',  
           inactiveColor: '#46f6d7',  
-          barStyle: { backgroundColor: '#67baf6' },  
+          barStyle: { backgroundColor: '#00bbff' },  
         }  
       },  
     },  

@@ -9,7 +9,8 @@ export default class Login extends Component {
 		super(props)
 		this.state = {
 			username : '',
-			password : '',
+      password : '',
+      hidePassword: true,
 		},
 		global.username = '';
 	}
@@ -35,13 +36,21 @@ export default class Login extends Component {
 			  var errorMessage = error.message;
 			  window.alert(errorMessage);
 		  });
-	} 
+  } 
+  
+  managePasswordVisibility = () =>
+  {
+    this.setState({ hidePassword: !this.state.hidePassword });
+  }
 
   render() {
 	const {navigate} = this.props.navigation;
 	return (
 		<KeyboardAvoidingView behaviour="padding" style={styles.container}>
-				<Image style={styles.bgImage} source={{ uri: "https://lorempixel.com/900/1400/nightlife/2/" }}/>
+				<Image style={styles.bgImage} source={{ uri: "https://cdn2.f-cdn.com/contestentries/68791/9261050/5337f7fab2996_thumb900.jpg" }}/>
+        <View style={styles.logoContainer}>
+          <Image style={styles.logo} source={require('../img/logo.png')}/>
+        </View>
 				<View style={styles.inputContainer}>
 					<TextInput style={styles.inputs}
 						placeholder="Email"
@@ -57,12 +66,16 @@ export default class Login extends Component {
 				<View style={styles.inputContainer}>
 					<TextInput style={styles.inputs}
 						placeholder="Password"
-						secureTextEntry={true}
+						secureTextEntry={this.state.hidePassword}
 						underlineColorAndroid='transparent'
 						returnKeyType="go"
 						ref={(input) => this.passwordInput = input}
-						onChangeText={(password) => this.setState({password})}></TextInput>
-					<Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}/>
+						onChangeText={(password) => this.setState({password})}>
+          </TextInput>
+          <TouchableOpacity activeOpacity = { 0.8 } style = { styles.visibilityBtn } onPress = { this.managePasswordVisibility }>
+            <Image source = { ( this.state.hidePassword ) ? {uri: 'https://img.icons8.com/nolan/64/000000/sleepy-eyes.png'} : {uri: 'https://img.icons8.com/nolan/64/000000/visible.png'} } style = { styles.inputIcon } />
+          </TouchableOpacity>
+					{/* <Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}/> */}
 				</View>
 				<TouchableOpacity style={styles.btnForgotPassword} onPress={() => navigate('Reset')}>
 					<Text style={styles.btnText}>Forgot your password?</Text>
@@ -81,6 +94,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#DCDCDC',
+  },
+  logoContainer:{
+    justifyContent: 'center',
+    marginBottom: 120,
+  },
+  logo:{
+    width: 200,
+    height: 120,
   },
   inputContainer: {
     borderBottomColor: '#F5FCFF',
