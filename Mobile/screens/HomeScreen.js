@@ -68,7 +68,7 @@ export default class ProfileScreen extends Component {
 
 const styles = StyleSheet.create({
   header:{
-    backgroundColor: "#00BBFF",
+    backgroundColor: "#000000",
     height:100,
     alignItems: 'center',
     padding: 20,
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   name:{
     fontSize:24,
-    color:"#000066",
+    color:"#FFFFFF",
     fontWeight:'700',
     marginLeft: 70,
   },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   info:{
     fontSize:18,
-    color: "#FFF",
+    color: "#AAAAAA",
     fontWeight: '700',
   },
   description:{

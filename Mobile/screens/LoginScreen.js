@@ -12,7 +12,8 @@ export default class Login extends Component {
       password : '',
       hidePassword: true,
 		},
-		global.username = '';
+    global.username = '';
+    global.pwd = '';
 	}
 
 	login(){
@@ -26,7 +27,8 @@ export default class Login extends Component {
 					alert("This email is not registered to a Salesperson");
 				}
 				else{
-					global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
+          global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
+          global.pwd = pwd;
 					alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
 					navigate('tNav');
 				}	
@@ -78,7 +80,7 @@ export default class Login extends Component {
 					{/* <Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}/> */}
 				</View>
 				<TouchableOpacity style={styles.btnForgotPassword} onPress={() => navigate('Reset')}>
-					<Text style={styles.btnText}>Forgot your password?</Text>
+					<Text style={styles.fgtText}>Forgot your password?</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={()=>this.login()}>
 				<Text style={styles.loginText}>Login</Text>
@@ -104,13 +106,11 @@ const styles = StyleSheet.create({
     height: 120,
   },
   inputContainer: {
-    borderBottomColor: '#F5FCFF',
     backgroundColor: '#FFFFFF',
     borderRadius:30,
-    borderBottomWidth: 1,
     width:340,
     height:50,
-    marginBottom:20,
+    marginBottom:25,
     flexDirection: 'row',
     alignItems:'center',
 
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   buttonContainer: {
-    height:45,
+    height:50,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor:'transparent'
   },
   loginButton: {
-    backgroundColor: "#00b5ec",
+    backgroundColor: "#000000",
 
     shadowColor: "#808080",
     shadowOffset: {
@@ -170,6 +170,8 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
   },
   bgImage:{
     flex: 1,
@@ -178,9 +180,9 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
   },
-  btnText:{
+  fgtText:{
     color:"white",
-	fontSize: 15,
+	  fontSize: 15,
   }
 }); 
 

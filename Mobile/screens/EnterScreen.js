@@ -77,7 +77,7 @@ export default class EnterScreen extends Component {
               onSubmitEditing={() => this.customerInput.focus()}/>
         </View>      
         <View style={styles.inputContainer}>
-        <Icon style={styles.inputIcon} size={25} name={'ios-peron'}/>
+        <Icon style={styles.inputIcon} size={25} name={'ios-person'}/>
           <TextInput style={styles.inputs}
               placeholder="Customer Name"
               underlineColorAndroid='transparent'
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DCDCDC',
+    backgroundColor: '#FFFFFF',
   },
   logo:{
     width:120,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     marginBottom:20,
   },
   inputContainer: {
-      borderBottomColor: '#F5FCFF',
+      borderBottomColor: '#777777',
       backgroundColor: '#FFFFFF',
       borderRadius:30,
       borderBottomWidth: 1,
@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
   inputs:{
       height:45,
       marginLeft:16,
-      borderBottomColor: '#FFFFFF',
       flex:1,
   },
   inputIcon:{
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
     borderRadius:30,
   },
   sendButton: {
-    backgroundColor: "#6199f6",
+    backgroundColor: "#000000",
   },
   buttonText: {
     color: 'white',

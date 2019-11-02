@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, PermissionsAndroid, AsyncStorage, Alert } from "react-native";
+import { View, StyleSheet, PermissionsAndroid, AsyncStorage, Alert, Image } from "react-native";
 import SettingsList from 'react-native-settings-list';
 import Geolocation from 'react-native-geolocation-service';
+import Dialog from "react-native-dialog";
 
 import FB from '../components/FB'
 
@@ -15,9 +16,34 @@ export default class SettingsScreen extends Component {
       lat: 0,
       lng: 0,
       timer: 0,
+      dialogVisible: false,
+      pwd: '',
     };
     global.location = 'off';
   }
+  showDialog = () => {
+    this.setState({ dialogVisible: true });
+  };
+ 
+  handleCancel = () => {
+    this.setState({ dialogVisible: false });
+  };
+ 
+  handleConfirm = () => {
+    if(this.state.pwd == global.pwd){
+      usersRef.child(firebase.auth().currentUser.uid).remove().then(() => {
+        firebase.auth().currentUser.delete().then(() => {
+          navigate('Login')
+        }).catch(function(error){
+          alert(error.message);
+        })
+      })
+    }
+    else{
+      alert("Wrong password entered")
+    }
+    this.setState({ dialogVisible: false });
+  };
   render() {
     const {navigate} = this.props.navigation;
     return (
@@ -25,44 +51,45 @@ export default class SettingsScreen extends Component {
         <View style={styles.container}>
           <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
             <SettingsList.Item
-              // icon={
-              //     <Image style={styles.imageStyle} source={require('./images/airplane.png')}/>
-              // }
+              icon={
+                <Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/64/000000/worldwide-location--v1.png"}}/>
+              }
               hasSwitch={true}
+              
               switchState={this.state.switchValue}
               switchOnValueChange={this.onValueChange}
               hasNavArrow={false}
               title='GPS Location'
             />
             <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/wifi.png')}/>}
+              icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/64/000000/point-objects.png"}}/>}
               title='My Locations'
               // titleInfoStyle={styles.titleInfoStyle}
               onPress={() => navigate('Locations')}
-            /> 
-            <SettingsList.Header headerStyle={{marginTop:15}}/>
+            />
             <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/control.png')}/>}
+              icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/purchase-order.png"}}/>}
               title='Order'
               titleInfo='View Pending order'
               onPress={() => alert('Route To Control Center Page')}
             />
+            <SettingsList.Header headerStyle={{marginTop:15}}/>
+
             <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/wifi.png')}/>}
+              icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/key--v1.png"}}/>}
               title='Change Password'
               // titleInfoStyle={styles.titleInfoStyle}
               onPress={() => alert('Route to Wifi Page')}
             /> 
-            <SettingsList.Header headerStyle={{marginTop:15}}/>
             <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/blutooth.png')}/>}
+              icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/user--v1.png"}}/>}
               title='Profile'
               titleInfo='Edit Info'
               // titleInfoStyle={styles.titleInfoStyle}
               onPress={() => navigate('Edit')}
             />
             <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/notifications.png')}/>}
+              icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/64/000000/exit.png"}}/>}
               title='Log out'
               onPress={()=>
                 Alert.alert(
@@ -79,7 +106,37 @@ export default class SettingsScreen extends Component {
                 )  
               }
             />
+            <SettingsList.Header headerStyle={{marginTop:15}}/>
+            <SettingsList.Item
+              icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/shutdown.png"}}/>}
+              title='Sign out'
+              onPress={()=>
+                Alert.alert(
+                  'Log out',
+                  'Are you sure you want to Signout?',
+                  [
+                    {text: 'Cancel', onPress: () => {return null}},
+                    {text: 'Confirm', onPress: () => {
+                      this.showDialog()
+                    }},
+                  ],
+                  { cancelable: false }
+                ) 
+              }
+            />
           </SettingsList>
+        </View>
+        <View>
+          <Dialog.Container visible={this.state.dialogVisible}>
+            <Dialog.Title>Approve Delete</Dialog.Title>
+            <Dialog.Description>
+              Do you want to delete this account? You cannot undo this action.
+            </Dialog.Description>
+            <Dialog.Input label="Type Password" onChangeText={(pwd) => this.setState({pwd})}>
+            </Dialog.Input>
+            <Dialog.Button label="Cancel" onPress={this.handleCancel}/>
+            <Dialog.Button label="Confirm" onPress={this.handleConfirm}/>
+          </Dialog.Container>
         </View>
       </View>
     );
@@ -149,5 +206,11 @@ const styles = StyleSheet.create({
   container:{
     backgroundColor:'#EFEFF4',
     flex:1,
+  },
+  imageStyle:{
+    width: 25,
+    height: 25,
+    alignSelf: 'center',
+    marginLeft: 15,
   },
 });

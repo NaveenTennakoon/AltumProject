@@ -19,8 +19,8 @@ const TabNavigator = createMaterialBottomTabNavigator(
               <Icon style={[{color: tintColor}]} size={25} name={'ios-home'}/>  
             </View>),
             activeColor: '#ffffff',  
-            inactiveColor: '#46f6d7',  
-            barStyle: { backgroundColor: '#00bbff' },    
+            inactiveColor: '#999999',  
+            barStyle: { backgroundColor: '#000000' },    
         }  
       },  
       Profile: { screen: ProfileScreen,  
@@ -31,8 +31,8 @@ const TabNavigator = createMaterialBottomTabNavigator(
               <Icon style={[{color: tintColor}]} size={25} name={'ios-person'}/>  
             </View>), 
             activeColor: '#ffffff',  
-            inactiveColor: '#46f6d7',  
-            barStyle: { backgroundColor: '#00bbff' },     
+            inactiveColor: '#999999',  
+            barStyle: { backgroundColor: '#000000' },     
         }  
       },  
       Settings: { screen: SettingsNavigator,  
@@ -43,8 +43,8 @@ const TabNavigator = createMaterialBottomTabNavigator(
               <Icon style={[{color: tintColor}]} size={25} name={'ios-settings'}/>  
             </View>),  
           activeColor: '#ffffff',  
-          inactiveColor: '#46f6d7',  
-          barStyle: { backgroundColor: '#00bbff' },  
+          inactiveColor: '#999999',  
+          barStyle: { backgroundColor: '#000000' },  
         }  
       },  
       location: { screen: EnterScreen,  
@@ -55,16 +55,16 @@ const TabNavigator = createMaterialBottomTabNavigator(
               <Icon style={[{color: tintColor}]} size={25} name={'ios-send'}/>  
             </View>),  
           activeColor: '#ffffff',  
-          inactiveColor: '#46f6d7',  
-          barStyle: { backgroundColor: '#00bbff' },  
+          inactiveColor: '#999999',  
+          barStyle: { backgroundColor: '#000000' },  
         }  
       },  
     },  
     {  
       initialRouteName: "Home",  
       activeColor: '#f0edf6',  
-      inactiveColor: '#226557',  
-      barStyle: { backgroundColor: '#3BAD87' },  
+      inactiveColor: '#999999',  
+      barStyle: { backgroundColor: '#000000' },  
     },  
 );  
   
