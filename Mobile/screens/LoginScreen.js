@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 import FB from '../components/FB';
 
@@ -77,15 +77,14 @@ export default class Login extends Component {
           <TouchableOpacity activeOpacity = { 0.8 } style = { styles.visibilityBtn } onPress = { this.managePasswordVisibility }>
             <Image source = { ( this.state.hidePassword ) ? {uri: 'https://img.icons8.com/nolan/64/000000/sleepy-eyes.png'} : {uri: 'https://img.icons8.com/nolan/64/000000/visible.png'} } style = { styles.inputIcon } />
           </TouchableOpacity>
-					{/* <Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}/> */}
 				</View>
 				<TouchableOpacity style={styles.btnForgotPassword} onPress={() => navigate('Reset')}>
 					<Text style={styles.fgtText}>Forgot your password?</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={()=>this.login()}>
-				<Text style={styles.loginText}>Login</Text>
+				  <Text style={styles.loginText}>Login</Text>
 				</TouchableOpacity>
-      	</KeyboardAvoidingView>
+      </KeyboardAvoidingView>
 	);
   }
 }
