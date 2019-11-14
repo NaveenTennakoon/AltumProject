@@ -14,8 +14,13 @@ function login(){
     });
   }).catch(function(error){
       // Handle Errors here.
-      let errorMessage = error.message;
-      window.alert(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
+      let element = document.getElementById("openModalLoading");
+      element.parentNode.removeChild(element);
   });
 }
 
@@ -27,7 +32,10 @@ function resetMail(){
     location.href = "index.html";
   }).catch(function(error) {
     // An error happened.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
 }
