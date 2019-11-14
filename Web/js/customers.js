@@ -6,7 +6,11 @@ function userid(){
         let uid = snapshot.val().name;
         document.getElementById("uid").innerHTML = uid; 
       }).catch(function(error){
-        window.alert(error.message);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+        })
       });
     }
   });
@@ -18,8 +22,11 @@ function logout(){
     location.href = "index.html";
   }).catch(function(error) {
     // An error happened.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
 }
 
@@ -28,7 +35,11 @@ function signout(){
     firebase.auth().currentUser.delete().then(() => {
       location.href = 'index.html';
     }).catch(function(error){
-      window.alert(error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
     })
   })
 }
@@ -199,11 +210,20 @@ function updateProfile(){
     telephone: $("#tel").val(),
     address: $("#address").val(),
   }).then(()=>{
-    window.alert("Profile updated successfully");
+    Swal.fire({
+      position: 'top',
+      icon: 'success',
+      title: 'Profile Updated successfully',
+      showConfirmButton: false,
+      timer: 3000
+    })
   }).catch(function(error){
       // Handle Errors here.
-      let errorMessage = error.message;
-      window.alert(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
   });
 }
 
@@ -281,7 +301,13 @@ function populateProducts() {
 function purchaseClicked() {
   let cartItem = document.getElementsByClassName('cart-item')
   let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText
-  if(cartTotal == 0) window.alert("No Items to checkout")
+  if(cartTotal == 0){
+    Swal.fire(
+      'No items in the cart',
+      '',
+      'warning'
+    )
+  }
   else{
     let cartItems = document.getElementsByClassName('cart-items')[0]
     let date = new Date();
@@ -297,7 +323,13 @@ function purchaseClicked() {
         })
       }
     }).then(()=>{
-      if(qtyFlag == 1) window.alert("One or more items are over the limit of our stock")
+      if(qtyFlag == 1){
+        Swal.fire(
+        'One or more items are exceeding our stock quantity',
+        '',
+        'warning'
+        )
+      }
       else{
         ordersRef.push({
           Customer: firebase.auth().currentUser.uid,
@@ -320,8 +352,11 @@ function purchaseClicked() {
           updateCartTotal()
         }).catch(function(error){
           // Handle Errors here.
-          let errorMessage = error.message;
-          window.alert(errorMessage);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+          })
         });
       }
     })
@@ -518,8 +553,11 @@ function ordersnapshotToArray() {
       }
   }).catch(function(error){
       // Handle Errors here.
-      let errorMessage = error.message;
-      window.alert(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
   });
   return orderArr;
 };
@@ -564,10 +602,21 @@ function submitFeedback() {
     let Feedback = document.getElementById("cus_feedback").value;
     ordersRef.child(selected).update({
         Feedback: Feedback
-    }).then(() => {window.alert("Feedback has been successfully submitted")}).catch(function(error){
+    }).then(() => {
+      Swal.fire({
+        position: 'top',
+        icon: 'success',
+        title: 'Feedback has been successfully submitted',
+        showConfirmButton: false,
+        timer: 3000
+      })
+    }).catch(function(error){
         // Handle Errors here.
-        let errorMessage = error.message;
-        window.alert(errorMessage);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+        })
     });
 }
   

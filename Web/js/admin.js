@@ -5,8 +5,11 @@ function logout(){
     location.href = "index.html";
   }).catch(function(error) {
     // An error happened.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
 }
 
@@ -16,8 +19,11 @@ function addSalesperson() {
     let email = $("#email").val();
     let password = $("#password").val();
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-      var errorMessage = error.message;
-      window.alert(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
     }).then(()=>{
       usersRef.child(firebase.auth().currentUser.uid).set({
         firstName: $("#fname").val(),
@@ -28,9 +34,21 @@ function addSalesperson() {
         type: 'salesperson',
       });
     });
-    window.alert("Salesperson added succesfully");
+    Swal.fire({
+      position: 'top',
+      icon: 'success',
+      title: 'Salesperson added successfully',
+      showConfirmButton: false,
+      timer: 3000
+    })
   }
-  else{window.alert("Password fields do not match")}
+  else{
+    Swal.fire(
+      'Password fields do not match',
+      '',
+      'warning'
+    )
+  }
 }
 
 // stock management page functions
@@ -188,7 +206,13 @@ function update(){
     });
   }
   clearViewModal();
-  window.alert("Product updated successfully");
+  Swal.fire({
+    position: 'top',
+    icon: 'success',
+    title: 'Product updated successfully',
+    showConfirmButton: false,
+    timer: 3000
+  })
 }
 
 // add new item page functions
@@ -219,8 +243,11 @@ function typesnapshotToArray() {
     });
   }).catch(function(error){
     // Handle Errors here.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
   autocomplete(document.getElementById("defaultval3"), typeArr);
 };
@@ -249,7 +276,11 @@ function additem(){
     snapshot.forEach(function(childSnapshot) {
       if(childSnapshot.val().ID == $("#defaultval1").val()){
         temp = 0;
-        window.alert('This Product is already available in the stock');
+        Swal.fire(
+          'This Product is already available in the stock',
+          '',
+          'warning'
+        )
       }
     });
     if(temp == 1){
@@ -270,8 +301,11 @@ function additem(){
         }
       }).catch(function(error){
         // Handle Errors here.
-        let errorMessage = error.message;
-        window.alert(errorMessage);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+        })
       });
     }
   });
@@ -290,8 +324,11 @@ function spsnapshotToArray() {
     });
   }).catch(function(error){
     // Handle Errors here.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
   autocomplete(document.getElementById("spLocations"), spArr);
 };
@@ -413,8 +450,11 @@ function spkeysnapshotToArray() {
     });
   }).catch(function(error){
     // Handle Errors here.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
   autocomplete(document.getElementById("salesperson-search"), spArr);
 };
@@ -433,7 +473,11 @@ function spDetails(){
       }
     })
   }).catch(function(error){
-    window.alert(error.message);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   })
 }
 
@@ -450,8 +494,11 @@ function customerkeysnapshotToArray() {
     });
   }).catch(function(error){
     // Handle Errors here.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
   autocomplete(document.getElementById("customer-search"), customerArr);
 };
@@ -469,7 +516,11 @@ function customerDetails(){
       }
     })
   }).catch(function(error){
-    window.alert(error.message);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   })
 }
 
@@ -550,8 +601,11 @@ function viewOrderClicked(event) {
     });
   }).catch(function(error){
     // Handle Errors here.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
   document.getElementById("order-title").innerHTML = title;
   $('#viewOrderModal').modal({backdrop: 'static', keyboard: false});
@@ -565,7 +619,11 @@ function rejectOrderClicked(){
   ordersRef.child(title).update({
     Status: 'Cancelled'
   }).then(()=>{
-    window.alert("Order Has been Rejected");
+    Swal.fire(
+      'Order Has been Rejected',
+      '',
+      'error'
+    )
     loadOrders();
   })
 }
@@ -596,6 +654,7 @@ function assign(){
           }
         })
       });
+      
       window.alert("Order Has been assigned and the stock has been updated");
       loadOrders();
     })
@@ -635,7 +694,11 @@ function initMap() {
     });
   } 
   else{
-    window.alert("Something went wrong with location Access");
+    Swal.fire(
+      'Something went wrong with location Access',
+      '',
+      'error'
+    )
   }
 }
 
@@ -666,8 +729,11 @@ function signup(){
 
   if(pwd == $("#cpassword").val()){
     firebase.auth().createUserWithEmailAndPassword(email, pwd).catch(function(error) {
-      var errorMessage = error.message;
-      window.alert(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
     }).then(()=>{
       // Push the new customer to the database using those values
         usersRef.child(firebase.auth().currentUser.uid).set({
@@ -680,12 +746,22 @@ function signup(){
           longitude: lng,
           latitude: lat
         });
-        window.alert("You have successfully signed in to Altum")
+        Swal.fire({
+          position: 'top',
+          icon: 'success',
+          title: 'You have successfully signed into Altum',
+          showConfirmButton: false,
+          timer: 3000
+        })
       location.href='cus_dashboard.html'
     });
   }
   else{
-    window.alert("Password Mismatch");
+    Swal.fire(
+      'Password Mismatch',
+      '',
+      'error'
+    )
   }
 }
 
@@ -700,8 +776,11 @@ function spkeysToArray() {
     });
   }).catch(function(error){
     // Handle Errors here.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
   autocomplete(document.getElementById("track_id"), spKeyArr);
 };
@@ -728,7 +807,11 @@ function initTrackMap() {
     });
   } 
   else{
-    window.alert("Something went wrong with location Access");
+    Swal.fire(
+      'Something went wrong with location Access',
+      '',
+      'error'
+    )
   }
 
   gpsRef.child('live').on('child_added', function (snapshot) {
@@ -772,7 +855,11 @@ function searchClicked(){
   child = document.getElementById("track_id").value;
   gpsRef.child('live/'+child).once('value').then(function(snapshot){
     if(snapshot.val().status == 'inactive'){
-      window.alert("Sales person's location is inactive");
+      Swal.fire(
+        'Sales person location is inactive',
+        '',
+        'info'
+      )
     }
     else if(snapshot.val().status == 'active'){
       let pos = {
