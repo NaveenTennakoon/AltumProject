@@ -117,7 +117,6 @@ function filterbyType(type){
   else{
     inventoryRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
-        console.log(type)
         if(childSnapshot.val().Type == type){
           document.getElementById("product-items").insertAdjacentHTML(
             'beforeend',

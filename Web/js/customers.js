@@ -138,6 +138,60 @@ function populateEditModal(){
   $('#editProfileModal').modal('show')
 }
 
+function filterbyType(type){
+  document.getElementById("product-items").innerHTML = '';
+  if(type == 'all'){
+    inventoryRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        document.getElementById("product-items").insertAdjacentHTML(
+          'beforeend',
+          "<div class='shop-item'>"+
+            "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
+            "<div class='shop-item-details'>"+
+            "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+            "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
+              "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
+              "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
+            "</div>"+
+          "</div>"
+        );
+      });
+      if (document.readyState == 'loading'){
+        document.addEventListener('DOMContentLoaded', ready)
+      } 
+      else{
+        populateProducts()
+      }
+    });
+  }
+  else{
+    inventoryRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        if(childSnapshot.val().Type == type){
+          document.getElementById("product-items").insertAdjacentHTML(
+            'beforeend',
+            "<div class='shop-item'>"+
+              "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
+              "<div class='shop-item-details'>"+
+              "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+              "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
+                "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
+                "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
+              "</div>"+
+            "</div>"
+          );
+        }
+      });
+      if (document.readyState == 'loading'){
+        document.addEventListener('DOMContentLoaded', ready)
+      } 
+      else{
+        populateProducts()
+      }
+    });
+  }
+}
+
 function updateProfile(){
   usersRef.child(firebase.auth().currentUser.uid).update({
     name: $("#name").val(),
@@ -154,8 +208,26 @@ function updateProfile(){
 }
 
 function loadProducts(){
+  let typesArr = [];
   inventoryRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
+      if(typesArr.length == 0){
+        let item = childSnapshot.val().Type;
+        typesArr.push(item);
+      }
+      else{
+        let flag = i = 0;
+        while(i<typesArr.length){
+          if(childSnapshot.val().Type == typesArr[i]){
+            flag = 1;
+          }
+          i++;
+        }
+        if(flag == 0){
+          let item = childSnapshot.val().Type;
+          typesArr.push(item);
+        }
+      }
       document.getElementById("product-items").insertAdjacentHTML(
         'beforeend',
         "<div class='shop-item'>"+
@@ -170,6 +242,15 @@ function loadProducts(){
       );
     });
     populateProducts()
+  }).then(()=>{
+    let x = 0
+    while(x<typesArr.length){
+      document.getElementById("product-type").insertAdjacentHTML(
+        'beforeend',
+        "<a class='dropdown-item' type='button' onclick='filterbyType(\""+typesArr[x]+"\")'>"+typesArr[x]+"</a>"
+      );
+      x++;
+    }
   });
 }
 
@@ -200,32 +281,51 @@ function populateProducts() {
 function purchaseClicked() {
   let cartItem = document.getElementsByClassName('cart-item')
   let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText
-  let cartItems = document.getElementsByClassName('cart-items')[0]
-  let date = new Date();
-  ordersRef.push({
-      Customer: firebase.auth().currentUser.uid,
-      Total: cartTotal,
-      Status: 'Pending',
-      payment: 'Cash',
-      orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
-  }).then((snap) => {
-      const key = snap.key;
+  if(cartTotal == 0) window.alert("No Items to checkout")
+  else{
+    let cartItems = document.getElementsByClassName('cart-items')[0]
+    let date = new Date();
+    let qtyFlag = 0;
+    inventoryRef.once("value").then(function(snapshot){
       for(let i = 0; i < cartItem.length; i++){
-          let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
-          let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
-          ordersRef.child(key+'/Products').update({
-              [cartItemName]: cartItemQuantity,
-          })
-      }  
-      while (cartItems.hasChildNodes()) {
-          cartItems.removeChild(cartItems.firstChild)
+        let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
+        let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
+        snapshot.forEach(function(childSnapshot){
+          if(childSnapshot.val().ID == cartItemName){
+            if(childSnapshot.val().Quantity < cartItemQuantity) qtyFlag = 1;
+          }
+        })
       }
-      updateCartTotal()
-  }).catch(function(error){
-      // Handle Errors here.
-      let errorMessage = error.message;
-      window.alert(errorMessage);
-  });
+    }).then(()=>{
+      if(qtyFlag == 1) window.alert("One or more items are over the limit of our stock")
+      else{
+        ordersRef.push({
+          Customer: firebase.auth().currentUser.uid,
+          Total: cartTotal,
+          Status: 'Pending',
+          payment: 'Cash',
+          orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
+        }).then((snap) => {
+          const key = snap.key;
+          for(let i = 0; i < cartItem.length; i++){
+            let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
+            let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
+            ordersRef.child(key+'/Products').update({
+              [cartItemName]: cartItemQuantity,
+            })
+          }  
+          while (cartItems.hasChildNodes()) {
+            cartItems.removeChild(cartItems.firstChild)
+          }
+          updateCartTotal()
+        }).catch(function(error){
+          // Handle Errors here.
+          let errorMessage = error.message;
+          window.alert(errorMessage);
+        });
+      }
+    })
+  }
 }
 
 function clearOrder(){
@@ -244,9 +344,7 @@ function removeCartItem(event) {
 
 function quantityChanged(event) {
   let input = event.target
-  if (isNaN(input.value) || input.value <= 0) {
-      input.value = 1
-  }
+  if (isNaN(input.value) || input.value <= 0) input.value = 1
   updateCartTotal()
 }
 
