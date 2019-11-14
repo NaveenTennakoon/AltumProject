@@ -50,6 +50,7 @@ function loadPaypal(){
     }
   }).render('#paypal-button-container');
 }
+
 function getProfile(){
   document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email;
   usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){

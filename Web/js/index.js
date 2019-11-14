@@ -1,4 +1,5 @@
 function login(){
+  modalLoading.init(true);
   let user = document.getElementById("Email").value;
   let pwd = document.getElementById("Password").value;
 
