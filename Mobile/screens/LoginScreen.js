@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import FB from '../components/FB';
 
@@ -11,32 +12,36 @@ export default class Login extends Component {
 			username : '',
       password : '',
       hidePassword: true,
+      spinner: false,
 		},
     global.username = '';
     global.pwd = '';
-	}
-
+  }
+  
 	login(){
 		const {navigate} = this.props.navigation;
 		let user = this.state.username;
 		let pwd = this.state.password;
-		FB.auth().signInWithEmailAndPassword(user, pwd).then(function(){
+		FB.auth().signInWithEmailAndPassword(user, pwd).then(() => {
 			let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
-			userdetails.on('value', function(snapshot) {
+			userdetails.on('value', (snapshot) => {
 				if (snapshot.val().type != 'salesperson'){
+          this.setState({spinner: false})
 					alert("This email is not registered to a Salesperson");
 				}
 				else{
           global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
           global.pwd = pwd;
-					alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
-					navigate('tNav');
+          alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
+          this.setState({spinner: false})
+          navigate('tNav');
 				}	
 			});
-		  }).catch(function(error){
+		  }).catch((error) => {
 			  // Handle Errors here.
-			  var errorMessage = error.message;
-			  window.alert(errorMessage);
+        var errorMessage = error.message;
+        this.setState({spinner: false})
+			  alert(errorMessage);
 		  });
   } 
   
@@ -49,42 +54,50 @@ export default class Login extends Component {
 	const {navigate} = this.props.navigation;
 	return (
 		<KeyboardAvoidingView behaviour="padding" style={styles.container}>
-				<Image style={styles.bgImage} source={{ uri: "https://cdn2.f-cdn.com/contestentries/68791/9261050/5337f7fab2996_thumb900.jpg" }}/>
-        <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('../img/logo.png')}/>
-        </View>
-				<View style={styles.inputContainer}>
-					<TextInput style={styles.inputs}
-						placeholder="Email"
-						keyboardType="email-address"
-						underlineColorAndroid='transparent'
-						autoCapitalize="none"
-						returnKeyType="next"
-						autoCorrect={false}
-						onSubmitEditing={() => this.passwordInput.focus()}
-						onChangeText={(username) => this.setState({username})}></TextInput>
-					<Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/email.png'}}/>
-				</View>       
-				<View style={styles.inputContainer}>
-					<TextInput style={styles.inputs}
-						placeholder="Password"
-						secureTextEntry={this.state.hidePassword}
-						underlineColorAndroid='transparent'
-						returnKeyType="go"
-						ref={(input) => this.passwordInput = input}
-						onChangeText={(password) => this.setState({password})}>
-          </TextInput>
-          <TouchableOpacity activeOpacity = { 0.8 } style = { styles.visibilityBtn } onPress = { this.managePasswordVisibility }>
-            <Image source = { ( this.state.hidePassword ) ? {uri: 'https://img.icons8.com/nolan/64/000000/sleepy-eyes.png'} : {uri: 'https://img.icons8.com/nolan/64/000000/visible.png'} } style = { styles.inputIcon } />
-          </TouchableOpacity>
-				</View>
-				<TouchableOpacity style={styles.btnForgotPassword} onPress={() => navigate('Reset')}>
-					<Text style={styles.fgtText}>Forgot your password?</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={()=>this.login()}>
-				  <Text style={styles.loginText}>Login</Text>
-				</TouchableOpacity>
-      </KeyboardAvoidingView>
+      <Spinner
+        visible={this.state.spinner}
+        textContent={'Loading...'}
+        textStyle={styles.spinnerTextStyle}
+      />
+      <Image style={styles.bgImage} source={{ uri: "https://cdn2.f-cdn.com/contestentries/68791/9261050/5337f7fab2996_thumb900.jpg" }}/>
+      <View style={styles.logoContainer}>
+        <Image style={styles.logo} source={require('../img/logo.png')}/>
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput style={styles.inputs}
+          placeholder="Email"
+          keyboardType="email-address"
+          underlineColorAndroid='transparent'
+          autoCapitalize="none"
+          returnKeyType="next"
+          autoCorrect={false}
+          onSubmitEditing={() => this.passwordInput.focus()}
+          onChangeText={(username) => this.setState({username})}></TextInput>
+        <Image style={styles.inputIcon} source={{uri: "https://img.icons8.com/nolan/64/000000/filled-message.png"}}/>
+      </View>       
+      <View style={styles.inputContainer}>
+        <TextInput style={styles.inputs}
+          placeholder="Password"
+          secureTextEntry={this.state.hidePassword}
+          underlineColorAndroid='transparent'
+          returnKeyType="go"
+          ref={(input) => this.passwordInput = input}
+          onChangeText={(password) => this.setState({password})}>
+        </TextInput>
+        <TouchableOpacity activeOpacity = { 0.8 } style = { styles.visibilityBtn } onPress = { this.managePasswordVisibility }>
+          <Image source = { ( this.state.hidePassword ) ? {uri: 'https://img.icons8.com/nolan/64/000000/sleepy-eyes.png'} : {uri: 'https://img.icons8.com/nolan/64/000000/visible.png'} } style = { styles.inputIcon } />
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity style={styles.btnForgotPassword} onPress={() => navigate('Reset')}>
+        <Text style={styles.fgtText}>Forgot your password?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={()=>{
+          this.setState({spinner: true});
+          this.login()
+        }}>
+        <Text style={styles.loginText}>Login</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
 	);
   }
 }
@@ -182,6 +195,9 @@ const styles = StyleSheet.create({
   fgtText:{
     color:"white",
 	  fontSize: 15,
-  }
+  },
+  spinnerTextStyle: {
+    color: '#FFF'
+  },
 }); 
 

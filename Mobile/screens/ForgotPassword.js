@@ -8,14 +8,14 @@ export default class Login extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			username : '',
+			fog_username : '',
 		}
 	}
 
 	reset(){
     const {navigate} = this.props.navigation;
-		let user = this.state.username;
-		FB.auth().sendPasswordResetEmail(user).then(function() {
+		let fog_user = this.state.fog_username;
+		FB.auth().sendPasswordResetEmail(fog_user).then(function() {
             // Email sent.
             alert("Link is successfully sent to your email address. Check your inbox");
             navigate('Login');
@@ -37,8 +37,8 @@ export default class Login extends Component {
 						placeholder="Email Address"
 						underlineColorAndroid='transparent'
 						returnKeyType="go"
-						onChangeText={(username) => this.setState({username})}></TextInput>
-					<Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}/>
+						onChangeText={(fog_username) => this.setState({fog_username})}></TextInput>
+					<Image style={styles.inputIcon} source={{uri: "https://img.icons8.com/nolan/64/000000/filled-message.png"}}/>
 				</View>
 				<TouchableOpacity style={[styles.buttonContainer, styles.resetButton]} onPress={()=>this.reset()}>
 				<Text style={styles.loginText}>Submit Request</Text>
