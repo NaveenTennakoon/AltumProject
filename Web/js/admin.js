@@ -15,40 +15,44 @@ function logout(){
 
 // new salesperson page functions
 function addSalesperson() {
-  if($("#password").val()==$("#cpassword").val()){
-    let email = $("#email").val();
-    let password = $("#password").val();
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.message,
+  $('#addSalespersonForm').submit(function(e){     
+    e.preventDefault(); 
+    if($("#password").val()==$("#cpassword").val()){
+      let email = $("#email").val();
+      let password = $("#password").val();
+      firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
+        usersRef.child(firebase.auth().currentUser.uid).set({
+          firstName: $("#fname").val(),
+          lastName: $("#lname").val(),
+          email: email,
+          telephone: $("#tel").val(),
+          address: $("#address").val(),
+          type: 'salesperson',
+        }).then(()=>{
+          Swal.fire({
+            position: 'top',
+            icon: 'success',
+            title: 'Salesperson added successfully',
+            showConfirmButton: false,
+            timer: 3000
+          })
+        })
+      }).catch(function(error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+        })
       })
-    }).then(()=>{
-      usersRef.child(firebase.auth().currentUser.uid).set({
-        firstName: $("#fname").val(),
-        lastName: $("#lname").val(),
-        email: email,
-        telephone: $("#tel").val(),
-        address: $("#address").val(),
-        type: 'salesperson',
-      });
-    });
-    Swal.fire({
-      position: 'top',
-      icon: 'success',
-      title: 'Salesperson added successfully',
-      showConfirmButton: false,
-      timer: 3000
-    })
-  }
-  else{
-    Swal.fire(
-      'Password fields do not match',
-      '',
-      'warning'
-    )
-  }
+    }
+    else{
+      Swal.fire(
+        'Password fields do not match',
+        '',
+        'warning'
+      )
+    }
+  });
 }
 
 // stock management page functions
@@ -174,17 +178,32 @@ function viewItemClicked(event) {
   let title = shopItem.getElementsByClassName('shop-item-title')[0].innerText
   inventoryRef.child(title).once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
-      document.getElementById("item-body").insertAdjacentHTML(
-        'beforeend',
-        "<div class='form-row my-3 mx-5'>"+
-          "<div class=''>"+
-            "<input class='form-control' id='key"+itemNo+"' value='"+childSnapshot.key+"' readonly>"+
-          "</div>"+
-          "<div class='col-lg-8'>"+
-            "<input class='form-control' id='value"+itemNo+"' value='"+childSnapshot.val()+"'>"+
-          "</div>"+
-        "</div>"
-      );
+      if(childSnapshot.key == 'Price'){
+        document.getElementById("item-body").insertAdjacentHTML(
+          'beforeend',
+          "<div class='form-row my-3 mx-5'>"+
+            "<div class=''>"+
+              "<input class='form-control' id='key"+itemNo+"' value='"+childSnapshot.key+"' readonly>"+
+            "</div>"+
+            "<div class='col-lg-7'>"+
+              "<input class='form-control' id='value"+itemNo+"' value='"+childSnapshot.val()+"'required type='number' step='0.01' min='0'>"+
+            "</div>"+
+          "</div>"
+        );
+      }
+      else{
+        document.getElementById("item-body").insertAdjacentHTML(
+          'beforeend',
+          "<div class='form-row my-3 mx-5'>"+
+            "<div class=''>"+
+              "<input class='form-control' id='key"+itemNo+"' value='"+childSnapshot.key+"' readonly>"+
+            "</div>"+
+            "<div class='col-lg-7'>"+
+              "<input class='form-control' id='value"+itemNo+"' value='"+childSnapshot.val()+"'required>"+
+            "</div>"+
+          "</div>"
+        );
+      }
       itemNo++;
     });
   });
@@ -198,21 +217,25 @@ function clearViewModal(){
 }
 
 function update(){
-  let title = document.getElementById('item-title').innerText;
-  while(itemNo>0){
-    itemNo--;
-    inventoryRef.child(title).update({
-      [$("#key"+itemNo).val()]: $("#value"+itemNo).val(),
+  $('#editItemForm').submit(function(e){     
+    e.preventDefault(); 
+    let title = document.getElementById('item-title').innerText;
+    while(itemNo>0){
+      itemNo--;
+      inventoryRef.child(title).update({
+        [$("#key"+itemNo).val()]: $("#value"+itemNo).val(),
+      });
+    }
+    clearViewModal();
+    $('#viewModal').modal('hide');
+    Swal.fire({
+      position: 'top',
+      icon: 'success',
+      title: 'Product updated successfully',
+      showConfirmButton: false,
+      timer: 3000
     });
-  }
-  clearViewModal();
-  Swal.fire({
-    position: 'top',
-    icon: 'success',
-    title: 'Product updated successfully',
-    showConfirmButton: false,
-    timer: 3000
-  })
+  });
 }
 
 // add new item page functions
@@ -251,6 +274,13 @@ function typesnapshotToArray() {
   });
   autocomplete(document.getElementById("defaultval3"), typeArr);
 };
+
+function validateNewItem(){
+  $('#addItemForm').submit(function(e){     
+    e.preventDefault(); 
+    $('#promptModal').modal('show');
+  });
+}
 
 function addInput(divName){
   counter++;
@@ -719,23 +749,20 @@ function placeMarker(position, map) {
 }
 
 function signup(){
-  // Get input values from each of the form elements
-  let company = $("#company").val();
-  let telephone = $("#tel").val();
-  let email = $("#email").val();
-  let name = $("#name").val();
-  let pwd = $("#password").val();
-  let address = $("#address").val();
+  $('#signupForm').submit(function(e){     
+    e.preventDefault(); 
+    modalLoading.init(true);    
+    // Get input values from each of the form elements
+    let company = $("#company").val();
+    let telephone = $("#tel").val();
+    let email = $("#email").val();
+    let name = $("#name").val();
+    let pwd = $("#password").val();
+    let address = $("#address").val();
 
-  if(pwd == $("#cpassword").val()){
-    firebase.auth().createUserWithEmailAndPassword(email, pwd).catch(function(error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.message,
-      })
-    }).then(()=>{
-      // Push the new customer to the database using those values
+    if(pwd == $("#cpassword").val()){
+      firebase.auth().createUserWithEmailAndPassword(email, pwd).then(()=>{
+        // Push the new customer to the database using those values
         usersRef.child(firebase.auth().currentUser.uid).set({
           company: company,
           telephone: telephone,
@@ -753,16 +780,27 @@ function signup(){
           showConfirmButton: false,
           timer: 3000
         })
-      location.href='cus_dashboard.html'
-    });
-  }
-  else{
-    Swal.fire(
-      'Password Mismatch',
-      '',
-      'error'
-    )
-  }
+        location.href='cus_dashboard.html'
+      }).catch(function(error){
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+        });
+        let element = document.getElementById("openModalLoading");
+        element.parentNode.removeChild(element);
+      });
+    }
+    else{
+      Swal.fire(
+        'Password Mismatch',
+        '',
+        'error'
+      )
+      let element = document.getElementById("openModalLoading");
+      element.parentNode.removeChild(element);
+    }
+  });
 }
 
 // track now page functions
