@@ -33,6 +33,13 @@ function logout(){
 function signout(){
   usersRef.child(firebase.auth().currentUser.uid).remove().then(() => {
     firebase.auth().currentUser.delete().then(() => {
+      Swal.fire({
+        position: 'top',
+        icon: 'success',
+        title: 'Thank you for staying with us. See you again',
+        showConfirmButton: false,
+        timer: 3000
+      });
       location.href = 'index.html';
     }).catch(function(error){
       Swal.fire({
