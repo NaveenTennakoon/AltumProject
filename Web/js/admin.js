@@ -82,13 +82,15 @@ function loadProducts(){
       document.getElementById("product-items").insertAdjacentHTML(
         'beforeend',
         "<div class='shop-item'>"+
-          "<b>Unique ID: </b>"+
-          "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
-          "<b class='ml-5'>Product ID: </b>"+childSnapshot.val().ID+
+          "<b class='d-none'>Unique ID: </b>"+
+          "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
+          "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
           "<div class='shop-item-details'>"+
-            "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+            "<div class='form-row'>"+
+              "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
+            "</div>"+
             "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
-          "</div>"+
+            "</div>"+
         "</div>"
       );
     });
@@ -118,11 +120,13 @@ function filterbyType(type){
         document.getElementById("product-items").insertAdjacentHTML(
           'beforeend',
           "<div class='shop-item'>"+
-            "<b>Unique ID: </b>"+
-            "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
-            "<b class='ml-5'>Product ID: </b>"+childSnapshot.val().ID+
+            "<b class='d-none'>Unique ID: </b>"+
+            "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
+            "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
             "<div class='shop-item-details'>"+
-              "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+              "<div class='form-row'>"+
+                "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
+              "</div>"+
               "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
             "</div>"+
           "</div>"
@@ -143,11 +147,13 @@ function filterbyType(type){
           document.getElementById("product-items").insertAdjacentHTML(
             'beforeend',
             "<div class='shop-item'>"+
-              "<b>Unique ID: </b>"+
-              "<span class='shop-item-title'>"+childSnapshot.key+"</span>"+
-              "<b class='ml-5'>Product ID: </b>"+childSnapshot.val().ID+
+              "<b class='d-none'>Unique ID: </b>"+
+              "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
+              "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
               "<div class='shop-item-details'>"+
-                "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+                "<div class='form-row'>"+
+                  "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
+                "</div>"+
                 "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
               "</div>"+
             "</div>"
@@ -191,6 +197,22 @@ function viewItemClicked(event) {
           "</div>"
         );
       }
+      else if(childSnapshot.key == 'Quantity'){
+        document.getElementById("item-body").insertAdjacentHTML(
+          'beforeend',
+          "<div class='form-row my-3 mx-5'>"+
+            "<div class=''>"+
+              "<input class='form-control' id='key"+itemNo+"' value='"+childSnapshot.key+"' readonly>"+
+            "</div>"+
+            "<div class='col-lg-7'>"+
+              "<input class='form-control' id='value"+itemNo+"' value='"+childSnapshot.val()+"'required type='number' min='0'>"+
+            "</div>"+
+          "</div>"
+        );
+      }
+      else if(childSnapshot.key == 'ID'){
+
+      }
       else{
         document.getElementById("item-body").insertAdjacentHTML(
           'beforeend',
@@ -207,7 +229,7 @@ function viewItemClicked(event) {
       itemNo++;
     });
   });
-  document.getElementById("item-title").innerHTML = title;
+  document.getElementById("item-title").innerHTML = shopItem.getElementsByClassName('shop-item-id')[0].innerText;
   $('#viewModal').modal({backdrop: 'static', keyboard: false});
   $('#viewModal').modal('show');
 }
@@ -511,6 +533,37 @@ function spDetails(){
   })
 }
 
+function deleteSp(){
+  let sp = document.getElementById("salesperson-search").value;
+  if(sp == ''){
+    Swal.fire(
+      'No salesperson selected',
+      '',
+      'info'
+    )
+  }
+  else{
+    usersRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        let tempName = childSnapshot.val().firstName+" "+childSnapshot.val().lastName
+        if(tempName == sp){
+          usersRef.child(childSnapshot.key).update({
+            status: 'inactive'
+          }).then(()=>{
+            Swal.fire({
+              position: 'top',
+              icon: 'success',
+              title: 'Salesperson successfully deleted',
+              showConfirmButton: false,
+              timer: 3000
+            })
+          })
+        }
+      });
+    });
+  }
+}
+
 // customer profiles page functions
 function customerkeysnapshotToArray() {
   let customerArr = [];
@@ -552,6 +605,36 @@ function customerDetails(){
       text: error.message,
     })
   })
+}
+
+function deleteCustomer(){
+  let sp = document.getElementById("customer-search").value;
+  if(sp == ''){
+    Swal.fire(
+      'No customer selected',
+      '',
+      'info'
+    )
+  }
+  else{
+    usersRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        if(childSnapshot.val().name == sp){
+          usersRef.child(childSnapshot.key).update({
+            status: 'inactive'
+          }).then(()=>{
+            Swal.fire({
+              position: 'top',
+              icon: 'success',
+              title: 'Customer successfully deleted',
+              showConfirmButton: false,
+              timer: 3000
+            })
+          })
+        }
+      });
+    });
+  }
 }
 
 // Orders page functions
@@ -771,7 +854,8 @@ function signup(){
           address: address,
           type: 'customer',
           longitude: lng,
-          latitude: lat
+          latitude: lat,
+          status: 'active'
         });
         Swal.fire({
           position: 'top',
@@ -779,7 +863,7 @@ function signup(){
           title: 'You have successfully signed into Altum',
           showConfirmButton: false,
           timer: 3000
-        })
+        });
         location.href='cus_dashboard.html'
       }).catch(function(error){
         Swal.fire({
