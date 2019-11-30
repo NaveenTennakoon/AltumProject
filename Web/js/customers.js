@@ -324,9 +324,7 @@ function purchaseClicked() {
         let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
         let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
         snapshot.forEach(function(childSnapshot){
-          if(childSnapshot.val().ID == cartItemName){
-            if(childSnapshot.val().Quantity < cartItemQuantity) qtyFlag = 1;
-          }
+          if((childSnapshot.val().ID === cartItemName) && parseInt(childSnapshot.val().Quantity) < cartItemQuantity) qtyFlag = 1;
         })
       }
     }).then(()=>{
@@ -345,6 +343,13 @@ function purchaseClicked() {
           payment: 'Cash',
           orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
         }).then((snap) => {
+          Swal.fire({
+            position: 'top',
+            icon: 'success',
+            title: 'Order Submitted successfully',
+            showConfirmButton: false,
+            timer: 3000
+          })
           const key = snap.key;
           for(let i = 0; i < cartItem.length; i++){
             let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
@@ -474,27 +479,34 @@ function loadOrders(){
         snapshot.forEach(function(childSnapshot){
           if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
             if(childSnapshot.val().Status == 'Pending'){
-              document.getElementById("pending").insertAdjacentHTML(
-                'beforeend',
-                "<p><b>Order ID</b></p>"+
-                "<p class='ml-4'>"+childSnapshot.key+"</p>"+
-                "<p><b>Total Price</b></p>"+
-                "<p class='ml-4'>"+childSnapshot.val().Total+"</p><br/>"
-              );
+              
               ordersRef.child(childSnapshot.key+"/Products").once("value").then(function(ccSnapshot){
+                document.getElementById("pending").insertAdjacentHTML(
+                  'beforeend',
+                  "<div class='form-row'>"+
+                    "<p><b class='col-lg-3'>Order ID: </b>"+childSnapshot.key+"</p>"+
+                  "</div>"+
+                  "<div class='form-row'>"+
+                    "<p><b class='col-lg-3'>Total Price: </b>"+childSnapshot.val().Total+"</p>"+
+                  "</div>"
+                );
                 ccSnapshot.forEach(function(products){
                   document.getElementById("pending").insertAdjacentHTML(
                     'beforeend',
                     "<p><a class='mx-3'>"+products.key+": </a>"+products.val()+"</p>"
                   );
-                })
-              })
+                });
+                document.getElementById("pending").insertAdjacentHTML(
+                  'beforeend',
+                  "<hr/>"
+                );
+              });
             }
             else if(childSnapshot.val().Status == 'Completed'){
               document.getElementById("completed").insertAdjacentHTML(
                 'beforeend',
                 "<div class='view-item'>"+
-                  "<b>Product ID: </b>"+
+                  "<b>Order ID: </b>"+
                   "<span class='view-item-title'>"+childSnapshot.key+"</span>"+
                   "<div class='view-item-details'>"+
                     "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/>"+
@@ -546,7 +558,7 @@ function ordersnapshotToArray() {
   ordersRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
           if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
-              if(childSnapshot.val().Status == 'Completed'){
+              if(childSnapshot.val().Status == 'Completed' && !childSnapshot.val().Feedback){
                   let item = childSnapshot.key;
                   orderArr.push(item);
               }
@@ -602,6 +614,17 @@ function view(){
 function clearViewOrderModal(){
   document.getElementById("order_content").innerHTML = '';
 }
+
+function starRating() {
+	var starRating1 = raterJs( {
+		starSize:32, 
+		element:document.querySelector("#rater"), 
+		rateCallback:function rateCallback(rating, done) {
+			this.setRating(rating); 
+			done(); 
+		}
+	}); 
+} 
 
 function submitFeedback() {
     let dropdown = document.getElementById("order_id");

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, PermissionsAndroid, AsyncStorage, Alert, Image, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, PermissionsAndroid, AsyncStorage, Alert, Image, Text, Platform, ToastAndroid } from "react-native";
 import SettingsList from 'react-native-settings-list';
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation, { clearWatch, stopObserving } from 'react-native-geolocation-service';
 import Dialog from "react-native-dialog";
 
 import FB from '../components/FB'
@@ -15,7 +15,7 @@ export default class SettingsScreen extends Component {
       switchValue: false,
       lat: 0,
       lng: 0,
-      timer: 0,
+      updatesEnabled: false,
       dialogVisible: false,
       pwd: '',
       newPwd: '',
@@ -128,62 +128,77 @@ export default class SettingsScreen extends Component {
     );
   }
 
-  onStart = () => {
-    this.state.timer = setInterval(() => {
-      Geolocation.getCurrentPosition(
+  hasLocationPermission = async () => {
+    if (Platform.OS === 'ios' ||
+        (Platform.OS === 'android' && Platform.Version < 23)) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+
+    if (hasPermission) return true;
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) return true;
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
+    }
+
+    return false;
+  }
+
+  getLocationUpdates = async () => {
+    const hasLocationPermission = await this.hasLocationPermission();
+    if (!hasLocationPermission) return;
+    this.setState({ updatesEnabled: true }, () => {
+      global.location = 'on';
+      this.watchId = Geolocation.watchPosition(
         (position) => {
+          this.setState({ lat: position.coords.latitude, lng: position.coords.longitude, });
           FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             status: 'active'
           });
-          this.setState({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-          global.location = "on";
         },
-        error => alert(error.message),
-        {
-          enableHighAccuracy: true,
-          timeout: 20000,
-          maximumAge: 1000,
-          distanceFilter: 1
-        }
+        (error) => {
+          this.setState({ location: error });
+          console.log(error);
+        },
+        { enableHighAccuracy: true, distanceFilter: 0, interval: 5000, fastestInterval: 2000 }
       );
-    }, 5000);
+    });
   }
 
-  onStop = () => {
-    FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
-      status: 'inactive'
-    });
-    clearInterval(this.state.timer);
-    global.location = "off";
+  removeLocationUpdates = () => {
+      if (this.watchId !== null) {
+          Geolocation.clearWatch(this.watchId);
+          global.location = 'off';
+          this.setState({ updatesEnabled: false })
+          FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
+            status: 'inactive'
+          });
+      }
   }
 
   onValueChange = (value) => {
     this.setState({switchValue: value});
     if(!this.state.switchValue) {
-      async function requestLocationPermission() {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-                'title': 'Location Access Required',
-                'message': 'This App needs to Access your location'
-            }
-        );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            alert("Location services are now active");
-          }
-        } catch (err) {
-          alert(err)
-        }
-      }
-      requestLocationPermission();
-      this.onStart();
+      ToastAndroid.show('Location services are now active', ToastAndroid.LONG);
+      this.getLocationUpdates();
     }
-    else this.onStop();
+    else {
+      ToastAndroid.show('GPS Tracking deactivated', ToastAndroid.LONG);
+      this.removeLocationUpdates();
+    }
   }
 
 }

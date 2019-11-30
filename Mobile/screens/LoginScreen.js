@@ -30,11 +30,17 @@ export default class Login extends Component {
 					alert("This email is not registered to a Salesperson");
 				}
 				else{
-          global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
-          global.pwd = pwd;
-          alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
-          this.setState({spinner: false})
-          navigate('tNav');
+          if(snapshot.val().status == 'active'){
+            global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
+            global.pwd = pwd;
+            alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
+            this.setState({spinner: false})
+            navigate('tNav');
+          }
+          else{
+            this.setState({spinner: false})
+            alert("This account has been deactivated by Altum")
+          }
 				}	
 			});
 		  }).catch((error) => {

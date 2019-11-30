@@ -211,7 +211,7 @@ function viewItemClicked(event) {
         );
       }
       else if(childSnapshot.key == 'ID'){
-
+        itemNo--;
       }
       else{
         document.getElementById("item-body").insertAdjacentHTML(
@@ -229,6 +229,7 @@ function viewItemClicked(event) {
       itemNo++;
     });
   });
+  document.getElementById("item-id").innerHTML = title;
   document.getElementById("item-title").innerHTML = shopItem.getElementsByClassName('shop-item-id')[0].innerText;
   $('#viewModal').modal({backdrop: 'static', keyboard: false});
   $('#viewModal').modal('show');
@@ -241,7 +242,7 @@ function clearViewModal(){
 function update(){
   $('#editItemForm').submit(function(e){     
     e.preventDefault(); 
-    let title = document.getElementById('item-title').innerText;
+    let title = document.getElementById('item-id').innerText;
     while(itemNo>0){
       itemNo--;
       inventoryRef.child(title).update({
@@ -495,7 +496,7 @@ function spkeysnapshotToArray() {
   usersRef.once("value").then(function(snapshot){
   // <!-- snapshot of childs of root of database-->
     snapshot.forEach(function(childSnapshot) {
-      if(childSnapshot.val().type == 'salesperson'){
+      if(childSnapshot.val().type == 'salesperson' && childSnapshot.val().status == 'active'){
         let item = childSnapshot.val().firstName+" "+childSnapshot.val().lastName;
         spArr.push(item); 
       }
@@ -543,24 +544,35 @@ function deleteSp(){
     )
   }
   else{
-    usersRef.once("value").then(function(snapshot){
-      snapshot.forEach(function(childSnapshot){
-        let tempName = childSnapshot.val().firstName+" "+childSnapshot.val().lastName
-        if(tempName == sp){
-          usersRef.child(childSnapshot.key).update({
-            status: 'inactive'
-          }).then(()=>{
-            Swal.fire({
-              position: 'top',
-              icon: 'success',
-              title: 'Salesperson successfully deleted',
-              showConfirmButton: false,
-              timer: 3000
-            })
-          })
-        }
-      });
-    });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete!'
+    }).then((result) => {
+      if (result.value) {
+        usersRef.once("value").then(function(snapshot){
+          snapshot.forEach(function(childSnapshot){
+            if(childSnapshot.val().name == sp){
+              usersRef.child(childSnapshot.key).update({
+                status: 'inactive'
+              }).then(()=>{
+                Swal.fire({
+                  position: 'top',
+                  icon: 'success',
+                  title: 'Salesperson successfully deleted',
+                  showConfirmButton: false,
+                  timer: 3000
+                })
+              })
+            }
+          });
+        });
+      }
+    })
   }
 }
 
@@ -570,7 +582,7 @@ function customerkeysnapshotToArray() {
   usersRef.once("value").then(function(snapshot){
   // <!-- snapshot of childs of root of database-->
     snapshot.forEach(function(childSnapshot) {
-      if(childSnapshot.val().type == 'customer'){
+      if(childSnapshot.val().type == 'customer' && childSnapshot.val().status == 'active'){
         let item = childSnapshot.val().name;
         customerArr.push(item); 
       }
@@ -617,23 +629,35 @@ function deleteCustomer(){
     )
   }
   else{
-    usersRef.once("value").then(function(snapshot){
-      snapshot.forEach(function(childSnapshot){
-        if(childSnapshot.val().name == sp){
-          usersRef.child(childSnapshot.key).update({
-            status: 'inactive'
-          }).then(()=>{
-            Swal.fire({
-              position: 'top',
-              icon: 'success',
-              title: 'Customer successfully deleted',
-              showConfirmButton: false,
-              timer: 3000
-            })
-          })
-        }
-      });
-    });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete!'
+    }).then((result) => {
+      if (result.value) {
+        usersRef.once("value").then(function(snapshot){
+          snapshot.forEach(function(childSnapshot){
+            if(childSnapshot.val().name == sp){
+              usersRef.child(childSnapshot.key).update({
+                status: 'inactive'
+              }).then(()=>{
+                Swal.fire({
+                  position: 'top',
+                  icon: 'success',
+                  title: 'Customer successfully deleted',
+                  showConfirmButton: false,
+                  timer: 3000
+                })
+              })
+            }
+          });
+        });
+      }
+    })
   }
 }
 
@@ -767,8 +791,13 @@ function assign(){
           }
         })
       });
-      
-      window.alert("Order Has been assigned and the stock has been updated");
+      Swal.fire({
+        position: 'top',
+        icon: 'success',
+        title: 'You have successfully assigned the order',
+        showConfirmButton: false,
+        timer: 3000
+      });
       loadOrders();
     })
   })
