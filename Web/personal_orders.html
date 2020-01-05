@@ -62,8 +62,8 @@
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
-      <li class="nav-item mt-5">
-        <a class="nav-link text-center" aria-expanded="true" type="button" data-toggle="modal" data-target="#signoutModal">
+      <li class="nav-item mt-5 pt-5">
+        <a class="nav-link text-center btn btn-danger mt-5" aria-expanded="true" type="button" data-toggle="modal" data-target="#signoutModal">
           <i class="fas fa-user"></i>
           <span class="font-weight-bold">Delete Account</span>
         </a>
@@ -99,12 +99,12 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item text-dark btn" onclick="getProfile()">
+                <a class="dropdown-item text-dark btn" type="button" onclick="getProfile()">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                <a class="dropdown-item bg-secondary text-white font-weight-bold" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-white-600"></i>
                   Logout
                 </a>
               </div>

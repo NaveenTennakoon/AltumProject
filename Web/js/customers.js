@@ -1,4 +1,4 @@
-// global funcitons for customer pages
+// global functions for customer pages
 function userid(){
   firebase.auth().onAuthStateChanged(function(user){
     if(user){
@@ -31,7 +31,9 @@ function logout(){
 }
 
 function signout(){
-  usersRef.child(firebase.auth().currentUser.uid).remove().then(() => {
+  usersRef.child(firebase.auth().currentUser.uid).update({
+    status: "inactive",
+  }).then(() => {
     firebase.auth().currentUser.delete().then(() => {
       Swal.fire({
         position: 'top',
@@ -432,7 +434,11 @@ function addItemToCart(title, price) {
   let cartItemNames = cartItems.getElementsByClassName('cart-item-title')
   for (let i = 0; i < cartItemNames.length; i++) {
       if (cartItemNames[i].innerText == title) {
-          alert('This item is already added to the cart')
+          Swal.fire(
+            'Item is already in the cart',
+            '',
+            'warning'
+            )
           return
       }
   }
