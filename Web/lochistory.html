@@ -193,7 +193,6 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-
           <div class="row">
             <!-- Locations Table -->
             <div class="col-xl-12 col-lg-7">
@@ -211,6 +210,7 @@
                       </div>
                     </div>
                   </form>
+                  <button class='btn btn-primary float-right' type='button' onclick="viewAllLocations()">View all locations</button>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body overflow-auto" style="height:500px">
@@ -273,13 +273,7 @@
   <!-- Location Modal-->
   <div class="modal fade" id="locationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog h-100" role="document">
-      <div class="modal-content h-75">
-        <div class="modal-header">
-          <h5 class="modal-title" id="location-modal-title"></h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
+      <div class="modal-content h-75" style="width: 900px">
         <div class="location-modal-body h-100">
           <div id="map" class="h-100"></div>
         </div>
