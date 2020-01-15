@@ -73,7 +73,7 @@ export default class SettingsScreen extends Component {
             icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/purchase-order.png"}}/>}
             title='Orders'
             titleInfo='Record a transaction'
-            onPress={() => alert('Route To Control Center Page')}
+            onPress={() => navigate('Home')}
           />
           <SettingsList.Header headerStyle={{marginTop:15}}/>
 

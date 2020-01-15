@@ -41,7 +41,7 @@ export default class Login extends Component {
 					<Image style={styles.inputIcon} source={{uri: "https://img.icons8.com/nolan/64/000000/filled-message.png"}}/>
 				</View>
 				<TouchableOpacity style={[styles.buttonContainer, styles.resetButton]} onPress={()=>this.reset()}>
-				<Text style={styles.loginText}>Submit Request</Text>
+				  <Text style={styles.loginText}>Submit Request</Text>
 				</TouchableOpacity>
                 <TouchableOpacity style={styles.btnRevert} onPress={() => navigate('Login')}>
 					<Text style={styles.btnText}>back to Login</Text>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor:'transparent'
   },
   resetButton: {
-    backgroundColor: "#00b5ec",
+    backgroundColor: "#000000",
 
     shadowColor: "#808080",
     shadowOffset: {
@@ -125,6 +125,8 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
   },
   bgImage:{
     flex: 1,

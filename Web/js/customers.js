@@ -540,7 +540,7 @@ function loadOrders(){
                   "<span class='view-item-title'>"+childSnapshot.key+"</span>"+
                   "<div class='view-item-details'>"+
                     "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/>"+
-                        "<button class='btn btn-primary view-item-button float-right' type='button'>View Products</button><hr class='mt-5'/>"+
+                      "<button class='btn btn-primary view-item-button float-right' type='button'>View Products</button><hr class='mt-5'/>"+
                     "</div>"+
                 "</div>"
               );

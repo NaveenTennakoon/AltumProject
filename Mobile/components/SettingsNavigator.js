@@ -5,6 +5,7 @@ import EditScreen from "../screens/EditScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import Locations from "../screens/Locations";
 import Profile from "../screens/ProfileScreen";
+import HomeScreen from "../screens/HomeScreen";
 
 const SettingsNavigator = createStackNavigator(
   {
@@ -12,6 +13,7 @@ const SettingsNavigator = createStackNavigator(
   Edit: {screen: EditScreen, navigationOptions: {header: null,}},
   Locations: {screen: Locations, navigationOptions: {header: null,}},
   Profile: {screen: Profile, navigationOptions: {header: null,}},
+  Home: {screen: HomeScreen, navigationOptions: {header: null}},
   },
   {
     initialRouteName: 'Settings',
