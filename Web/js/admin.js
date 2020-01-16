@@ -742,7 +742,8 @@ function loadOrders(){
           'beforeend',
           "<div class='view-order'>"+
             "<b>Order ID: </b>"+
-            "<span class='view-order-title'>"+childSnapshot.key+"</span>"+
+            "<span class='view-order-title' style='display: none'>"+childSnapshot.key+"</span>"+
+            "<span class='view-order-id'>"+childSnapshot.val().orderId+"</span>"+
             "<div class='view-order-details'>"+
               "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/></br/>"+
               "<button class='btn btn-primary view-order-button float-right ml-3' type='button'>Assign</button>"+
@@ -775,6 +776,7 @@ function viewOrderClicked(event) {
   let button = event.target
   let shopItem = button.parentElement.parentElement
   let title = shopItem.getElementsByClassName('view-order-title')[0].innerText
+  let uid = shopItem.getElementsByClassName('view-order-id')[0].innerText
   ordersRef.child(title+"/Products").once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
       let tempKey = childSnapshot.key;
@@ -815,7 +817,7 @@ function viewOrderClicked(event) {
       text: error.message,
     })
   });
-  document.getElementById("order-title").innerHTML = title;
+  document.getElementById("order-title").innerHTML = uid;
   $('#viewOrderModal').modal({backdrop: 'static', keyboard: false});
   $('#viewOrderModal').modal('show')
 }
@@ -824,16 +826,28 @@ function rejectOrderClicked(){
   let button = event.target
   let shopItem = button.parentElement.parentElement
   let title = shopItem.getElementsByClassName('view-order-title')[0].innerText
-  ordersRef.child(title).update({
-    Status: 'Cancelled'
-  }).then(()=>{
-    Swal.fire(
-      'Order Has been Rejected',
-      '',
-      'error'
-    )
-    loadOrders();
-  })
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You are trying to reject an order!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete!'
+  }).then((result) => {
+    if (result.value) {
+      ordersRef.child(title).update({
+        Status: 'Cancelled'
+      }).then(()=>{
+        Swal.fire(
+          'Order Has been Rejected',
+          '',
+          'error'
+        )
+        loadOrders();
+      })
+    }
+  });
 }
 
 function assign(){

@@ -362,12 +362,15 @@ function purchaseClicked() {
         )
       }
       else{
+        let str = firebase.auth().currentUser.uid+date.getTime();
+        let hash = str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0)
         ordersRef.push({
           Customer: firebase.auth().currentUser.uid,
           Total: cartTotal,
           Status: 'Pending',
           payment: 'Cash',
           orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
+          orderId: hash,
         }).then((snap) => {
           Swal.fire({
             position: 'top',
@@ -514,7 +517,7 @@ function loadOrders(){
                 document.getElementById("pending").insertAdjacentHTML(
                   'beforeend',
                   "<div class='form-row'>"+
-                    "<p><b class='col-lg-3'>Order ID: </b>"+childSnapshot.key+"</p>"+
+                    "<p><b class='col-lg-3'>Order ID: </b>"+childSnapshot.val().orderId+"</p>"+
                   "</div>"+
                   "<div class='form-row'>"+
                     "<p><b class='col-lg-3'>Total Price: </b>"+childSnapshot.val().Total+"</p>"+
@@ -537,7 +540,8 @@ function loadOrders(){
                 'beforeend',
                 "<div class='view-item'>"+
                   "<b>Order ID: </b>"+
-                  "<span class='view-item-title'>"+childSnapshot.key+"</span>"+
+                  "<span class='view-item-title' style='display: none'>"+childSnapshot.key+"</span>"+
+                  "<span class='view-item-id'>"+childSnapshot.val().orderId+"</span>"+
                   "<div class='view-item-details'>"+
                     "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/>"+
                       "<button class='btn btn-primary view-item-button float-right' type='button'>View Products</button><hr class='mt-5'/>"+
@@ -565,6 +569,7 @@ function viewOrderItemClicked(event){
   let button = event.target
   let order = button.parentElement.parentElement
   let title = order.getElementsByClassName('view-item-title')[0].innerText
+  let id = order.getElementsByClassName('view-item-id')[0].innerText
   ordersRef.child(title+"/Products").once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
           document.getElementById("order-body").insertAdjacentHTML(
@@ -573,7 +578,7 @@ function viewOrderItemClicked(event){
           );
       });
   });
-  document.getElementById("order-title").innerHTML = title;
+  document.getElementById("order-title").innerHTML = id;
   $('#viewModal').modal({backdrop: 'static', keyboard: false});
   $('#viewModal').modal('show')
 }
@@ -585,19 +590,23 @@ function clearOrderViewModal(){
 // Feedback page functions
 function ordersnapshotToArray() {
   let orderArr = [];
+  let keyArr = [];
+  document.getElementById("order_id").innerHTML = '';
   ordersRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
           if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
               if(childSnapshot.val().Status == 'Completed' && !childSnapshot.val().Feedback){
-                  let item = childSnapshot.key;
+                  let item = childSnapshot.val().orderId;
+                  let key = childSnapshot.key;
                   orderArr.push(item);
+                  keyArr.push(key);
               }
           }
       });
       for(let i = 0; i < orderArr.length; i++){
           document.getElementById("order_id").insertAdjacentHTML(
               'beforeend',
-              "<option>"+orderArr[i]+"</option>"
+              "<option value="+keyArr[i]+">"+orderArr[i]+"</option>"
           );
       }
   }).catch(function(error){
@@ -615,7 +624,7 @@ function view(){
     let productArr = [];
     let quantityArr = [];
     let dropdown = document.getElementById("order_id");
-    let selected = dropdown.options[dropdown.selectedIndex].text;
+    let selected = dropdown.options[dropdown.selectedIndex].value;
     ordersRef.child(selected+"/Products").once("value").then(function(snapshot){
         snapshot.forEach(function(childSnapshot){
             productArr.push(childSnapshot.key);
@@ -645,21 +654,29 @@ function clearViewOrderModal(){
   document.getElementById("order_content").innerHTML = '';
 }
 
-function starRating() {
-	var starRating1 = raterJs( {
-		starSize:32, 
-		element:document.querySelector("#rater"), 
-		rateCallback:function rateCallback(rating, done) {
-			this.setRating(rating); 
-			done(); 
-		}
-	}); 
-} 
+// function starRating() {
+// 	var starRating1 = raterJs( {
+// 		starSize:32, 
+// 		element:document.querySelector("#rater"), 
+// 		rateCallback:function rateCallback(rating, done) {
+// 			this.setRating(rating); 
+// 			done(); 
+// 		}
+// 	}); 
+// } 
 
 function submitFeedback() {
     let dropdown = document.getElementById("order_id");
-    let selected = dropdown.options[dropdown.selectedIndex].text;
+    let selected = dropdown.options[dropdown.selectedIndex].value;
     let Feedback = document.getElementById("cus_feedback").value;
+    if(Feedback == ''){
+      Swal.fire(
+        'Feedback is empty',
+        '',
+        'warning'
+        )
+      return
+    }
     ordersRef.child(selected).update({
         Feedback: Feedback
     }).then(() => {
@@ -670,6 +687,8 @@ function submitFeedback() {
         showConfirmButton: false,
         timer: 3000
       })
+      document.getElementById("cus_feedback").value = '';
+      ordersnapshotToArray();
     }).catch(function(error){
         // Handle Errors here.
         Swal.fire({
