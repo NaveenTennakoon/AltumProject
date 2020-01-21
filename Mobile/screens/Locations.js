@@ -37,7 +37,14 @@ export default class Locations extends Component {
 
     fitToMarkersToMap() {
         const {markers} = this.state;
-        this.map.fitToSuppliedMarkers(markers.map(marker => marker.id), true);
+        this.map.fitToSuppliedMarkers(markers.map(marker => marker.id), { edgePadding: 
+            {
+                top: 100,
+                right: 120,
+                bottom: 140,
+                left: 120
+            }
+          });
     }
     
     render(){

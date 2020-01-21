@@ -1,7 +1,7 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
+Chart.defaults.global.defaultFontColor = '#858796'
 
-let selling = {};
+let selling = {}
 ordersRef.once("value").then(function(snapshot){
   snapshot.forEach(function(childSnapshot){
     for(let key in Object.keys(childSnapshot.val().Products)){
@@ -12,24 +12,24 @@ ordersRef.once("value").then(function(snapshot){
     }
   })
 }).then(()=>{
-  let sellKeys = [];
+  let sellKeys = []
   for(let key in selling) { 
-    sellKeys[sellKeys.length] = key;
+    sellKeys[sellKeys.length] = key
   }
-  let sellValues = [];     
+  let sellValues = []     
   for(let i = 0; i < sellKeys.length; i++) {
-    sellValues[sellValues.length] = selling[sellKeys [i]];
+    sellValues[sellValues.length] = selling[sellKeys [i]]
   }
-  let sortedValues = sellValues.sort(sortNumber);
-  document.getElementById("best1").innerText = " "+sellKeys[0];
-  document.getElementById("best2").innerText = " "+sellKeys[1];
-  document.getElementById("best3").innerText = " "+sellKeys[2];
+  let sortedValues = sellValues.sort(sortNumber)
+  document.getElementById("best1").innerText = " "+sellKeys[0]
+  document.getElementById("best2").innerText = " "+sellKeys[1]
+  document.getElementById("best3").innerText = " "+sellKeys[2]
 
   function sortNumber(a,b) {
-    return b - a;
+    return b - a
   }
 
-  let ctp = document.getElementById("myPieChart");
+  let ctp = document.getElementById("myPieChart")
   let myPieChart = new Chart(ctp, {
     type: 'doughnut',
     data: {
@@ -58,5 +58,5 @@ ordersRef.once("value").then(function(snapshot){
       },
       cutoutPercentage: 80,
     },
-  });
-});
+  })
+})

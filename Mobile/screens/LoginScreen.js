@@ -12,10 +12,18 @@ export default class Login extends Component {
 			username : '',
       password : '',
       hidePassword: true,
-      spinner: false,
+      spinner: true,
 		},
     global.username = '';
     global.pwd = '';
+  }
+
+  async componentDidMount() {
+    let user = FB.auth().currentUser;
+      if (user)
+        this.updateDetails(); 
+      else
+        this.setState({spinner: false});
   }
   
 	login(){
@@ -23,26 +31,7 @@ export default class Login extends Component {
 		let user = this.state.username;
 		let pwd = this.state.password;
 		FB.auth().signInWithEmailAndPassword(user, pwd).then(() => {
-			let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
-			userdetails.on('value', (snapshot) => {
-				if (snapshot.val().type != 'salesperson'){
-          this.setState({spinner: false})
-					alert("This email is not registered to a Salesperson");
-				}
-				else{
-          if(snapshot.val().status == 'active'){
-            global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
-            global.pwd = pwd;
-            alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
-            this.setState({spinner: false})
-            navigate('tNav');
-          }
-          else{
-            this.setState({spinner: false})
-            alert("This account has been deactivated by Altum")
-          }
-				}	
-			});
+      this.updateDetails(); 
 		  }).catch((error) => {
 			  // Handle Errors here.
         var errorMessage = error.message;
@@ -50,6 +39,29 @@ export default class Login extends Component {
 			  alert(errorMessage);
 		  });
   } 
+
+  updateDetails() {
+    let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
+    userdetails.on('value', (snapshot) => {
+      if (snapshot.val().type != 'salesperson'){
+        this.setState({spinner: false})
+        alert("This email is not registered to a Salesperson");
+      }
+      else{
+        if(snapshot.val().status == 'active'){
+          global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
+          global.pwd = pwd;
+          alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
+          this.setState({spinner: false})
+          this.props.navigation.navigate('tNav');
+        }
+        else{
+          this.setState({spinner: false})
+          alert("This account has been deactivated by Altum")
+        }
+      }	
+    });
+  }
   
   managePasswordVisibility = () =>
   {

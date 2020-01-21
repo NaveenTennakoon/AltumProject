@@ -3,23 +3,23 @@ function userid(){
   firebase.auth().onAuthStateChanged(function(user){
     if(user){
       usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
-        let uid = snapshot.val().name;
-        document.getElementById("uid").innerHTML = uid; 
+        let uid = snapshot.val().name
+        document.getElementById("uid").innerHTML = uid 
       }).catch(function(error){
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: error.message,
         })
-      });
+      })
     }
-  });
+  })
 }
 
 function logout(){
   firebase.auth().signOut().then(function(){
     // Sign-out successful.
-    location.href = "index.html";
+    location.href = "index.html"
   }).catch(function(error) {
     // An error happened.
     Swal.fire({
@@ -27,11 +27,11 @@ function logout(){
       title: 'Oops...',
       text: error.message,
     })
-  });
+  })
 }
 
 async function signout(){
-  $('#signoutModal').modal('hide');
+  $('#signoutModal').modal('hide')
   const { value: formValues } = await Swal.fire({
     title: 'Re-Authenticate user credentials',
     html:
@@ -40,11 +40,11 @@ async function signout(){
     focusConfirm: false,
   }) 
   if (formValues) {
-    let user = firebase.auth().currentUser;
+    let user = firebase.auth().currentUser
     let credential = firebase.auth.EmailAuthProvider.credential(
       document.getElementById('swalEmail').value,
       document.getElementById('swalPassword').value
-    );
+    )
     // Prompt the user to re-provide their sign-in credentials
     user.reauthenticateWithCredential(credential).then(function() {
       usersRef.child(firebase.auth().currentUser.uid).update({
@@ -57,8 +57,8 @@ async function signout(){
             title: 'Thank you for staying with us. See you again',
             showConfirmButton: false,
             timer: 3000
-          });
-          location.href = 'index.html';
+          })
+          location.href = 'index.html'
         }).catch(function(error){
           Swal.fire({
             icon: 'error',
@@ -66,14 +66,14 @@ async function signout(){
             text: error.message,
           })
         })
-      });
+      })
     }).catch(function(error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: error.message,
       })
-    });
+    })
   }
 }
 
@@ -81,8 +81,8 @@ async function signout(){
 function loadPaypal(){
   paypal.Buttons({
     createOrder: function(data, actions) {
-      let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText;
-      console.log(cartTotal);
+      let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText
+      console.log(cartTotal)
       // Set up the transaction
       return actions.order.create({
         purchase_units: [{
@@ -90,13 +90,13 @@ function loadPaypal(){
             value: cartTotal
           }
         }]
-      });
+      })
     }
-  }).render('#paypal-button-container');
+  }).render('#paypal-button-container')
 }
 
 function getProfile(){
-  document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email;
+  document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email
   usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
     document.getElementById("view-profile-body").insertAdjacentHTML(
       'beforeend',
@@ -132,15 +132,15 @@ function getProfile(){
           "<textarea class='form-control' id='name' readonly>"+snapshot.val().address+"</textarea>"+
         "</div>"+
       "</div>"
-    );
-  });
-  $('#viewProfileModal').modal({backdrop: 'static', keyboard: false});
+    )
+  })
+  $('#viewProfileModal').modal({backdrop: 'static', keyboard: false})
   $('#viewProfileModal').modal('show')
 }
 
 function populateEditModal(){
-  document.getElementById("view-profile-body").innerHTML = '';
-  document.getElementById("edit-profile-title").innerText = firebase.auth().currentUser.email;
+  document.getElementById("view-profile-body").innerHTML = ''
+  document.getElementById("edit-profile-title").innerText = firebase.auth().currentUser.email
   usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
     document.getElementById("edit-profile-body").insertAdjacentHTML(
       'beforeend',
@@ -176,14 +176,14 @@ function populateEditModal(){
           "<textarea class='form-control' id='address'>"+snapshot.val().address+"</textarea>"+
         "</div>"+
       "</div>"
-    );
-  });
-  $('#editProfileModal').modal({backdrop: 'static', keyboard: false});
+    )
+  })
+  $('#editProfileModal').modal({backdrop: 'static', keyboard: false})
   $('#editProfileModal').modal('show')
 }
 
 function filterbyType(type){
-  document.getElementById("product-items").innerHTML = '';
+  document.getElementById("product-items").innerHTML = ''
   if(type == 'all'){
     inventoryRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
@@ -198,15 +198,15 @@ function filterbyType(type){
               "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
             "</div>"+
           "</div>"
-        );
-      });
+        )
+      })
       if (document.readyState == 'loading'){
         document.addEventListener('DOMContentLoaded', ready)
       } 
       else{
         populateProducts()
       }
-    });
+    })
   }
   else{
     inventoryRef.once("value").then(function(snapshot){
@@ -223,16 +223,16 @@ function filterbyType(type){
                 "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
               "</div>"+
             "</div>"
-          );
+          )
         }
-      });
+      })
       if (document.readyState == 'loading'){
         document.addEventListener('DOMContentLoaded', ready)
       } 
       else{
         populateProducts()
       }
-    });
+    })
   }
 }
 
@@ -257,28 +257,28 @@ function updateProfile(){
         title: 'Oops...',
         text: error.message,
       })
-  });
+  })
 }
 
 function loadProducts(){
-  let typesArr = [];
+  let typesArr = []
   inventoryRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
       if(typesArr.length == 0){
-        let item = childSnapshot.val().Type;
-        typesArr.push(item);
+        let item = childSnapshot.val().Type
+        typesArr.push(item)
       }
       else{
-        let flag = i = 0;
+        let flag = i = 0
         while(i<typesArr.length){
           if(childSnapshot.val().Type == typesArr[i]){
-            flag = 1;
+            flag = 1
           }
-          i++;
+          i++
         }
         if(flag == 0){
-          let item = childSnapshot.val().Type;
-          typesArr.push(item);
+          let item = childSnapshot.val().Type
+          typesArr.push(item)
         }
       }
       document.getElementById("product-items").insertAdjacentHTML(
@@ -292,8 +292,8 @@ function loadProducts(){
             "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
           "</div>"+
         "</div>"
-      );
-    });
+      )
+    })
     populateProducts()
   }).then(()=>{
     let x = 0
@@ -301,10 +301,10 @@ function loadProducts(){
       document.getElementById("product-type").insertAdjacentHTML(
         'beforeend',
         "<a class='dropdown-item' type='button' onclick='filterbyType(\""+typesArr[x]+"\")'>"+typesArr[x]+"</a>"
-      );
-      x++;
+      )
+      x++
     }
-  });
+  })
 }
 
 function populateProducts() {
@@ -318,12 +318,12 @@ function populateProducts() {
       let input = quantityInputs[i]
       input.addEventListener('change', quantityChanged)
   }
-  let addToCartButtons = document.getElementsByClassName('shop-item-button');
+  let addToCartButtons = document.getElementsByClassName('shop-item-button')
   for (let i = 0; i < addToCartButtons.length; i++) {
       let button = addToCartButtons[i]
       button.addEventListener('click', addToCartClicked)
   }
-  let viewItemButtons = document.getElementsByClassName('view-item-button');
+  let viewItemButtons = document.getElementsByClassName('view-item-button')
   for (let i = 0; i < viewItemButtons.length; i++) {
       let button = viewItemButtons[i]
       button.addEventListener('click', viewItemClicked)
@@ -343,14 +343,14 @@ function purchaseClicked() {
   }
   else{
     let cartItems = document.getElementsByClassName('cart-items')[0]
-    let date = new Date();
-    let qtyFlag = 0;
+    let date = new Date()
+    let qtyFlag = 0
     inventoryRef.once("value").then(function(snapshot){
       for(let i = 0; i < cartItem.length; i++){
         let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
         let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
         snapshot.forEach(function(childSnapshot){
-          if((childSnapshot.val().ID === cartItemName) && parseInt(childSnapshot.val().Quantity) < cartItemQuantity) qtyFlag = 1;
+          if((childSnapshot.val().ID === cartItemName) && parseInt(childSnapshot.val().Quantity) < cartItemQuantity) qtyFlag = 1
         })
       }
     }).then(()=>{
@@ -362,7 +362,7 @@ function purchaseClicked() {
         )
       }
       else{
-        let str = firebase.auth().currentUser.uid+date.getTime();
+        let str = firebase.auth().currentUser.uid+date.getTime()
         let hash = str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0)
         ordersRef.push({
           Customer: firebase.auth().currentUser.uid,
@@ -379,7 +379,7 @@ function purchaseClicked() {
             showConfirmButton: false,
             timer: 3000
           })
-          const key = snap.key;
+          const key = snap.key
           for(let i = 0; i < cartItem.length; i++){
             let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
             let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
@@ -398,7 +398,7 @@ function purchaseClicked() {
             title: 'Oops...',
             text: error.message,
           })
-        });
+        })
       }
     })
   }
@@ -435,13 +435,13 @@ function viewItemClicked(event) {
           document.getElementById("item-body").insertAdjacentHTML(
             'beforeend',
             "<p><b>"+ccSnapshot.key+"</b>: "+ccSnapshot.val()+"</p>"
-          );
+          )
         })
       }
-    });
-  });
-  document.getElementById("item-title").innerHTML = title;
-  $('#viewProductModal').modal({backdrop: 'static', keyboard: false});
+    })
+  })
+  document.getElementById("item-title").innerHTML = title
+  $('#viewProductModal').modal({backdrop: 'static', keyboard: false})
   $('#viewProductModal').modal('show')
 }
 
@@ -501,7 +501,7 @@ function updateCartTotal() {
 }
 
 function clearViewModal(){
-  document.getElementById("item-body").innerHTML = '';
+  document.getElementById("item-body").innerHTML = ''
 }
 
 // Personal Orders page functions
@@ -522,18 +522,18 @@ function loadOrders(){
                   "<div class='form-row'>"+
                     "<p><b class='col-lg-3'>Total Price: </b>"+childSnapshot.val().Total+"</p>"+
                   "</div>"
-                );
+                )
                 ccSnapshot.forEach(function(products){
                   document.getElementById("pending").insertAdjacentHTML(
                     'beforeend',
                     "<p><a class='mx-3'>"+products.key+": </a>"+products.val()+"</p>"
-                  );
-                });
+                  )
+                })
                 document.getElementById("pending").insertAdjacentHTML(
                   'beforeend',
                   "<hr/>"
-                );
-              });
+                )
+              })
             }
             else if(childSnapshot.val().Status == 'Completed'){
               document.getElementById("completed").insertAdjacentHTML(
@@ -547,18 +547,18 @@ function loadOrders(){
                       "<button class='btn btn-primary view-item-button float-right' type='button'>View Products</button><hr class='mt-5'/>"+
                     "</div>"+
                 "</div>"
-              );
-              ready();
+              )
+              ready()
             }
           }
-        });
-      });
+        })
+      })
     }
-  });
+  })
 }
 
 function ready(){
-  let viewItemButtons = document.getElementsByClassName('view-item-button');
+  let viewItemButtons = document.getElementsByClassName('view-item-button')
   for (let i = 0; i < viewItemButtons.length; i++) {
       let button = viewItemButtons[i]
       button.addEventListener('click', viewOrderItemClicked)
@@ -575,39 +575,39 @@ function viewOrderItemClicked(event){
           document.getElementById("order-body").insertAdjacentHTML(
               'beforeend',
               "<p><b>Product ID: </b>"+childSnapshot.key+"<b class='ml-4'>Items: </b>"+childSnapshot.val()+"</p>"
-          );
-      });
-  });
-  document.getElementById("order-title").innerHTML = id;
-  $('#viewModal').modal({backdrop: 'static', keyboard: false});
+          )
+      })
+  })
+  document.getElementById("order-title").innerHTML = id
+  $('#viewModal').modal({backdrop: 'static', keyboard: false})
   $('#viewModal').modal('show')
 }
 
 function clearOrderViewModal(){
-  document.getElementById("order-body").innerHTML = '';
+  document.getElementById("order-body").innerHTML = ''
 }
 
 // Feedback page functions
 function ordersnapshotToArray() {
-  let orderArr = [];
-  let keyArr = [];
-  document.getElementById("order_id").innerHTML = '';
+  let orderArr = []
+  let keyArr = []
+  document.getElementById("order_id").innerHTML = ''
   ordersRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
           if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
               if(childSnapshot.val().Status == 'Completed' && !childSnapshot.val().Feedback){
-                  let item = childSnapshot.val().orderId;
-                  let key = childSnapshot.key;
-                  orderArr.push(item);
-                  keyArr.push(key);
+                  let item = childSnapshot.val().orderId
+                  let key = childSnapshot.key
+                  orderArr.push(item)
+                  keyArr.push(key)
               }
           }
-      });
+      })
       for(let i = 0; i < orderArr.length; i++){
           document.getElementById("order_id").insertAdjacentHTML(
               'beforeend',
               "<option value="+keyArr[i]+">"+orderArr[i]+"</option>"
-          );
+          )
       }
   }).catch(function(error){
       // Handle Errors here.
@@ -616,20 +616,20 @@ function ordersnapshotToArray() {
         title: 'Oops...',
         text: error.message,
       })
-  });
-  return orderArr;
-};
+  })
+  return orderArr
+}
 
 function view(){
-    let productArr = [];
-    let quantityArr = [];
-    let dropdown = document.getElementById("order_id");
-    let selected = dropdown.options[dropdown.selectedIndex].value;
+    let productArr = []
+    let quantityArr = []
+    let dropdown = document.getElementById("order_id")
+    let selected = dropdown.options[dropdown.selectedIndex].value
     ordersRef.child(selected+"/Products").once("value").then(function(snapshot){
         snapshot.forEach(function(childSnapshot){
-            productArr.push(childSnapshot.key);
-            quantityArr.push(childSnapshot.val());
-        });
+            productArr.push(childSnapshot.key)
+            quantityArr.push(childSnapshot.val())
+        })
     }).then(() => {
         for(let i = 0; i < productArr.length; i++){
             inventoryRef.once("value").then(function(snapshot){
@@ -640,18 +640,18 @@ function view(){
                     "<p>Name : "+childSnapshot.val().Name+"</p>"+
                     "<p>Product ID : "+childSnapshot.val().ID+"</p>"+
                     "<b>Quantity : "+quantityArr[i]+"</b><hr/>"
-                );
+                )
                 }
               })
-            });
+            })
         }
-        $('#viewfbModal').modal({backdrop: 'static', keyboard: false});
+        $('#viewfbModal').modal({backdrop: 'static', keyboard: false})
         $('#viewfbModal').modal('show')
     })
 }
 
 function clearViewOrderModal(){
-  document.getElementById("order_content").innerHTML = '';
+  document.getElementById("order_content").innerHTML = ''
 }
 
 // function starRating() {
@@ -659,16 +659,16 @@ function clearViewOrderModal(){
 // 		starSize:32, 
 // 		element:document.querySelector("#rater"), 
 // 		rateCallback:function rateCallback(rating, done) {
-// 			this.setRating(rating); 
-// 			done(); 
+// 			this.setRating(rating) 
+// 			done() 
 // 		}
-// 	}); 
+// 	}) 
 // } 
 
 function submitFeedback() {
-    let dropdown = document.getElementById("order_id");
-    let selected = dropdown.options[dropdown.selectedIndex].value;
-    let Feedback = document.getElementById("cus_feedback").value;
+    let dropdown = document.getElementById("order_id")
+    let selected = dropdown.options[dropdown.selectedIndex].value
+    let Feedback = document.getElementById("cus_feedback").value
     if(Feedback == ''){
       Swal.fire(
         'Feedback is empty',
@@ -687,8 +687,8 @@ function submitFeedback() {
         showConfirmButton: false,
         timer: 3000
       })
-      document.getElementById("cus_feedback").value = '';
-      ordersnapshotToArray();
+      document.getElementById("cus_feedback").value = ''
+      ordersnapshotToArray()
     }).catch(function(error){
         // Handle Errors here.
         Swal.fire({
@@ -696,7 +696,7 @@ function submitFeedback() {
           title: 'Oops...',
           text: error.message,
         })
-    });
+    })
 }
   
 

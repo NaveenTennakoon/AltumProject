@@ -54,9 +54,7 @@ export default class SettingsScreen extends Component {
       <View style={styles.container}>
         <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
           <SettingsList.Item
-            icon={
-              <Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/24/000000/worldwide-location--v1.png"}}/>
-            }
+            icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/24/000000/worldwide-location--v1.png"}}/>}
             hasSwitch={true}
             
             switchState={this.state.switchValue}
@@ -73,7 +71,7 @@ export default class SettingsScreen extends Component {
             icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/purchase-order.png"}}/>}
             title='Orders'
             titleInfo='Record a transaction'
-            onPress={() => navigate('Home')}
+            onPress={() => navigate('Home') }
           />
           <SettingsList.Header headerStyle={{marginTop:15}}/>
 
@@ -82,12 +80,6 @@ export default class SettingsScreen extends Component {
             title='Change Password'
             onPress={() => this.showDialog()}
           /> 
-          <SettingsList.Item
-            icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/user--v1.png"}}/>}
-            title='Profile'
-            titleInfo='Edit Info'
-            onPress={() => navigate('Edit')}
-          />
           <SettingsList.Header headerStyle={{marginTop:15}}/>
           <SettingsList.Item
             icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/64/000000/exit.png"}}/>}

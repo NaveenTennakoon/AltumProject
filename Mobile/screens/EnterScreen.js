@@ -30,6 +30,11 @@ export default class EnterScreen extends Component {
         alert("All fields are required");
       }
       else{
+        let now = new Date()
+        let nowstamp = now.getFullYear()+(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds()
+        let timestamp = now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()
+        let str = firebase.auth().currentUser.uid+date.getTime()
+        let hash = str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0)
         Geolocation.getCurrentPosition(
           position => {
             FB.database().ref("tracking/locations/").push({
@@ -39,6 +44,9 @@ export default class EnterScreen extends Component {
               customer: this.state.customer_name,
               address : this.state.address,
               salesperson: FB.auth().currentUser.uid,
+              dateString: nowstamp,
+              timestamp: timestamp,
+              id: hash,
             });
             Alert.alert("Success", "Location entered successfully");
             this.setState({

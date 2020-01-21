@@ -1,30 +1,35 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import Dialog from "react-native-dialog";
 
 import FB from '../components/FB';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-let tempItems = [];
-let tempProducts = [];
-let date = new Date();
-
 export default class ProfileScreen extends Component {
 
     constructor(props){
-		super(props)
-		this.state = {
-      items: [],
-      dialogVisible: false,
-      selectedID: '',
-      selectedProducts: [],
-      pwd: '',
-		},
+      super(props)
+
+      this.state = {
+        items: [],
+        dialogVisible: false,
+        selectedID: '',
+        selectedCustomer: '',
+        selectedProducts: [],
+        pwd: '',
+        avatarSource: 'empty',
+      },
       global.firstname = '';
       global.lastname = '';
     }
     
-    componentDidMount(){
+    async componentDidMount(){
+      let tempItems = [];
+      let tempProducts = [];
+      let date = new Date();
+      const ref = FB.storage().ref('profilePics/'+FB.auth().currentUser.uid)
+      const url = await ref.getDownloadURL()
+      this.setState({ avatarSource: url })
       let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
       userdetails.on('value', function(snapshot) {
         if (snapshot.val().type != 'salesperson'){
@@ -38,14 +43,11 @@ export default class ProfileScreen extends Component {
         
       FB.database().ref("orders").once('value', function(snapshot) {
         snapshot.forEach(function (childSnapshot){
-          let user;
           if (childSnapshot.val().salesperson == FB.auth().currentUser.uid && childSnapshot.val().Status == 'Assigned') {
-            FB.database().ref("users/"+childSnapshot.val().Customer).once('value', function(userSnap){
-              user = userSnap.val().name;
-            }) 
             tempItems.push({
               id: childSnapshot.key,
-              customer: user,
+              orderId: childSnapshot.val().orderId,
+              customer: childSnapshot.val().Customer,
               total: childSnapshot.val().Total,
               orderDate: childSnapshot.val().orderDate,
             });
@@ -65,19 +67,23 @@ export default class ProfileScreen extends Component {
       );
     };
 
-    showDialog = (id) => {
+    showDialog = (id, customer) => {
       this.setState({ dialogVisible: true, selectedID: id});
-      tempProducts = [];
+      let name;
+      FB.database().ref('users/'+customer).once('value', function(userSnap){
+        name = userSnap.val().company;
+      });
       FB.database().ref('orders/'+id+"/Products").once('value', function(snapshot){
         snapshot.forEach(function(childSnapshot){
+          tempProducts = [];
           tempProducts.push({
             id: childSnapshot.key,
             amount: childSnapshot.val(),
           });
         });
       }).then(() => {
-        this.setState({ selectedProducts: tempProducts });
-      });
+          this.setState({ selectedCustomer: name, selectedProducts: tempProducts });
+        })
     };
    
     handleCancel = () => {
@@ -90,6 +96,22 @@ export default class ProfileScreen extends Component {
           Status: 'Completed',
           paymentDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
         }).then(() => {
+          FB.database().ref("orders").once('value', function(snapshot) {
+            snapshot.forEach(function (childSnapshot){
+              if (childSnapshot.val().salesperson == FB.auth().currentUser.uid && childSnapshot.val().Status == 'Assigned') {
+                tempItems = [];
+                tempItems.push({
+                  id: childSnapshot.key,
+                  orderId: childSnapshot.val().orderId,
+                  customer: childSnapshot.val().Customer,
+                  total: childSnapshot.val().Total,
+                  orderDate: childSnapshot.val().orderDate,
+                });
+              }
+            });
+          }).then(() => {
+            this.setState({ items: tempItems });
+          });
           alert("Correct Password. Transaction completed successfully")
         }).catch(function(error){
           // Handle Errors here.
@@ -106,7 +128,7 @@ export default class ProfileScreen extends Component {
       return (
       <View style={styles.container}>
         <View style={styles.header}>
-        <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
+        <Image style={styles.avatar} source={{uri: this.state.avatarSource}}/>
         <Text style={styles.name}>{global.username}</Text>
           <Text style={styles.info}>Salesperson</Text>
         </View>
@@ -120,7 +142,7 @@ export default class ProfileScreen extends Component {
               <View style={styles.itemContainer}>
                 <Text
                   style={styles.item}>
-                  {item.id}
+                  ORDER NO : {item.orderId}
                 </Text>
                 <View
                   style={{
@@ -129,11 +151,10 @@ export default class ProfileScreen extends Component {
                     marginBottom: 15,
                   }}
                 />
-                <Text style={styles.itemText}>Customer : {item.customer}</Text>
                 <Text style={styles.itemText}>Order Date :  {item.orderDate}</Text>
-                <Text style={styles.itemText}>Total :           {item.total}</Text>
+                <Text style={styles.itemText}>Total          :  {item.total}</Text>
               </View>
-              <TouchableOpacity style={styles.btnContainer} onPress={() => this.showDialog(item.id)}>
+              <TouchableOpacity style={styles.btnContainer} onPress={() => this.showDialog(item.id, item.customer)}>
                 <Text style={styles.btnText}>Complete This Order</Text>
               </TouchableOpacity>
             </View>
@@ -143,9 +164,9 @@ export default class ProfileScreen extends Component {
         />
         <View>
           <Dialog.Container visible={this.state.dialogVisible}>
-                <Dialog.Title style={styles.popupHead}>{this.state.selectedID}</Dialog.Title>
+            <Dialog.Title style={styles.popupHead}>Customer: {this.state.selectedCustomer}</Dialog.Title>
             <Dialog.Description>
-              Click Save after the completion of delivery and payment of the below products
+              Click Save after the completion of delivery and payment of the listed products
             </Dialog.Description>
             {
               this.state.selectedProducts.map((item, index) => (
@@ -237,7 +258,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000000",
     marginHorizontal: 10,
-    height: 170,
+    height: 150,
     borderTopEndRadius: 6,
     borderTopStartRadius: 6,
     justifyContent: 'center',
@@ -245,7 +266,7 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 10,
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
     color: "#aaaaaa",
   },
@@ -253,7 +274,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     fontSize: 18,
     fontWeight: '700',
-    marginBottom: 5,
+    marginBottom: 8,
   },
   btnContainer: {
     backgroundColor: "#000000",
@@ -292,5 +313,18 @@ const styles = StyleSheet.create({
     marginTop: 15,
     borderBottomWidth: 1,
     borderColor: "#009988",
+  },
+  customerHead:{
+    margin: 10,
+    marginBottom: 0,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  customerName:{
+    paddingTop: 0,
+    padding: 12,
+    fontSize: 22,
+    fontWeight: '700',
+    color: "#aaaaaa",
   },
 });
