@@ -12,12 +12,13 @@
   <title>Altum - Stock</title>
 
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
   <link href="css/styles.min.css" rel="stylesheet">
 
 </head>
 
-<body id="page-top">
+<body id="page-top" onload="reportsLoad()">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -194,16 +195,51 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <!-- Page Heading -->
-                <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+            <div class="mb-4">
             </div>
 
           <div class="row">
 
-            <div class="col-lg-10" id="maincon">
-
+            <div class="col-lg-12" id="maincon">
+              <h4>Product details</h4>
+              <button onclick="generatePdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+              <table class="table display" id="reports-product-table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-product-body"></tbody>
+              </table>
+              <h4 class="mt-5">Customer details</h4>
+              <button onclick="generatePdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+              <table class="table display" id="reports-product-table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-product-body"></tbody>
+              </table>
+              <h4 class="mt-5">Salesperson details</h4>
+              <button onclick="generatePdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+              <table class="table display" id="reports-product-table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-product-body"></tbody>
+              </table>
             </div>
           </div>
 
@@ -255,14 +291,19 @@
 
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script type="text/javascript" src="js/datatables.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
   <script src="js/fbconf.js"></script>
   <script src="js/search.js"></script>
   <script src="js/inventory.js"></script>
-  <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script src="https://unpkg.com/jspdf-autotable"></script>
   <script src="js/altum.min.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/jspdf.js"></script>
+
 </body>
 
 </html>

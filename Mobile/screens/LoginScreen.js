@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import FB from '../components/FB';
 
@@ -9,68 +10,112 @@ export default class Login extends Component {
 		super(props)
 		this.state = {
 			username : '',
-			password : '',
+      password : '',
+      hidePassword: true,
+      spinner: true,
 		},
-		global.username = '';
-	}
+    global.username = '';
+    global.pwd = '';
+  }
 
+  async componentDidMount() {
+    let user = FB.auth().currentUser;
+      if (user)
+        this.updateDetails(); 
+      else
+        this.setState({spinner: false});
+  }
+  
 	login(){
 		const {navigate} = this.props.navigation;
 		let user = this.state.username;
 		let pwd = this.state.password;
-		FB.auth().signInWithEmailAndPassword(user, pwd).then(function(){
-			let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
-			userdetails.on('value', function(snapshot) {
-				if (snapshot.val().type != 'salesperson'){
-					alert("This email is not registered to a Salesperson");
-				}
-				else{
-					global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
-					alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
-					navigate('tNav');
-				}	
-			});
-		  }).catch(function(error){
+		FB.auth().signInWithEmailAndPassword(user, pwd).then(() => {
+      this.updateDetails(); 
+		  }).catch((error) => {
 			  // Handle Errors here.
-			  var errorMessage = error.message;
-			  window.alert(errorMessage);
+        var errorMessage = error.message;
+        this.setState({spinner: false})
+			  alert(errorMessage);
 		  });
-	} 
+  } 
+
+  updateDetails() {
+    let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
+    userdetails.on('value', (snapshot) => {
+      if (snapshot.val().type != 'salesperson'){
+        this.setState({spinner: false})
+        alert("This email is not registered to a Salesperson");
+      }
+      else{
+        if(snapshot.val().status == 'active'){
+          global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
+          global.pwd = pwd;
+          alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
+          this.setState({spinner: false})
+          this.props.navigation.navigate('tNav');
+        }
+        else{
+          this.setState({spinner: false})
+          alert("This account has been deactivated by Altum")
+        }
+      }	
+    });
+  }
+  
+  managePasswordVisibility = () =>
+  {
+    this.setState({ hidePassword: !this.state.hidePassword });
+  }
 
   render() {
 	const {navigate} = this.props.navigation;
 	return (
 		<KeyboardAvoidingView behaviour="padding" style={styles.container}>
-				<Image style={styles.bgImage} source={{ uri: "https://lorempixel.com/900/1400/nightlife/2/" }}/>
-				<View style={styles.inputContainer}>
-					<TextInput style={styles.inputs}
-						placeholder="Email"
-						keyboardType="email-address"
-						underlineColorAndroid='transparent'
-						autoCapitalize="none"
-						returnKeyType="next"
-						autoCorrect={false}
-						onSubmitEditing={() => this.passwordInput.focus()}
-						onChangeText={(username) => this.setState({username})}></TextInput>
-					<Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/email.png'}}/>
-				</View>       
-				<View style={styles.inputContainer}>
-					<TextInput style={styles.inputs}
-						placeholder="Password"
-						secureTextEntry={true}
-						underlineColorAndroid='transparent'
-						returnKeyType="go"
-						ref={(input) => this.passwordInput = input}
-						onChangeText={(password) => this.setState({password})}></TextInput>
-					<Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}/>
-				</View>
-				<TouchableOpacity style={styles.btnForgotPassword} onPress={() => navigate('Reset')}>
-					<Text style={styles.btnText}>Forgot your password?</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={()=>this.login()}>
-				<Text style={styles.loginText}>Login</Text>
-				</TouchableOpacity>
-      	</KeyboardAvoidingView>
+      <Spinner
+        visible={this.state.spinner}
+        textContent={'Loading...'}
+        textStyle={styles.spinnerTextStyle}
+      />
+      <Image style={styles.bgImage} source={{ uri: "https://cdn2.f-cdn.com/contestentries/68791/9261050/5337f7fab2996_thumb900.jpg" }}/>
+      <View style={styles.logoContainer}>
+        <Image style={styles.logo} source={require('../img/logo.png')}/>
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput style={styles.inputs}
+          placeholder="Email"
+          keyboardType="email-address"
+          underlineColorAndroid='transparent'
+          autoCapitalize="none"
+          returnKeyType="next"
+          autoCorrect={false}
+          onSubmitEditing={() => this.passwordInput.focus()}
+          onChangeText={(username) => this.setState({username})}></TextInput>
+        <Image style={styles.inputIcon} source={{uri: "https://img.icons8.com/nolan/64/000000/filled-message.png"}}/>
+      </View>       
+      <View style={styles.inputContainer}>
+        <TextInput style={styles.inputs}
+          placeholder="Password"
+          secureTextEntry={this.state.hidePassword}
+          underlineColorAndroid='transparent'
+          returnKeyType="go"
+          ref={(input) => this.passwordInput = input}
+          onChangeText={(password) => this.setState({password})}>
+        </TextInput>
+        <TouchableOpacity activeOpacity = { 0.8 } style = { styles.visibilityBtn } onPress = { this.managePasswordVisibility }>
+          <Image source = { ( this.state.hidePassword ) ? {uri: 'https://img.icons8.com/nolan/64/000000/sleepy-eyes.png'} : {uri: 'https://img.icons8.com/nolan/64/000000/visible.png'} } style = { styles.inputIcon } />
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity style={styles.btnForgotPassword} onPress={() => navigate('Reset')}>
+        <Text style={styles.fgtText}>Forgot your password?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={()=>{
+          this.setState({spinner: true});
+          this.login()
+        }}>
+        <Text style={styles.loginText}>Login</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
 	);
   }
 }
@@ -82,14 +127,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#DCDCDC',
   },
+  logoContainer:{
+    justifyContent: 'center',
+    marginBottom: 120,
+  },
+  logo:{
+    width: 200,
+    height: 120,
+  },
   inputContainer: {
-    borderBottomColor: '#F5FCFF',
     backgroundColor: '#FFFFFF',
     borderRadius:30,
-    borderBottomWidth: 1,
     width:340,
     height:50,
-    marginBottom:20,
+    marginBottom:25,
     flexDirection: 'row',
     alignItems:'center',
 
@@ -116,7 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   buttonContainer: {
-    height:45,
+    height:50,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -135,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor:'transparent'
   },
   loginButton: {
-    backgroundColor: "#00b5ec",
+    backgroundColor: "#000000",
 
     shadowColor: "#808080",
     shadowOffset: {
@@ -149,6 +200,8 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
   },
   bgImage:{
     flex: 1,
@@ -157,9 +210,12 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
   },
-  btnText:{
+  fgtText:{
     color:"white",
-	fontSize: 15,
-  }
+	  fontSize: 15,
+  },
+  spinnerTextStyle: {
+    color: '#FFF'
+  },
 }); 
 

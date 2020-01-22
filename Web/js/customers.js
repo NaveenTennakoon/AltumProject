@@ -1,41 +1,85 @@
-// global funcitons for customer pages
+// global functions for customer pages
 function userid(){
   firebase.auth().onAuthStateChanged(function(user){
     if(user){
       usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
-        let uid = snapshot.val().name;
-        document.getElementById("uid").innerHTML = uid; 
+        let uid = snapshot.val().name
+        document.getElementById("uid").innerHTML = uid 
       }).catch(function(error){
-        window.alert(error.message);
-      });
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+        })
+      })
     }
-  });
+  })
 }
 
 function logout(){
   firebase.auth().signOut().then(function(){
     // Sign-out successful.
-    location.href = "index.html";
+    location.href = "index.html"
   }).catch(function(error) {
     // An error happened.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
-  });
-}
-
-function signout(){
-  usersRef.child(firebase.auth().currentUser.uid).remove().then(() => {
-    firebase.auth().currentUser.delete().then(() => {
-      location.href = 'index.html';
-    }).catch(function(error){
-      window.alert(error.message);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
     })
   })
 }
 
+async function signout(){
+  $('#signoutModal').modal('hide')
+  const { value: formValues } = await Swal.fire({
+    title: 'Re-Authenticate user credentials',
+    html:
+      '<input id="swalEmail" class="swal2-input" placeholder="Email address">' +
+      '<input id="swalPassword" class="swal2-input" placeholder="Password" type="password">',
+    focusConfirm: false,
+  }) 
+  if (formValues) {
+    let user = firebase.auth().currentUser
+    let credential = firebase.auth.EmailAuthProvider.credential(
+      document.getElementById('swalEmail').value,
+      document.getElementById('swalPassword').value
+    )
+    // Prompt the user to re-provide their sign-in credentials
+    user.reauthenticateWithCredential(credential).then(function() {
+      usersRef.child(firebase.auth().currentUser.uid).update({
+        status: "inactive",
+      }).then(() => {
+        firebase.auth().currentUser.delete().then(() => {
+          Swal.fire({
+            position: 'top',
+            icon: 'success',
+            title: 'Thank you for staying with us. See you again',
+            showConfirmButton: false,
+            timer: 3000
+          })
+          location.href = 'index.html'
+        }).catch(function(error){
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+          })
+        })
+      })
+    }).catch(function(error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
+    })
+  }
+}
+
 // Customer dashboard page functions
 function getProfile(){
-  document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email;
+  document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email
   usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
     document.getElementById("view-profile-body").insertAdjacentHTML(
       'beforeend',
@@ -71,15 +115,15 @@ function getProfile(){
           "<textarea class='form-control' id='name' readonly>"+snapshot.val().address+"</textarea>"+
         "</div>"+
       "</div>"
-    );
-  });
-  $('#viewProfileModal').modal({backdrop: 'static', keyboard: false});
+    )
+  })
+  $('#viewProfileModal').modal({backdrop: 'static', keyboard: false})
   $('#viewProfileModal').modal('show')
 }
 
 function populateEditModal(){
-  document.getElementById("view-profile-body").innerHTML = '';
-  document.getElementById("edit-profile-title").innerText = firebase.auth().currentUser.email;
+  document.getElementById("view-profile-body").innerHTML = ''
+  document.getElementById("edit-profile-title").innerText = firebase.auth().currentUser.email
   usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
     document.getElementById("edit-profile-body").insertAdjacentHTML(
       'beforeend',
@@ -115,10 +159,64 @@ function populateEditModal(){
           "<textarea class='form-control' id='address'>"+snapshot.val().address+"</textarea>"+
         "</div>"+
       "</div>"
-    );
-  });
-  $('#editProfileModal').modal({backdrop: 'static', keyboard: false});
+    )
+  })
+  $('#editProfileModal').modal({backdrop: 'static', keyboard: false})
   $('#editProfileModal').modal('show')
+}
+
+function filterbyType(type){
+  document.getElementById("product-items").innerHTML = ''
+  if(type == 'all'){
+    inventoryRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        document.getElementById("product-items").insertAdjacentHTML(
+          'beforeend',
+          "<div class='shop-item'>"+
+            "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
+            "<div class='shop-item-details'>"+
+            "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+            "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
+              "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
+              "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
+            "</div>"+
+          "</div>"
+        )
+      })
+      if (document.readyState == 'loading'){
+        document.addEventListener('DOMContentLoaded', ready)
+      } 
+      else{
+        populateProducts()
+      }
+    })
+  }
+  else{
+    inventoryRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        if(childSnapshot.val().Type == type){
+          document.getElementById("product-items").insertAdjacentHTML(
+            'beforeend',
+            "<div class='shop-item'>"+
+              "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
+              "<div class='shop-item-details'>"+
+              "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+              "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
+                "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
+                "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
+              "</div>"+
+            "</div>"
+          )
+        }
+      })
+      if (document.readyState == 'loading'){
+        document.addEventListener('DOMContentLoaded', ready)
+      } 
+      else{
+        populateProducts()
+      }
+    })
+  }
 }
 
 function updateProfile(){
@@ -128,17 +226,44 @@ function updateProfile(){
     telephone: $("#tel").val(),
     address: $("#address").val(),
   }).then(()=>{
-    window.alert("Profile updated successfully");
+    Swal.fire({
+      position: 'top',
+      icon: 'success',
+      title: 'Profile Updated successfully',
+      showConfirmButton: false,
+      timer: 3000
+    })
   }).catch(function(error){
       // Handle Errors here.
-      let errorMessage = error.message;
-      window.alert(errorMessage);
-  });
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
+  })
 }
 
 function loadProducts(){
+  let typesArr = []
   inventoryRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
+      if(typesArr.length == 0){
+        let item = childSnapshot.val().Type
+        typesArr.push(item)
+      }
+      else{
+        let flag = i = 0
+        while(i<typesArr.length){
+          if(childSnapshot.val().Type == typesArr[i]){
+            flag = 1
+          }
+          i++
+        }
+        if(flag == 0){
+          let item = childSnapshot.val().Type
+          typesArr.push(item)
+        }
+      }
       document.getElementById("product-items").insertAdjacentHTML(
         'beforeend',
         "<div class='shop-item'>"+
@@ -150,10 +275,19 @@ function loadProducts(){
             "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
           "</div>"+
         "</div>"
-      );
-    });
+      )
+    })
     populateProducts()
-  });
+  }).then(()=>{
+    let x = 0
+    while(x<typesArr.length){
+      document.getElementById("product-type").insertAdjacentHTML(
+        'beforeend',
+        "<a class='dropdown-item' type='button' onclick='filterbyType(\""+typesArr[x]+"\")'>"+typesArr[x]+"</a>"
+      )
+      x++
+    }
+  })
 }
 
 function populateProducts() {
@@ -167,12 +301,12 @@ function populateProducts() {
       let input = quantityInputs[i]
       input.addEventListener('change', quantityChanged)
   }
-  let addToCartButtons = document.getElementsByClassName('shop-item-button');
+  let addToCartButtons = document.getElementsByClassName('shop-item-button')
   for (let i = 0; i < addToCartButtons.length; i++) {
       let button = addToCartButtons[i]
       button.addEventListener('click', addToCartClicked)
   }
-  let viewItemButtons = document.getElementsByClassName('view-item-button');
+  let viewItemButtons = document.getElementsByClassName('view-item-button')
   for (let i = 0; i < viewItemButtons.length; i++) {
       let button = viewItemButtons[i]
       button.addEventListener('click', viewItemClicked)
@@ -183,32 +317,74 @@ function populateProducts() {
 function purchaseClicked() {
   let cartItem = document.getElementsByClassName('cart-item')
   let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText
-  let cartItems = document.getElementsByClassName('cart-items')[0]
-  let date = new Date();
-  ordersRef.push({
-      Customer: firebase.auth().currentUser.uid,
-      Total: cartTotal,
-      Status: 'Pending',
-      payment: 'Cash',
-      orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
-  }).then((snap) => {
-      const key = snap.key;
+  if(cartTotal == 0){
+    Swal.fire(
+      'No items in the cart',
+      '',
+      'warning'
+    )
+  }
+  else{
+    let cartItems = document.getElementsByClassName('cart-items')[0]
+    let date = new Date()
+    let qtyFlag = 0
+    inventoryRef.once("value").then(function(snapshot){
       for(let i = 0; i < cartItem.length; i++){
-          let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
-          let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
-          ordersRef.child(key+'/Products').update({
-              [cartItemName]: cartItemQuantity,
-          })
-      }  
-      while (cartItems.hasChildNodes()) {
-          cartItems.removeChild(cartItems.firstChild)
+        let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
+        let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
+        snapshot.forEach(function(childSnapshot){
+          if((childSnapshot.val().ID === cartItemName) && parseInt(childSnapshot.val().Quantity) < cartItemQuantity) qtyFlag = 1
+        })
       }
-      updateCartTotal()
-  }).catch(function(error){
-      // Handle Errors here.
-      let errorMessage = error.message;
-      window.alert(errorMessage);
-  });
+    }).then(()=>{
+      if(qtyFlag == 1){
+        Swal.fire(
+        'One or more items are exceeding our stock quantity',
+        '',
+        'warning'
+        )
+      }
+      else{
+        let str = firebase.auth().currentUser.uid+date.getTime()
+        let hash = str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0)
+        ordersRef.push({
+          Customer: firebase.auth().currentUser.uid,
+          Total: cartTotal,
+          Status: 'Pending',
+          payment: 'Cash',
+          orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
+          orderId: hash,
+        }).then((snap) => {
+          Swal.fire({
+            position: 'top',
+            icon: 'success',
+            title: 'Order Submitted successfully',
+            showConfirmButton: false,
+            timer: 3000
+          })
+          const key = snap.key
+          for(let i = 0; i < cartItem.length; i++){
+            let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
+            let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
+            ordersRef.child(key+'/Products').update({
+              [cartItemName]: cartItemQuantity,
+            })
+          }  
+          while (cartItems.hasChildNodes()) {
+            cartItems.removeChild(cartItems.firstChild)
+          }
+          updateCartTotal()
+        }).catch(function(error){
+          // Handle Errors here.
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+          })
+        })
+      }
+    })
+  }
 }
 
 function clearOrder(){
@@ -227,9 +403,7 @@ function removeCartItem(event) {
 
 function quantityChanged(event) {
   let input = event.target
-  if (isNaN(input.value) || input.value <= 0) {
-      input.value = 1
-  }
+  if (isNaN(input.value) || input.value <= 0) input.value = 1
   updateCartTotal()
 }
 
@@ -244,13 +418,13 @@ function viewItemClicked(event) {
           document.getElementById("item-body").insertAdjacentHTML(
             'beforeend',
             "<p><b>"+ccSnapshot.key+"</b>: "+ccSnapshot.val()+"</p>"
-          );
+          )
         })
       }
-    });
-  });
-  document.getElementById("item-title").innerHTML = title;
-  $('#viewProductModal').modal({backdrop: 'static', keyboard: false});
+    })
+  })
+  document.getElementById("item-title").innerHTML = title
+  $('#viewProductModal').modal({backdrop: 'static', keyboard: false})
   $('#viewProductModal').modal('show')
 }
 
@@ -270,7 +444,11 @@ function addItemToCart(title, price) {
   let cartItemNames = cartItems.getElementsByClassName('cart-item-title')
   for (let i = 0; i < cartItemNames.length; i++) {
       if (cartItemNames[i].innerText == title) {
-          alert('This item is already added to the cart')
+          Swal.fire(
+            'Item is already in the cart',
+            '',
+            'warning'
+            )
           return
       }
   }
@@ -306,7 +484,7 @@ function updateCartTotal() {
 }
 
 function clearViewModal(){
-  document.getElementById("item-body").innerHTML = '';
+  document.getElementById("item-body").innerHTML = ''
 }
 
 function loadPaypal(){
@@ -383,45 +561,53 @@ function loadOrders(){
         snapshot.forEach(function(childSnapshot){
           if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
             if(childSnapshot.val().Status == 'Pending'){
-              document.getElementById("pending").insertAdjacentHTML(
-                'beforeend',
-                "<p><b>Order ID</b></p>"+
-                "<p class='ml-4'>"+childSnapshot.key+"</p>"+
-                "<p><b>Total Price</b></p>"+
-                "<p class='ml-4'>"+childSnapshot.val().Total+"</p><br/>"
-              );
+              
               ordersRef.child(childSnapshot.key+"/Products").once("value").then(function(ccSnapshot){
+                document.getElementById("pending").insertAdjacentHTML(
+                  'beforeend',
+                  "<div class='form-row'>"+
+                    "<p><b class='col-lg-3'>Order ID: </b>"+childSnapshot.val().orderId+"</p>"+
+                  "</div>"+
+                  "<div class='form-row'>"+
+                    "<p><b class='col-lg-3'>Total Price: </b>"+childSnapshot.val().Total+"</p>"+
+                  "</div>"
+                )
                 ccSnapshot.forEach(function(products){
                   document.getElementById("pending").insertAdjacentHTML(
                     'beforeend',
                     "<p><a class='mx-3'>"+products.key+": </a>"+products.val()+"</p>"
-                  );
+                  )
                 })
+                document.getElementById("pending").insertAdjacentHTML(
+                  'beforeend',
+                  "<hr/>"
+                )
               })
             }
             else if(childSnapshot.val().Status == 'Completed'){
               document.getElementById("completed").insertAdjacentHTML(
                 'beforeend',
                 "<div class='view-item'>"+
-                  "<b>Product ID: </b>"+
-                  "<span class='view-item-title'>"+childSnapshot.key+"</span>"+
+                  "<b>Order ID: </b>"+
+                  "<span class='view-item-title' style='display: none'>"+childSnapshot.key+"</span>"+
+                  "<span class='view-item-id'>"+childSnapshot.val().orderId+"</span>"+
                   "<div class='view-item-details'>"+
                     "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/>"+
-                        "<button class='btn btn-primary view-item-button float-right' type='button'>View Products</button><hr class='mt-5'/>"+
+                      "<button class='btn btn-primary view-item-button float-right' type='button'>View Products</button><hr class='mt-5'/>"+
                     "</div>"+
                 "</div>"
-              );
-              ready();
+              )
+              ready()
             }
           }
-        });
-      });
+        })
+      })
     }
-  });
+  })
 }
 
 function ready(){
-  let viewItemButtons = document.getElementsByClassName('view-item-button');
+  let viewItemButtons = document.getElementsByClassName('view-item-button')
   for (let i = 0; i < viewItemButtons.length; i++) {
       let button = viewItemButtons[i]
       button.addEventListener('click', viewOrderItemClicked)
@@ -432,59 +618,67 @@ function viewOrderItemClicked(event){
   let button = event.target
   let order = button.parentElement.parentElement
   let title = order.getElementsByClassName('view-item-title')[0].innerText
+  let id = order.getElementsByClassName('view-item-id')[0].innerText
   ordersRef.child(title+"/Products").once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
           document.getElementById("order-body").insertAdjacentHTML(
               'beforeend',
               "<p><b>Product ID: </b>"+childSnapshot.key+"<b class='ml-4'>Items: </b>"+childSnapshot.val()+"</p>"
-          );
-      });
-  });
-  document.getElementById("order-title").innerHTML = title;
-  $('#viewModal').modal({backdrop: 'static', keyboard: false});
+          )
+      })
+  })
+  document.getElementById("order-title").innerHTML = id
+  $('#viewModal').modal({backdrop: 'static', keyboard: false})
   $('#viewModal').modal('show')
 }
 
 function clearOrderViewModal(){
-  document.getElementById("order-body").innerHTML = '';
+  document.getElementById("order-body").innerHTML = ''
 }
 
 // Feedback page functions
 function ordersnapshotToArray() {
-  let orderArr = [];
+  let orderArr = []
+  let keyArr = []
+  document.getElementById("order_id").innerHTML = ''
   ordersRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
           if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
-              if(childSnapshot.val().Status == 'Completed'){
-                  let item = childSnapshot.key;
-                  orderArr.push(item);
+              if(childSnapshot.val().Status == 'Completed' && !childSnapshot.val().Feedback){
+                  let item = childSnapshot.val().orderId
+                  let key = childSnapshot.key
+                  orderArr.push(item)
+                  keyArr.push(key)
               }
           }
-      });
+      })
       for(let i = 0; i < orderArr.length; i++){
           document.getElementById("order_id").insertAdjacentHTML(
               'beforeend',
-              "<option>"+orderArr[i]+"</option>"
-          );
+              "<option value="+keyArr[i]+">"+orderArr[i]+"</option>"
+          )
       }
   }).catch(function(error){
       // Handle Errors here.
-      let errorMessage = error.message;
-      window.alert(errorMessage);
-  });
-  return orderArr;
-};
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
+  })
+  return orderArr
+}
 
 function view(){
-    let productArr = [];
-    let quantityArr = [];
-    let dropdown = document.getElementById("order_id");
-    let selected = dropdown.options[dropdown.selectedIndex].text;
+    let productArr = []
+    let quantityArr = []
+    let dropdown = document.getElementById("order_id")
+    let selected = dropdown.options[dropdown.selectedIndex].value
     ordersRef.child(selected+"/Products").once("value").then(function(snapshot){
         snapshot.forEach(function(childSnapshot){
-            productArr.push(childSnapshot.key);
-            quantityArr.push(childSnapshot.val());
-        });
+            productArr.push(childSnapshot.key)
+            quantityArr.push(childSnapshot.val())
+        })
     }).then(() => {
         for(let i = 0; i < productArr.length; i++){
             inventoryRef.once("value").then(function(snapshot){
@@ -495,31 +689,63 @@ function view(){
                     "<p>Name : "+childSnapshot.val().Name+"</p>"+
                     "<p>Product ID : "+childSnapshot.val().ID+"</p>"+
                     "<b>Quantity : "+quantityArr[i]+"</b><hr/>"
-                );
+                )
                 }
               })
-            });
+            })
         }
-        $('#viewfbModal').modal({backdrop: 'static', keyboard: false});
+        $('#viewfbModal').modal({backdrop: 'static', keyboard: false})
         $('#viewfbModal').modal('show')
     })
 }
 
 function clearViewOrderModal(){
-  document.getElementById("order_content").innerHTML = '';
+  document.getElementById("order_content").innerHTML = ''
 }
 
+// function starRating() {
+// 	var starRating1 = raterJs( {
+// 		starSize:32, 
+// 		element:document.querySelector("#rater"), 
+// 		rateCallback:function rateCallback(rating, done) {
+// 			this.setRating(rating) 
+// 			done() 
+// 		}
+// 	}) 
+// } 
+
 function submitFeedback() {
-    let dropdown = document.getElementById("order_id");
-    let selected = dropdown.options[dropdown.selectedIndex].text;
-    let Feedback = document.getElementById("cus_feedback").value;
+    let dropdown = document.getElementById("order_id")
+    let selected = dropdown.options[dropdown.selectedIndex].value
+    let Feedback = document.getElementById("cus_feedback").value
+    if(Feedback == ''){
+      Swal.fire(
+        'Feedback is empty',
+        '',
+        'warning'
+        )
+      return
+    }
     ordersRef.child(selected).update({
         Feedback: Feedback
-    }).then(() => {window.alert("Feedback has been successfully submitted")}).catch(function(error){
+    }).then(() => {
+      Swal.fire({
+        position: 'top',
+        icon: 'success',
+        title: 'Feedback has been successfully submitted',
+        showConfirmButton: false,
+        timer: 3000
+      })
+      document.getElementById("cus_feedback").value = ''
+      ordersnapshotToArray()
+    }).catch(function(error){
         // Handle Errors here.
-        let errorMessage = error.message;
-        window.alert(errorMessage);
-    });
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+        })
+    })
 }
 
 

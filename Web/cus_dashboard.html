@@ -62,6 +62,12 @@
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
+      <li class="nav-item mt-5 pt-5">
+        <a class="nav-link text-center btn btn-danger mt-5" aria-expanded="true" type="button" data-toggle="modal" data-target="#signoutModal">
+          <i class="fas fa-user"></i>
+          <span class="font-weight-bold">Delete Account</span>
+        </a>
+      </li>
   
     </ul>
     <!-- End of Sidebar -->
@@ -93,18 +99,14 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item text-dark btn" onclick="getProfile()">
+                <a class="dropdown-item text-dark btn" type="button" onclick="getProfile()">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                <a class="dropdown-item bg-secondary text-white font-weight-bold" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-fw mr-2 text-white-600"></i>
                   Logout
                 </a>
-                <a class="dropdown-item"href="#" data-toggle="modal" data-target="#signoutModal">
-                  <i class="fas fa-door-open fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Sign Out
-                  </a>
               </div>
             </li>
           </ul>
@@ -127,10 +129,9 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <div class="dropdown-header">Filter by Type:</div>
-                      <a class="dropdown-item" href="#">Bulbs</a>
-                      <a class="dropdown-item" href="#">Circuit Breakers</a>
+                      <div id="product-type"></div>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Clear filters</a>
+                      <a class="dropdown-item" type="button" onclick="filterbyType('all')">Clear filters</a>
                     </div>
                   </div>
                 </div>
@@ -173,7 +174,7 @@
                 <strong class="cart-total-title">Total</strong>
                 $<span class="cart-total-price">0</span>
               </div>
-              <button class="btn btn-primary" data-toggle="modal" data-target="#paymentModal" type="button">Submit Order</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#paymentModal" type="button">Checkout</button>
             </div>
           </div>
         </div>
@@ -310,12 +311,12 @@
 
   <script src="https://www.paypal.com/sdk/js?client-id=AePUB0YxTMfv1U9Dzid9EcVlvnqxYhERqT4FlOpFcigAXGuEwJ8_gCY4JXcaYWtgfpJddfdSLdPbdFUX"></script>
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
-  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/altum.min.js"></script>
   <script src="js/fbconf.js"></script>
-  <script src="js/order.js"></script>
   <script src="js/customers.js"></script>
   <script src="js/paypal.js"></script>
 </body>

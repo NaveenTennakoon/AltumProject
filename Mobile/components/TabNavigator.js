@@ -1,6 +1,6 @@
 import React from 'react';  
 import { View } from 'react-native';  
-import { createBottomTabNavigator, createAppContainer} from 'react-navigation';  
+import { createAppContainer} from 'react-navigation';  
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';  
 import Icon from 'react-native-vector-icons/Ionicons';  
 
@@ -18,9 +18,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View>  
               <Icon style={[{color: tintColor}]} size={25} name={'ios-home'}/>  
             </View>),
-            activeColor: '#615af6',  
-            inactiveColor: '#46f6d7',  
-            barStyle: { backgroundColor: '#67baf6' },    
+            activeColor: '#ffffff',  
+            inactiveColor: '#999999',  
+            barStyle: { backgroundColor: '#000000' },    
         }  
       },  
       Profile: { screen: ProfileScreen,  
@@ -30,9 +30,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View>  
               <Icon style={[{color: tintColor}]} size={25} name={'ios-person'}/>  
             </View>), 
-            activeColor: '#615af6',  
-            inactiveColor: '#46f6d7',  
-            barStyle: { backgroundColor: '#67baf6' },     
+            activeColor: '#ffffff',  
+            inactiveColor: '#999999',  
+            barStyle: { backgroundColor: '#000000' },     
         }  
       },  
       Settings: { screen: SettingsNavigator,  
@@ -42,9 +42,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View>  
               <Icon style={[{color: tintColor}]} size={25} name={'ios-settings'}/>  
             </View>),  
-          activeColor: '#615af6',  
-          inactiveColor: '#46f6d7',  
-          barStyle: { backgroundColor: '#67baf6' },  
+          activeColor: '#ffffff',  
+          inactiveColor: '#999999',  
+          barStyle: { backgroundColor: '#000000' },  
         }  
       },  
       location: { screen: EnterScreen,  
@@ -54,17 +54,17 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View>  
               <Icon style={[{color: tintColor}]} size={25} name={'ios-send'}/>  
             </View>),  
-          activeColor: '#615af6',  
-          inactiveColor: '#46f6d7',  
-          barStyle: { backgroundColor: '#67baf6' },  
+          activeColor: '#ffffff',  
+          inactiveColor: '#999999',  
+          barStyle: { backgroundColor: '#000000' },  
         }  
       },  
     },  
     {  
       initialRouteName: "Home",  
       activeColor: '#f0edf6',  
-      inactiveColor: '#226557',  
-      barStyle: { backgroundColor: '#3BAD87' },  
+      inactiveColor: '#999999',  
+      barStyle: { backgroundColor: '#000000' },  
     },  
 );  
   

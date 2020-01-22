@@ -27,13 +27,13 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="p-4">
-                  <h4 class="card-title text-center text-gray-900 mb-5">Customer Sign Up</h4>
-                  <form class="user">
+                  <h4 class="card-title text-center text-gray-900 mb-5 font-weight-bold">Customer Sign Up</h4>
+                  <form class="user" id="signupForm">
                     <div class="form-group input-group col-lg-12">
                       <div class="input-group-prepend">
                         <span class="input-group-text"> <i class="fa fa-briefcase"></i></span>
                       </div>
-                      <input id="company" class="form-control" placeholder="Company / Shop Name" type="text">
+                      <input id="company" class="form-control" placeholder="Company / Shop Name" type="text" required>
                       <div class="input-group-prepend ml-4">
                         <span class="input-group-text"> <i class="fa fa-user"></i></span>
                       </div>
@@ -49,17 +49,20 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
                       </div> 
-                      <input id="tel" class="form-control" placeholder="Phone number" type="text" required>
+                      <input id="tel" class="form-control" placeholder="Phone number" type="tel" required>
                     </div>
                     <div class="form-group input-group col-lg-12">
                       <div class="input-group-prepend">
                         <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
                       </div>
-                      <input id="password" class="form-control" placeholder="Create password" type="password" required>
+                      <input id="password" class="form-control" placeholder="New password" type="password" required>
                       <div class="input-group-prepend ml-4">
                         <span class="input-group-text"> <i class="fa fa-redo"></i> </span>
                       </div>
                       <input id="cpassword" class="form-control" placeholder="Retype password" type="password" required>
+                    </div>
+                    <div class="form-group input-group col-lg-12">
+                      <input type="checkbox" onclick="togglePassword()"><a class="ml-2 font-weight-bold">Show Password</a> 
                     </div>
                     <div class="form-group input-group col-lg-12">
                       <div class="input-group-prepend">
@@ -68,7 +71,7 @@
                       <input id="address" class="form-control" placeholder="Address" type="text" required>
                     </div>
                     <p><a href="#" data-toggle="modal" data-target="#locationModal">Click here to set the location</a></p>                                       
-                    <a class="btn btn-primary btn-user float-right w-25" onclick="signup()" style="color: #fff">Sign Up</a><hr/>  
+                    <button class="btn btn-primary btn-user float-right w-25" type="submit" onclick="signup()" style="color: #fff">Sign Up</button><hr/>  
                     <p>or <a href="index.html">Back to Login</a></p>                                                                
                   </form>
                 </div>
@@ -99,13 +102,15 @@
 
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7_RjkIVHXwvzgI7Y6BQ3aCY2jAbMw7x0&callback=initMap" async defer></script>
-  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <script src="js/altum.min.js"></script>
   <script src="js/fbconf.js"></script>
   <script src="js/index.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/modalLoading.js"></script>
 </body>
 
 </html>

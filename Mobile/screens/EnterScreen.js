@@ -30,6 +30,11 @@ export default class EnterScreen extends Component {
         alert("All fields are required");
       }
       else{
+        let now = new Date()
+        let nowstamp = now.getFullYear()+(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds()
+        let timestamp = now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()
+        let str = firebase.auth().currentUser.uid+date.getTime()
+        let hash = str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0)
         Geolocation.getCurrentPosition(
           position => {
             FB.database().ref("tracking/locations/").push({
@@ -39,6 +44,9 @@ export default class EnterScreen extends Component {
               customer: this.state.customer_name,
               address : this.state.address,
               salesperson: FB.auth().currentUser.uid,
+              dateString: nowstamp,
+              timestamp: timestamp,
+              id: hash,
             });
             Alert.alert("Success", "Location entered successfully");
             this.setState({
@@ -63,44 +71,58 @@ export default class EnterScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image style={styles.logo} source={{uri: 'https://png.icons8.com/google/color/120'}}/>
+        <View style={styles.header}></View>
+        <Image style={styles.logo} source={{uri: "https://img.icons8.com/material-rounded/480/000000/user-location.png"}}/>
+        <View style={styles.body}>
+          <View style={styles.inputContainer}>
+          <Icon style={styles.inputIcon} size={25} name={'ios-cart'}/> 
+            <TextInput style={styles.inputs}
+                placeholder="Shop Name"
+                underlineColorAndroid='transparent'
+                ref={(input) => this.shopInput = input}
+                returnKeyType="next"
+                onChangeText={(shop_name) => this.setState({shop_name})}
+                value={this.state.shop_name}
+                onSubmitEditing={() => this.customerInput.focus()}/>
+          </View>      
+          <View style={styles.inputContainer}>
+          <Icon style={styles.inputIcon} size={25} name={'ios-person'}/>
+            <TextInput style={styles.inputs}
+                placeholder="Customer Name"
+                underlineColorAndroid='transparent'
+                ref={(input) => this.customerInput = input}
+                returnKeyType="next"
+                onChangeText={(customer_name) => this.setState({customer_name})}
+                value={this.state.customer_name}
+                onSubmitEditing={() => this.addressInput.focus()}/>
+          </View>     
+          <View style={styles.inputContainer}>
+          <Icon style={styles.inputIcon} size={25} name={'ios-pin'}/>
+            <TextInput style={[ styles.inputs]}
+                placeholder="Address"
+                underlineColorAndroid='transparent'
+                multiline = {true}
+                ref={(input) => this.addressInput = input}
+                onChangeText={(address) => this.setState({address})}
+                value={this.state.address}/>
+          </View>
 
-        <View style={styles.inputContainer}>
-        <Icon style={styles.inputIcon} size={25} name={'ios-cart'}/> 
-          <TextInput style={styles.inputs}
-              placeholder="Shop Name"
-              underlineColorAndroid='transparent'
-              ref={(input) => this.shopInput = input}
-              returnKeyType="next"
-              onChangeText={(shop_name) => this.setState({shop_name})}
-              value={this.state.shop_name}
-              onSubmitEditing={() => this.customerInput.focus()}/>
-        </View>      
-        <View style={styles.inputContainer}>
-        <Icon style={styles.inputIcon} size={25} name={'ios-peron'}/>
-          <TextInput style={styles.inputs}
-              placeholder="Customer Name"
-              underlineColorAndroid='transparent'
-              ref={(input) => this.customerInput = input}
-              returnKeyType="next"
-              onChangeText={(customer_name) => this.setState({customer_name})}
-              value={this.state.customer_name}
-              onSubmitEditing={() => this.addressInput.focus()}/>
-        </View>     
-        <View style={styles.inputContainer}>
-        <Icon style={styles.inputIcon} size={25} name={'ios-pin'}/>
-          <TextInput style={[ styles.inputs]}
-              placeholder="Address"
-              underlineColorAndroid='transparent'
-              multiline = {true}
-              ref={(input) => this.addressInput = input}
-              onChangeText={(address) => this.setState({address})}
-              value={this.state.address}/>
+          <TouchableHighlight style={[styles.buttonContainer, styles.sendButton]} onPress={() => {
+              Alert.alert(
+                'Confirm',
+                'Do you want to record the location?',
+                [
+                  {text: 'Cancel', onPress: () => {return null}},
+                  {text: 'Confirm', onPress: () => {
+                    this.enterLocation();
+                  }},
+                ],
+                { cancelable: false }
+              ) 
+            }}>
+            <Text style={styles.buttonText}>Enter Location</Text>
+          </TouchableHighlight>
         </View>
-
-        <TouchableHighlight style={[styles.buttonContainer, styles.sendButton]} onPress={() => this.enterLocation()}>
-          <Text style={styles.buttonText}>Enter Location</Text>
-        </TouchableHighlight>
       </View>
     );
   }
@@ -108,19 +130,31 @@ export default class EnterScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#DCDCDC',
+    backgroundColor: '#FFFFFF',
+  },
+  header:{
+    backgroundColor: "#000000",
+    height: 160,
+    width: '100%',
   },
   logo:{
     width:120,
     height:120,
     justifyContent: 'center',
     marginBottom:20,
+    alignSelf:'center',
+    position: 'absolute',
+    borderWidth: 3,
+    borderColor: "white",
+    borderRadius: 45,
+    backgroundColor: "white",
+    marginTop: 100,
+  },
+  body:{
+    marginTop: 90,
   },
   inputContainer: {
-      borderBottomColor: '#F5FCFF',
+      borderBottomColor: '#777777',
       backgroundColor: '#FFFFFF',
       borderRadius:30,
       borderBottomWidth: 1,
@@ -128,12 +162,12 @@ const styles = StyleSheet.create({
       height:50,
       marginBottom:20,
       flexDirection: 'row',
-      alignItems:'center'
+      alignItems:'center',
+      alignSelf: 'center',
   },
   inputs:{
       height:45,
       marginLeft:16,
-      borderBottomColor: '#FFFFFF',
       flex:1,
   },
   inputIcon:{
@@ -147,12 +181,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom:20,
-    width:200,
-    borderRadius:30,
+    marginTop: 60,
+    width: 200,
+    borderRadius: 30,
+    alignSelf: 'center',
   },
   sendButton: {
-    backgroundColor: "#6199f6",
+    backgroundColor: "#000000",
   },
   buttonText: {
     color: 'white',

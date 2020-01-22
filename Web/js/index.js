@@ -1,20 +1,48 @@
 function login(){
+  modalLoading.init(true);
   let user = document.getElementById("Email").value;
   let pwd = document.getElementById("Password").value;
 
   firebase.auth().signInWithEmailAndPassword(user, pwd).then(function(){
     usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
-      if(snapshot.val().type == 'customer'){
-        location.href="cus_dashboard.html";
+      if(!firebase.auth().currentUser.emailVerified){
+        Swal.fire(
+          'Your email has not yet been verified. Please verify and try again',
+          '',
+          'info'
+        )
+        let element = document.getElementById("openModalLoading");
+        element.parentNode.removeChild(element);
       }
-      else if(snapshot.val().type == 'admin'){
-        location.href="dashboard.html";
+      else{
+        if(snapshot.val().type == 'customer'){
+          if(snapshot.val().status == 'active'){
+            location.href="cus_dashboard.html";
+          }
+          else{
+            let element = document.getElementById("openModalLoading");
+            element.parentNode.removeChild(element);
+            Swal.fire(
+              'Your account has been deactivated by Altum',
+              '',
+              'error'
+            )
+          }
+        }
+        else if(snapshot.val().type == 'admin'){
+          location.href="dashboard.html";
+        }
       }
     });
   }).catch(function(error){
       // Handle Errors here.
-      let errorMessage = error.message;
-      window.alert(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
+      let element = document.getElementById("openModalLoading");
+      element.parentNode.removeChild(element);
   });
 }
 
@@ -26,7 +54,10 @@ function resetMail(){
     location.href = "index.html";
   }).catch(function(error) {
     // An error happened.
-    let errorMessage = error.message;
-    window.alert(errorMessage);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
   });
 }

@@ -8,14 +8,14 @@ export default class Login extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			username : '',
+			fog_username : '',
 		}
 	}
 
 	reset(){
     const {navigate} = this.props.navigation;
-		let user = this.state.username;
-		FB.auth().sendPasswordResetEmail(user).then(function() {
+		let fog_user = this.state.fog_username;
+		FB.auth().sendPasswordResetEmail(fog_user).then(function() {
             // Email sent.
             alert("Link is successfully sent to your email address. Check your inbox");
             navigate('Login');
@@ -30,18 +30,18 @@ export default class Login extends Component {
   const {navigate} = this.props.navigation;
 	return (
 		<KeyboardAvoidingView behaviour="padding" style={styles.container}>
-				<Image style={styles.bgImage} source={{ uri: "https://lorempixel.com/900/1400/nightlife/2/" }}/>
+				<Image style={styles.bgImage} source={{ uri: "https://cdn2.f-cdn.com/contestentries/68791/9261050/5337f7fab2996_thumb900.jpg" }}/>
 				<Text style={styles.textByReset}>We get it. Things do happen. Have you forgot your password? Enter the email address below and we will email a password reset link</Text>   
 				<View style={styles.inputContainer}>
 					<TextInput style={styles.inputs}
 						placeholder="Email Address"
 						underlineColorAndroid='transparent'
 						returnKeyType="go"
-						onChangeText={(username) => this.setState({username})}></TextInput>
-					<Image style={styles.inputIcon} source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}/>
+						onChangeText={(fog_username) => this.setState({fog_username})}></TextInput>
+					<Image style={styles.inputIcon} source={{uri: "https://img.icons8.com/nolan/64/000000/filled-message.png"}}/>
 				</View>
 				<TouchableOpacity style={[styles.buttonContainer, styles.resetButton]} onPress={()=>this.reset()}>
-				<Text style={styles.loginText}>Submit Request</Text>
+				  <Text style={styles.loginText}>Submit Request</Text>
 				</TouchableOpacity>
                 <TouchableOpacity style={styles.btnRevert} onPress={() => navigate('Login')}>
 					<Text style={styles.btnText}>back to Login</Text>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor:'transparent'
   },
   resetButton: {
-    backgroundColor: "#00b5ec",
+    backgroundColor: "#000000",
 
     shadowColor: "#808080",
     shadowOffset: {
@@ -125,6 +125,8 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
   },
   bgImage:{
     flex: 1,

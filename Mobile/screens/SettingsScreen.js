@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, PermissionsAndroid, AsyncStorage, Alert } from "react-native";
+import { View, StyleSheet, PermissionsAndroid, AsyncStorage, Alert, Image, Text, Platform, ToastAndroid } from "react-native";
 import SettingsList from 'react-native-settings-list';
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation, { clearWatch, stopObserving } from 'react-native-geolocation-service';
+import Dialog from "react-native-dialog";
 
 import FB from '../components/FB'
 
@@ -14,133 +15,182 @@ export default class SettingsScreen extends Component {
       switchValue: false,
       lat: 0,
       lng: 0,
-      timer: 0,
+      updatesEnabled: false,
+      dialogVisible: false,
+      pwd: '',
+      newPwd: '',
+      cNewPwd: '',
     };
     global.location = 'off';
   }
+
+  showDialog = () => {
+    this.setState({ dialogVisible: true });
+  };
+ 
+  handleCancel = () => {
+    this.setState({ dialogVisible: false });
+  };
+ 
+  handleSave = () => {
+    let user = FB.auth().currentUser;
+    if(this.state.pwd == global.pwd && this.state.newPwd == this.state.cNewPwd){
+      user.updatePassword(this.state.newPwd).then(function() {
+        alert("Password updated successfully")
+      }).catch(function(error) {
+        alert(error.message);
+      });
+    }
+    else{
+      alert("Something wrong with the details you entered");
+    }
+
+    this.setState({ dialogVisible: false });
+  };
+
   render() {
     const {navigate} = this.props.navigation;
     return (
       <View style={styles.container}>
-        <View style={styles.container}>
-          <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
-            <SettingsList.Item
-              // icon={
-              //     <Image style={styles.imageStyle} source={require('./images/airplane.png')}/>
-              // }
-              hasSwitch={true}
-              switchState={this.state.switchValue}
-              switchOnValueChange={this.onValueChange}
-              hasNavArrow={false}
-              title='GPS Location'
-            />
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/wifi.png')}/>}
-              title='My Locations'
-              // titleInfoStyle={styles.titleInfoStyle}
-              onPress={() => navigate('Locations')}
-            /> 
-            <SettingsList.Header headerStyle={{marginTop:15}}/>
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/control.png')}/>}
-              title='Order'
-              titleInfo='View Pending order'
-              onPress={() => alert('Route To Control Center Page')}
-            />
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/wifi.png')}/>}
-              title='Change Password'
-              // titleInfoStyle={styles.titleInfoStyle}
-              onPress={() => alert('Route to Wifi Page')}
-            /> 
-            <SettingsList.Header headerStyle={{marginTop:15}}/>
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/blutooth.png')}/>}
-              title='Profile'
-              titleInfo='Edit Info'
-              // titleInfoStyle={styles.titleInfoStyle}
-              onPress={() => navigate('Edit')}
-            />
-            <SettingsList.Item
-              // icon={<Image style={styles.imageStyle} source={require('./images/notifications.png')}/>}
-              title='Log out'
-              onPress={()=>
-                Alert.alert(
-                  'Log out',
-                  'Do you want to logout?',
-                  [
-                    {text: 'Cancel', onPress: () => {return null}},
-                    {text: 'Confirm', onPress: () => {
-                      AsyncStorage.clear();
-                      navigate('Login')
-                    }},
-                  ],
-                  { cancelable: false }
-                )  
-              }
-            />
-          </SettingsList>
+        <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
+          <SettingsList.Item
+            icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/24/000000/worldwide-location--v1.png"}}/>}
+            hasSwitch={true}
+            
+            switchState={this.state.switchValue}
+            switchOnValueChange={this.onValueChange}
+            hasNavArrow={false}
+            title='GPS Location'
+          />
+          <SettingsList.Item
+            icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/64/000000/point-objects.png"}}/>}
+            title='My Locations'
+            onPress={() => navigate('Locations')}
+          />
+          <SettingsList.Item
+            icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/purchase-order.png"}}/>}
+            title='Orders'
+            titleInfo='Record a transaction'
+            onPress={() => navigate('Home') }
+          />
+          <SettingsList.Header headerStyle={{marginTop:15}}/>
+
+          <SettingsList.Item
+            icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/ios-glyphs/64/000000/key--v1.png"}}/>}
+            title='Change Password'
+            onPress={() => this.showDialog()}
+          /> 
+          <SettingsList.Header headerStyle={{marginTop:15}}/>
+          <SettingsList.Item
+            icon={<Image style={styles.imageStyle} source={{uri: "https://img.icons8.com/material/64/000000/exit.png"}}/>}
+            title='Log out'
+            onPress={()=>
+              Alert.alert(
+                'Log out',
+                'Do you want to logout?',
+                [
+                  {text: 'Cancel', onPress: () => {return null}},
+                  {text: 'Confirm', onPress: () => {
+                    AsyncStorage.clear();
+                    navigate('Login')
+                  }},
+                ],
+                { cancelable: false }
+              )  
+            }
+          />
+        </SettingsList>
+        <View style={styles.footer}>
+          <Text>&#9400;Altum Inc</Text>
+        </View>
+        <View>
+          <Dialog.Container visible={this.state.dialogVisible}>
+            <Dialog.Title style={styles.popupHead}>Change Password</Dialog.Title>
+            <Dialog.Description>
+              Enter below info to save a new password
+            </Dialog.Description>
+            <Dialog.Input  style={styles.popupInput} label="Current password" onChangeText={(pwd) => this.setState({pwd})}/>
+            <Dialog.Input style={styles.popupInput} label="New password" onChangeText={(newPwd) => this.setState({newPwd})}/>
+            <Dialog.Input style={styles.popupInput} label="Confirm new password" onChangeText={(cNewPwd) => this.setState({cNewPwd})}/>
+            <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+            <Dialog.Button label="Save" onPress={this.handleSave} />
+          </Dialog.Container>
         </View>
       </View>
     );
   }
 
-  onValueChange(value){
-    this.setState({switchValue: value});
-    if(!this.state.switchValue) {
-      async function requestLocationPermission() {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-                'title': 'Location Access Required',
-                'message': 'This App needs to Access your location'
-            }
-        );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            alert("Location services are now active")
-          }
-        } catch (err) {
-          console.warn(err);
-        }
-      }
-      requestLocationPermission();
-      this.onStart();
+  hasLocationPermission = async () => {
+    if (Platform.OS === 'ios' ||
+        (Platform.OS === 'android' && Platform.Version < 23)) {
+      return true;
     }
-    else this.onStop();
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+
+    if (hasPermission) return true;
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) return true;
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
+    }
+
+    return false;
   }
 
-  onStart() {
-    this.state.timer = setInterval(() => {
-      Geolocation.getCurrentPosition(
-        position => {
+  getLocationUpdates = async () => {
+    const hasLocationPermission = await this.hasLocationPermission();
+    if (!hasLocationPermission) return;
+    this.setState({ updatesEnabled: true }, () => {
+      global.location = 'on';
+      this.watchId = Geolocation.watchPosition(
+        (position) => {
+          this.setState({ lat: position.coords.latitude, lng: position.coords.longitude, });
           FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             status: 'active'
           });
-          this.setState({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-          global.location = "on";
         },
-        error => alert(error.message),
-        {
-          enableHighAccuracy: true,
-          timeout: 20000,
-          maximumAge: 1000,
-          distanceFilter: 1
-        }
+        (error) => {
+          this.setState({ location: error });
+          console.log(error);
+        },
+        { enableHighAccuracy: true, distanceFilter: 0, interval: 5000, fastestInterval: 2000 }
       );
-    }, 5000);
+    });
   }
 
-  onStop() {
-    FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
-      status: 'inactive'
-    });
-    clearInterval(this.state.timer);
-    global.location = "off";
+  removeLocationUpdates = () => {
+      if (this.watchId !== null) {
+          Geolocation.clearWatch(this.watchId);
+          global.location = 'off';
+          this.setState({ updatesEnabled: false })
+          FB.database().ref("tracking/live/"+FB.auth().currentUser.uid).update({
+            status: 'inactive'
+          });
+      }
+  }
+
+  onValueChange = (value) => {
+    this.setState({switchValue: value});
+    if(!this.state.switchValue) {
+      ToastAndroid.show('Location services are now active', ToastAndroid.LONG);
+      this.getLocationUpdates();
+    }
+    else {
+      ToastAndroid.show('GPS Tracking deactivated', ToastAndroid.LONG);
+      this.removeLocationUpdates();
+    }
   }
 
 }
@@ -149,5 +199,23 @@ const styles = StyleSheet.create({
   container:{
     backgroundColor:'#EFEFF4',
     flex:1,
+  },
+  imageStyle:{
+    width: 25,
+    height: 25,
+    alignSelf: 'center',
+    marginLeft: 15,
+  },
+  footer:{
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  popupHead:{
+    fontWeight: '700',
+    marginBottom: 15,
+  },
+  popupInput:{
+    borderBottomWidth: 1,
+    borderColor: "#009988",
   },
 });
