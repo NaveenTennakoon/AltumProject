@@ -34,22 +34,6 @@ function signout(){
 }
 
 // Customer dashboard page functions
-function loadPaypal(){
-  paypal.Buttons({
-    createOrder: function(data, actions) {
-      let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText;
-      console.log(cartTotal);
-      // Set up the transaction
-      return actions.order.create({
-        purchase_units: [{
-          amount: {
-            value: cartTotal
-          }
-        }]
-      });
-    }
-  }).render('#paypal-button-container');
-}
 function getProfile(){
   document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email;
   usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
@@ -325,6 +309,72 @@ function clearViewModal(){
   document.getElementById("item-body").innerHTML = '';
 }
 
+function loadPaypal(){
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText;
+      console.log(cartTotal);
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: cartTotal
+          }
+        }],
+        application_context: {
+          shipping_preference: 'NO_SHIPPING'
+        }
+        
+      });
+    },
+    onApprove: function(data, actions) {
+      let cartItem = document.getElementsByClassName('cart-item')
+      let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText
+      let cartItems = document.getElementsByClassName('cart-items')[0]
+      let date = new Date();
+      ordersRef.push({
+        Customer: firebase.auth().currentUser.uid,
+        Total: cartTotal,
+        Status: 'Completed',
+        payment: 'Online',
+        orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
+        paymentDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(), 
+        }).then((snap) => {
+          const key = snap.key;
+          for(let i = 0; i < cartItem.length; i++){
+              let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
+              let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
+              ordersRef.child(key+'/Products').update({
+                  [cartItemName]: cartItemQuantity,
+              })
+          }  
+          while (cartItems.hasChildNodes()) {
+              cartItems.removeChild(cartItems.firstChild)
+          }
+          updateCartTotal()
+      }).catch(function(error){
+          // Handle Errors here.
+          let errorMessage = error.message;
+          window.alert(errorMessage);
+      });
+     
+      return actions.order.capture().then(function(details) {
+        alert('Transaction completed by ' + details.payer.name.given_name);
+        // Call your server to save the transaction
+        return fetch('/paypal-transaction-complete', {
+          method: 'post',
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            orderID: data.orderID 
+          })
+        });
+      });
+    }, 
+  }).render('#paypal-button-container');
+}
+  
+
 // Personal Orders page functions
 function loadOrders(){
   firebase.auth().onAuthStateChanged(function(user) {
@@ -471,6 +521,16 @@ function submitFeedback() {
         window.alert(errorMessage);
     });
 }
-  
+
+
+
 
   
+
+
+
+
+
+
+
+ 
