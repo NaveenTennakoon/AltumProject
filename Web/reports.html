@@ -201,8 +201,8 @@
           <div class="row">
 
             <div class="col-lg-12" id="maincon">
-              <h4>Product details</h4>
-              <button onclick="generatePdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+              <h4 class="font-weight-bold">Product details</h4>
+              <button onclick="generateProductsPdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
               <table class="table display" id="reports-product-table">
                 <thead class="thead-dark">
                   <tr>
@@ -214,31 +214,39 @@
                 </thead>
                 <tbody id="reports-product-body"></tbody>
               </table>
-              <h4 class="mt-5">Customer details</h4>
-              <button onclick="generatePdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
-              <table class="table display" id="reports-product-table">
+              <hr/> 
+              <h4 class="mt-5 font-weight-bold">Order details</h4>
+              <button onclick="generateOrdersPdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+              <table class="table display" id="reports-order-table">
                 <thead class="thead-dark">
                   <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col">Customer ID</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Order Date</th>
+                    <th scope="col">Payment</th>
+                    <th scope="col">Payment Date</th>
+                    <th scope="col">Products
+                    </th>
                   </tr>
                 </thead>
-                <tbody id="reports-product-body"></tbody>
+                <tbody id="reports-order-body"></tbody>
               </table>
-              <h4 class="mt-5">Salesperson details</h4>
-              <button onclick="generatePdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
-              <table class="table display" id="reports-product-table">
+              <hr/> 
+              <h4 class="mt-5 font-weight-bold">Location details</h4>
+              <button onclick="generateLocationPdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+              <table class="table display" id="reports-location-table">
                 <thead class="thead-dark">
                   <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col">Salesperson ID</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Shop</th>
+                    <th scope="col">Time stamp</th>
+                    <th scope="col">Address</th>
                   </tr>
                 </thead>
-                <tbody id="reports-product-body"></tbody>
+                <tbody id="reports-location-body"></tbody>
               </table>
             </div>
           </div>
