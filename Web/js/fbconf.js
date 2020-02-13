@@ -8,9 +8,9 @@ let config = {
     messagingSenderId: "170107476902",
     appId: "1:170107476902:web:4667ac60268bdf0c"
   };
-firebase.initializeApp(config); 
+firebase.initializeApp(config)
 
-let inventoryRef = firebase.database().ref("inventory");
-let gpsRef = firebase.database().ref("tracking");
-let usersRef = firebase.database().ref("users");
-let ordersRef = firebase.database().ref("orders");
+let inventoryRef = firebase.database().ref("inventory")
+let gpsRef = firebase.database().ref("tracking")
+let usersRef = firebase.database().ref("users")
+let ordersRef = firebase.database().ref("orders")

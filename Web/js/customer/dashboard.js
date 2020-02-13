@@ -1,47 +1,54 @@
-// Customer dashboard page functions
-function getProfile(){
-    document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email
-    usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
-      document.getElementById("view-profile-body").insertAdjacentHTML(
-        'beforeend',
-        "<div class='form-row my-3 mx-3'>"+
-          "<div class='col-lg-3'>"+
-            "<a value='Name'><strong>Name</strong></a>"+
-          "</div>"+
-          "<div class='col-lg-9'>"+
-            "<input class='form-control' id='name' value='"+snapshot.val().name+"' readonly>"+
-          "</div>"+
-        "</div>"+
-        "<div class='form-row my-3 mx-3'>"+
-          "<div class='col-lg-3'>"+
-            "<a value='Name'><strong>Company</strong></a>"+
-          "</div>"+
-          "<div class='col-lg-9'>"+
-            "<input class='form-control' id='name' value='"+snapshot.val().company+"' readonly>"+
-          "</div>"+
-        "</div>"+
-        "<div class='form-row my-3 mx-3'>"+
-          "<div class='col-lg-3'>"+
-            "<a value='Name'><strong>Contact Number</strong></a>"+
-          "</div>"+
-          "<div class='col-lg-7'>"+
-            "<input class='form-control' id='name' value='"+snapshot.val().telephone+"' readonly>"+
-          "</div>"+
-        "</div>"+
-        "<div class='form-row my-3 mx-3'>"+
-          "<div class='col-lg-3'>"+
-            "<a value='Name'><strong>Address</strong></a>"+
-          "</div>"+
-          "<div class='col-lg-9'>"+
-            "<textarea class='form-control' id='name' readonly>"+snapshot.val().address+"</textarea>"+
-          "</div>"+
-        "</div>"
-      )
+let typesArr = []
+inventoryRef.once("value").then(function(snapshot){
+    snapshot.forEach(function(childSnapshot){
+      // pouplate the types array
+      if(childSnapshot.val().Status == 'active'){
+        if(typesArr.length == 0){
+            let item = childSnapshot.val().Type
+            typesArr.push(item)
+        }
+        else{
+            let flag = i = 0
+            while(i<typesArr.length){
+            if(childSnapshot.val().Type == typesArr[i]){
+                flag = 1
+            }
+            i++
+            }
+            if(flag == 0){
+            let item = childSnapshot.val().Type
+            typesArr.push(item)
+            }
+        }
+        // add product to items div
+        document.getElementById("product-items").insertAdjacentHTML(
+            'beforeend',
+            "<div class='shop-item'>"+
+            "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
+            "<div class='shop-item-details'>"+
+            "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+            "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
+                "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
+                "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
+            "</div>"+
+            "</div>"
+        )
+      }
     })
-    $('#viewProfileModal').modal({backdrop: 'static', keyboard: false})
-    $('#viewProfileModal').modal('show')
-  }
+    populateProducts()
+}).then(()=>{
+  // populate the types filter
+    let x = 0
+    while(x<typesArr.length){
+    document.getElementById("product-type").insertAdjacentHTML(
+        'beforeend',
+        "<a class='dropdown-item' type='button' onclick='filterbyType(\""+typesArr[x]+"\")'>"+typesArr[x]+"</a>"
+    )
+    x++
+    }
+})
   
+  // populate the edit modal with details of selected item
   function populateEditModal(){
     document.getElementById("view-profile-body").innerHTML = ''
     document.getElementById("edit-profile-title").innerText = firebase.auth().currentUser.email
@@ -82,27 +89,33 @@ function getProfile(){
         "</div>"
       )
     })
+    // show modal
     $('#editProfileModal').modal({backdrop: 'static', keyboard: false})
     $('#editProfileModal').modal('show')
   }
   
+  // filtering process
   function filterbyType(type){
     document.getElementById("product-items").innerHTML = ''
+    // no filters
     if(type == 'all'){
       inventoryRef.once("value").then(function(snapshot){
         snapshot.forEach(function(childSnapshot){
-          document.getElementById("product-items").insertAdjacentHTML(
-            'beforeend',
-            "<div class='shop-item'>"+
-              "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
-              "<div class='shop-item-details'>"+
-              "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
-              "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
-                "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
-                "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
-              "</div>"+
-            "</div>"
-          )
+          // populate products
+          if(childSnapshot.val().Status == 'active'){
+            document.getElementById("product-items").insertAdjacentHTML(
+              'beforeend',
+              "<div class='shop-item'>"+
+                "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
+                "<div class='shop-item-details'>"+
+                "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
+                "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
+                  "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
+                  "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
+                "</div>"+
+              "</div>"
+            )
+          }
         })
         if (document.readyState == 'loading'){
           document.addEventListener('DOMContentLoaded', ready)
@@ -112,10 +125,12 @@ function getProfile(){
         }
       })
     }
+    // filter selected
     else{
       inventoryRef.once("value").then(function(snapshot){
         snapshot.forEach(function(childSnapshot){
-          if(childSnapshot.val().Type == type){
+          // populate products
+          if(childSnapshot.val().Type == type && childSnapshot.val().Status == 'active'){
             document.getElementById("product-items").insertAdjacentHTML(
               'beforeend',
               "<div class='shop-item'>"+
@@ -140,75 +155,7 @@ function getProfile(){
     }
   }
   
-  function updateProfile(){
-    usersRef.child(firebase.auth().currentUser.uid).update({
-      name: $("#name").val(),
-      company: $("#company").val(),
-      telephone: $("#tel").val(),
-      address: $("#address").val(),
-    }).then(()=>{
-      Swal.fire({
-        position: 'top',
-        icon: 'success',
-        title: 'Profile Updated successfully',
-        showConfirmButton: false,
-        timer: 3000
-      })
-    }).catch(function(error){
-        // Handle Errors here.
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: error.message,
-        })
-    })
-  }
-      
-let typesArr = []
-inventoryRef.once("value").then(function(snapshot){
-    snapshot.forEach(function(childSnapshot){
-    if(typesArr.length == 0){
-        let item = childSnapshot.val().Type
-        typesArr.push(item)
-    }
-    else{
-        let flag = i = 0
-        while(i<typesArr.length){
-        if(childSnapshot.val().Type == typesArr[i]){
-            flag = 1
-        }
-        i++
-        }
-        if(flag == 0){
-        let item = childSnapshot.val().Type
-        typesArr.push(item)
-        }
-    }
-    document.getElementById("product-items").insertAdjacentHTML(
-        'beforeend',
-        "<div class='shop-item'>"+
-        "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
-        "<div class='shop-item-details'>"+
-        "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
-        "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
-            "<button class='btn btn-primary shop-item-button float-right ml-4' type='button'>Add to Order</button>"+
-            "<button class='btn btn-primary view-item-button float-right' type='button'>View Item</button><hr class='mt-5'/>"+
-        "</div>"+
-        "</div>"
-    )
-    })
-    populateProducts()
-}).then(()=>{
-    let x = 0
-    while(x<typesArr.length){
-    document.getElementById("product-type").insertAdjacentHTML(
-        'beforeend',
-        "<a class='dropdown-item' type='button' onclick='filterbyType(\""+typesArr[x]+"\")'>"+typesArr[x]+"</a>"
-    )
-    x++
-    }
-})
-  
+  // event listeners for the product items
   function populateProducts() {
     let removeCartItemButtons = document.getElementsByClassName('btn-danger')
     for (let i = 0; i < removeCartItemButtons.length; i++) {
@@ -233,9 +180,11 @@ inventoryRef.once("value").then(function(snapshot){
     document.getElementsByClassName('btn-purchase')[0].addEventListener('click', purchaseClicked)
   }
   
+  // checking out the cart
   function purchaseClicked() {
     let cartItem = document.getElementsByClassName('cart-item')
     let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText
+    // no selected items
     if(cartTotal == 0){
       Swal.fire(
         'No items in the cart',
@@ -252,10 +201,12 @@ inventoryRef.once("value").then(function(snapshot){
           let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
           let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
           snapshot.forEach(function(childSnapshot){
-            if((childSnapshot.val().ID === cartItemName) && parseInt(childSnapshot.val().Quantity) < cartItemQuantity) qtyFlag = 1
+            if((childSnapshot.val().ID === cartItemName) && parseInt(childSnapshot.val().Quantity) < cartItemQuantity) 
+              qtyFlag = 1
           })
         }
       }).then(()=>{
+        // items exceeding stock
         if(qtyFlag == 1){
           Swal.fire(
           'One or more items are exceeding our stock quantity',
@@ -264,8 +215,10 @@ inventoryRef.once("value").then(function(snapshot){
           )
         }
         else{
+          //generate order id
           let str = firebase.auth().currentUser.uid+date.getTime()
-          let hash = str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0)
+          let hash = Math.abs(str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0))
+          // record order in database
           ordersRef.push({
             Customer: firebase.auth().currentUser.uid,
             Total: cartTotal,
@@ -306,6 +259,7 @@ inventoryRef.once("value").then(function(snapshot){
     }
   }
   
+  // clear the cart
   function clearOrder(){
     let cartItems = document.getElementsByClassName('cart-items')[0]
     while (cartItems.hasChildNodes()) {
@@ -314,18 +268,21 @@ inventoryRef.once("value").then(function(snapshot){
     updateCartTotal()
   }
   
+  // removing item from the cart
   function removeCartItem(event) {
     let buttonClicked = event.target
     buttonClicked.parentElement.parentElement.remove()
     updateCartTotal()
   }
   
+  // changing the quantity of a cart item
   function quantityChanged(event) {
     let input = event.target
     if (isNaN(input.value) || input.value <= 0) input.value = 1
     updateCartTotal()
   }
   
+  // viewing an item
   function viewItemClicked(event) {
     let button = event.target
     let shopItem = button.parentElement.parentElement
@@ -347,6 +304,7 @@ inventoryRef.once("value").then(function(snapshot){
     $('#viewProductModal').modal('show')
   }
   
+  // adding item to cart
   function addToCartClicked(event) {
     let button = event.target
     let shopItem = button.parentElement.parentElement
@@ -371,6 +329,7 @@ inventoryRef.once("value").then(function(snapshot){
             return
         }
     }
+    // a row for the product
     let cartRowContents = 
         `<div class="cart-item cart-column">
             <span class="cart-item-title">${title}</span>
@@ -386,6 +345,7 @@ inventoryRef.once("value").then(function(snapshot){
     cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged)
   }
   
+  // update the total price of the cart
   function updateCartTotal() {
     let cartItemContainer = document.getElementsByClassName('cart-items')[0]
     let cartRows = cartItemContainer.getElementsByClassName('cart-row')
@@ -406,10 +366,10 @@ inventoryRef.once("value").then(function(snapshot){
     document.getElementById("item-body").innerHTML = ''
   }
   
+// paypal buttons for checkout
 paypal.Buttons({
     createOrder: function(data, actions) {
     let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText;
-    console.log(cartTotal);
     return actions.order.create({
         purchase_units: [{
         amount: {
@@ -423,17 +383,21 @@ paypal.Buttons({
     });
     },
     onApprove: function(data, actions) {
+      // record order in the database
     let cartItem = document.getElementsByClassName('cart-item')
     let cartTotal = document.getElementsByClassName('cart-total-price')[0].innerText
     let cartItems = document.getElementsByClassName('cart-items')[0]
     let date = new Date();
+    let str = firebase.auth().currentUser.uid+date.getTime()
+    let hash = Math.abs(str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0))
     ordersRef.push({
         Customer: firebase.auth().currentUser.uid,
         Total: cartTotal,
-        Status: 'Completed',
+        Status: 'Pending',
         payment: 'Online',
         orderDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
         paymentDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(), 
+        orderId: hash,
         }).then((snap) => {
         const key = snap.key;
         for(let i = 0; i < cartItem.length; i++){
@@ -455,7 +419,7 @@ paypal.Buttons({
     
     return actions.order.capture().then(function(details) {
         alert('Transaction completed by ' + details.payer.name.given_name);
-        // Call your server to save the transaction
+        // Call server to save the transaction
         return fetch('/paypal-transaction-complete', {
         method: 'post',
         headers: {

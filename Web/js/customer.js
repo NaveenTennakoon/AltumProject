@@ -1,8 +1,7 @@
-// customer profiles page functions
 let customerArr = []
 
+// populate customer ids to customer array
 usersRef.once("value").then(function(snapshot){
-// <!-- snapshot of childs of root of database-->
     snapshot.forEach(function(childSnapshot) {
     if(childSnapshot.val().type == 'customer' && childSnapshot.val().status == 'active'){
         let item = childSnapshot.val().name
@@ -18,7 +17,8 @@ usersRef.once("value").then(function(snapshot){
     })
 })
 autocomplete(document.getElementById("customer-search"), customerArr)
-  
+
+// load customer details with search
 function customerDetails(){
     let userName = document.getElementById("customer-search").value
     usersRef.once("value").then(function(snapshot){
@@ -40,6 +40,7 @@ function customerDetails(){
     })
 }
   
+// delete customer
 function deleteCustomer(){
     let sp = document.getElementById("customer-search").value
     if(sp == ''){
@@ -59,6 +60,7 @@ function deleteCustomer(){
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete!'
       }).then((result) => {
+        // if confirmed deactivate user status
         if (result.value) {
           usersRef.once("value").then(function(snapshot){
             snapshot.forEach(function(childSnapshot){

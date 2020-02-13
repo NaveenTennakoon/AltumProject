@@ -3,9 +3,14 @@ let spKeyArr = []
 gpsRef.child("live").once("value").then(function(snapshot){
 // <!-- snapshot of childs of root of database-->
     snapshot.forEach(function(childSnapshot) {
-    let item = childSnapshot.key
+    let item = {
+      key: childSnapshot.key,
+      name: childSnapshot.val().name
+    }
     spKeyArr.push(item) 
     })
+}).then(()=>{
+  autocomplete(document.getElementById("track_id"), spKeyArr.map(sp => sp.name))
 }).catch(function(error){
     // Handle Errors here.
     Swal.fire({
@@ -14,7 +19,6 @@ gpsRef.child("live").once("value").then(function(snapshot){
     text: error.message,
     })
 })
-autocomplete(document.getElementById("track_id"), spKeyArr)
   
 let markers = []
   
@@ -85,25 +89,6 @@ function initTrackMap() {
       center: {lat: -34.397, lng: 150.644},
       zoom: 15
     })
-  
-    if (navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(function(position) {
-        let pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-        lat = position.coords.latitude
-        lng = position.coords.longitude
-        map.setCenter(pos)
-      })
-    } 
-    else{
-      Swal.fire(
-        'Something went wrong with location Access',
-        '',
-        'error'
-      )
-    }
     locationButton(map)
   
     gpsRef.child('live').on('child_added', function (snapshot) {
@@ -124,34 +109,35 @@ function initTrackMap() {
 }
   
 function AddMarker(snapshot) {
-    usersRef.child(snapshot.key).once("value").then(function(snap){
-      let uluru = { lat: snapshot.val().lat, lng: snapshot.val().lng }
-      let marker = new google.maps.Marker({
-        position: uluru,
-        icon: {
-          url: '../marker.svg',
-        },
-        map: map,
-        title: snapshot.key,
-      })
-      var contentString = '<div id="content">'+
-                            '<div id="siteNotice">'+
-                            '</div>'+
-                            '<h1 id="name" class="h6">'+snap.val().firstName+" "+snap.val().lastName+'</h1>'+
-                            '<div id="bodyContent"><b>'+snap.val().telephone+'</b><br/>'+snap.val().address+
-                            '</div>'+
-                          '</div>'
-      var infowindow = new google.maps.InfoWindow({
-        content: contentString
-      })
-      infowindow.open(map, marker)
-      markers[snapshot.key] = marker
+  usersRef.child(snapshot.key).once("value").then(function(snap){
+    let uluru = { lat: snapshot.val().lat, lng: snapshot.val().lng }
+    let marker = new google.maps.Marker({
+      position: uluru,
+      icon: {
+        url: '../marker.svg',
+      },
+      map: map,
+      title: snapshot.key,
     })
+    var contentString = '<div id="content">'+
+                          '<div id="siteNotice">'+
+                          '</div>'+
+                          '<h1 id="name" class="h6">'+snap.val().firstName+" "+snap.val().lastName+'</h1>'+
+                          '<div id="bodyContent"><b>'+snap.val().telephone+'</b><br/>'+snap.val().address+
+                          '</div>'+
+                        '</div>'
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    })
+    infowindow.open(map, marker)
+    markers[snapshot.key] = marker
+  })
 }
   
 function searchClicked(){
-    child = document.getElementById("track_id").value
-    gpsRef.child('live/'+child).once('value').then(function(snapshot){
+    let name = document.getElementById("track_id").value
+    child = spKeyArr.filter(obj => { return obj.name === name })
+    gpsRef.child('live/'+child[0].key).once('value').then(function(snapshot){
       if(snapshot.val().status == 'inactive'){
         Swal.fire(
           'Sales person location is inactive',

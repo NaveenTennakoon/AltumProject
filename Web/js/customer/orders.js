@@ -1,33 +1,33 @@
-// Personal Orders page functions
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
     ordersRef.once("value").then(function(snapshot){
         snapshot.forEach(function(childSnapshot){
+        // load pending orders    
         if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
-            if(childSnapshot.val().Status == 'Pending'){
-            
-            ordersRef.child(childSnapshot.key+"/Products").once("value").then(function(ccSnapshot){
-                document.getElementById("pending").insertAdjacentHTML(
-                'beforeend',
-                "<div class='form-row'>"+
-                    "<p><b class='col-lg-3'>Order ID: </b>"+childSnapshot.val().orderId+"</p>"+
-                "</div>"+
-                "<div class='form-row'>"+
-                    "<p><b class='col-lg-3'>Total Price: </b>"+childSnapshot.val().Total+"</p>"+
-                "</div>"
-                )
-                ccSnapshot.forEach(function(products){
-                document.getElementById("pending").insertAdjacentHTML(
+            if(childSnapshot.val().Status == 'Pending'){   
+                ordersRef.child(childSnapshot.key+"/Products").once("value").then(function(ccSnapshot){
+                    document.getElementById("pending").insertAdjacentHTML(
                     'beforeend',
-                    "<p><a class='mx-3'>"+products.key+": </a>"+products.val()+"</p>"
-                )
+                    "<div class='form-row'>"+
+                        "<p><b class='col-lg-3'>Order ID: </b>"+childSnapshot.val().orderId+"</p>"+
+                    "</div>"+
+                    "<div class='form-row'>"+
+                        "<p><b class='col-lg-3'>Total Price: </b>"+childSnapshot.val().Total+"</p>"+
+                    "</div>"
+                    )
+                    ccSnapshot.forEach(function(products){
+                    document.getElementById("pending").insertAdjacentHTML(
+                        'beforeend',
+                        "<p><a class='mx-3'>"+products.key+": </a>"+products.val()+"</p>"
+                    )
+                    })
+                    document.getElementById("pending").insertAdjacentHTML(
+                    'beforeend',
+                    "<hr/>"
+                    )
                 })
-                document.getElementById("pending").insertAdjacentHTML(
-                'beforeend',
-                "<hr/>"
-                )
-            })
             }
+            // load completed orders
             else if(childSnapshot.val().Status == 'Completed'){
             document.getElementById("completed").insertAdjacentHTML(
                 'beforeend',
@@ -49,6 +49,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
 })
   
+  // listeners for view buttons
   function ready(){
     let viewItemButtons = document.getElementsByClassName('view-item-button')
     for (let i = 0; i < viewItemButtons.length; i++) {
@@ -57,6 +58,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   }
   
+  // view the selected order in modal
   function viewOrderItemClicked(event){
     let button = event.target
     let order = button.parentElement.parentElement

@@ -22,8 +22,42 @@ inventoryRef.once("value").then(function(snapshot){
 usersRef.once('value').then(function(snapshot){
     $.map(snapshot.val(), function(value, key){
         if(value.type == 'customer')
-        customerIds.push({ key: key, id: value.id })
+            customerIds.push({ key: key, id: value.id })
+        if(value.type == 'salesperson')
+            spIds.push({ key: key, id: value.id })
     })
+    snapshot.forEach(function(childSnapshot){
+        if(childSnapshot.val().type == 'salesperson'){
+            document.getElementById("reports-users-body").insertAdjacentHTML(
+                'beforeend',
+                "<tr>"+
+                    "<td>"+childSnapshot.val().id+"</td>"+
+                    "<td>"+childSnapshot.val().firstName+" "+childSnapshot.val().lastName+"</td>"+
+                    "<td>"+childSnapshot.val().telephone+"</td>"+
+                    "<td>"+childSnapshot.val().address+"</td>"+
+                    "<td>"+childSnapshot.val().type+"</td>"+
+                    "<td>"+childSnapshot.val().status+"</td>"+
+                    "<td>-</td>"+
+                "</tr>"
+            ) 
+        }  
+        else if(childSnapshot.val().type == 'customer'){
+            document.getElementById("reports-users-body").insertAdjacentHTML(
+                'beforeend',
+                "<tr>"+
+                    "<td>"+childSnapshot.val().id+"</td>"+
+                    "<td>"+childSnapshot.val().name+"</td>"+
+                    "<td>"+childSnapshot.val().telephone+"</td>"+
+                    "<td>"+childSnapshot.val().address+"</td>"+
+                    "<td>"+childSnapshot.val().type+"</td>"+
+                    "<td>"+childSnapshot.val().status+"</td>"+
+                    "<td>"+childSnapshot.val().company+"</td>"+
+                "</tr>"
+            ) 
+        }  
+    })
+}).then(()=>{
+    $('#reports-users-table').DataTable()
 })
 ordersRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
@@ -32,20 +66,20 @@ ordersRef.once("value").then(function(snapshot){
         if(customerIds[i].key == childSnapshot.val().Customer)  
             username = customerIds[i].id
         }
-        if(childSnapshot.val().Status == 'Cancelled'){
-        document.getElementById("reports-order-body").insertAdjacentHTML(
-            'beforeend',
-            "<tr>"+
-            "<td>"+childSnapshot.val().orderId+"</td>"+
-            "<td>"+username+"</td>"+
-            "<td>"+childSnapshot.val().Total+"</td>"+
-            "<td>"+childSnapshot.val().orderDate+"</td>"+
-            "<td>Order cancelled</td>"+
-            "<td>Order cancelled</td>"+
-            "<td>"+
-                "<table class='table display'>"+
-                "<tbody id='reports-order-body-products"+childSnapshot.key+"'>"
-        )
+        if(!childSnapshot.val().paymentDate){
+            document.getElementById("reports-order-body").insertAdjacentHTML(
+                'beforeend',
+                "<tr>"+
+                "<td>"+childSnapshot.val().orderId+"</td>"+
+                "<td>"+username+"</td>"+
+                "<td>"+childSnapshot.val().Total+"</td>"+
+                "<td>"+childSnapshot.val().orderDate+"</td>"+
+                "<td>"+childSnapshot.val().payment+"</td>"+
+                "<td>"+childSnapshot.val().Status+"</td>"+
+                "<td>"+
+                    "<table class='table display'>"+
+                    "<tbody id='reports-order-body-products"+childSnapshot.key+"'>"
+            )
         }
         else{
         document.getElementById("reports-order-body").insertAdjacentHTML(
@@ -82,12 +116,7 @@ ordersRef.once("value").then(function(snapshot){
         $('#reports-order-table').DataTable()
     })
 })
-usersRef.once('value').then(function(snapshot){
-    $.map(snapshot.val(), function(value, key){
-        if(value.type == 'salesperson')
-        spIds.push({ key: key, id: value.id })
-    })
-})
+
 gpsRef.child('locations').once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
         let username

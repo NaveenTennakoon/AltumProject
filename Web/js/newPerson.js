@@ -1,4 +1,21 @@
 // new salesperson page functions
+let id = 0
+usersRef.once('value').then(function(snapshot){
+    snapshot.forEach(function(childSnashot){
+        if(childSnashot.val().id > id)
+            id = childSnashot.val().id
+    })
+}).then(()=>{
+    id++
+    id = pad(id, 4)
+})
+
+function pad(num, size) {
+    let s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
 function addSalesperson() {
     $('#addSalespersonForm').submit(function(e){     
         e.preventDefault() 
@@ -13,13 +30,22 @@ function addSalesperson() {
                     telephone: $("#tel").val(),
                     address: $("#address").val(),
                     type: 'salesperson',
+                    id: id
                 }).then(()=>{
-                    Swal.fire({
-                    position: 'top',
-                    icon: 'success',
-                    title: 'Salesperson added successfully',
-                    showConfirmButton: false,
-                    timer: 3000
+                    gpsRef.child('live/'+firebase.auth().currentUser.uid).set({
+                        name: $("#fname").val()+" "+$("#lname").val(),
+                        lat: 0,
+                        lng: 0,
+                        status: 'inactive'
+                    }).then(()=>{
+                        Swal.fire({
+                            position: 'top',
+                            icon: 'success',
+                            title: 'Salesperson added successfully',
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                        $("#addSalespersonForm").trigger('reset'); 
                     })
                 })
             }).catch(function(error) {

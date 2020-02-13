@@ -1,25 +1,27 @@
 // Orders page functions
-document.getElementById("pending-orders").innerHTML = ''
-ordersRef.once("value").then(function(snapshot){
-    snapshot.forEach(function(childSnapshot){
-    if(childSnapshot.val().Status == 'Pending'){
-        document.getElementById("pending-orders").insertAdjacentHTML(
-        'beforeend',
-        "<div class='view-order'>"+
-            "<b>Order ID: </b>"+
-            "<span class='view-order-title' style='display: none'>"+childSnapshot.key+"</span>"+
-            "<span class='view-order-id'>"+childSnapshot.val().orderId+"</span>"+
-            "<div class='view-order-details'>"+
-            "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/></br/>"+
-            "<button class='btn btn-primary view-order-button float-right ml-3' type='button'>Assign</button>"+
-            "<button class='btn btn-danger reject-order-button float-right' type='button'>Reject Order</button><hr class='mt-5'/>"+
-            "</div"+
-        "</div>"
-        )
-    }
-    })
-    populateProducts()
-})
+function loadOrders(){
+  document.getElementById("pending-orders").innerHTML = ''
+  ordersRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+      if(childSnapshot.val().Status == 'Pending'){
+          document.getElementById("pending-orders").insertAdjacentHTML(
+          'beforeend',
+          "<div class='view-order'>"+
+              "<b>Order ID: </b>"+
+              "<span class='view-order-title' style='display: none'>"+childSnapshot.key+"</span>"+
+              "<span class='view-order-id'>"+childSnapshot.val().orderId+"</span>"+
+              "<div class='view-order-details'>"+
+              "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/></br/>"+
+              "<button class='btn btn-primary view-order-button float-right ml-3' type='button'>Assign</button>"+
+              "<button class='btn btn-danger reject-order-button float-right' type='button'>Reject Order</button><hr class='mt-5'/>"+
+              "</div"+
+          "</div>"
+          )
+      }
+      })
+      populateProducts()
+  })
+}
   
 function populateProducts() {
     let rejectOrderButtons = document.getElementsByClassName('btn-danger')
@@ -81,7 +83,8 @@ function viewOrderClicked(event) {
         text: error.message,
       })
     })
-    document.getElementById("order-title").innerHTML = uid
+    document.getElementById("order-title").innerHTML = title
+    document.getElementById("order-id").innerHTML = uid
     $('#viewOrderModal').modal({backdrop: 'static', keyboard: false})
     $('#viewOrderModal').modal('show')
 }
@@ -131,7 +134,7 @@ function assign(){
       }).then(()=>{
         inventoryRef.once("value").then(function(snapshot){
           snapshot.forEach(function(childSnapshot){
-            if(childSnapshot.key==document.getElementById("key"+x).innerHTML){
+            if(childSnapshot.key == document.getElementById("key"+x).innerHTML){
               let deduce = document.getElementById("val"+x).innerHTML - document.getElementById("quantity"+x).innerHTML
               inventoryRef.child(childSnapshot.key).update({
                 Quantity: deduce

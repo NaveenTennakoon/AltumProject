@@ -4,6 +4,7 @@ Chart.defaults.global.defaultFontColor = '#858796'
 let selling = {}
 ordersRef.once("value").then(function(snapshot){
   snapshot.forEach(function(childSnapshot){
+    // Getting the total of sold items each
     for(let key in Object.keys(childSnapshot.val().Products)){
       if(!selling[Object.keys(childSnapshot.val().Products)[key]]){
         selling[Object.keys(childSnapshot.val().Products)[key]] = 0
@@ -20,6 +21,7 @@ ordersRef.once("value").then(function(snapshot){
   for(let i = 0; i < sellKeys.length; i++) {
     sellValues[sellValues.length] = selling[sellKeys [i]]
   }
+  // Sort and select the top 3 sold items
   let sortedValues = sellValues.sort(sortNumber)
   document.getElementById("best1").innerText = " "+sellKeys[0]
   document.getElementById("best2").innerText = " "+sellKeys[1]
@@ -29,6 +31,7 @@ ordersRef.once("value").then(function(snapshot){
     return b - a
   }
 
+  // Create the pie chart
   let ctp = document.getElementById("myPieChart")
   let myPieChart = new Chart(ctp, {
     type: 'doughnut',

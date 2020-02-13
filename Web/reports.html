@@ -92,7 +92,6 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Sales related activities:</h6>
             <a class="collapse-item" href="salespersons.html">Sales Persons</a>
-            <a class="collapse-item" href="payment.html">Payments</a>
             <a class="collapse-item" href="new_salesperson.html">Add New Salesperson</a>
           </div>
         </div>
@@ -128,13 +127,6 @@
       <div class="sidebar-heading">
         Analysis
       </div>
-
-      <!-- Nav Item - Charts and Tables -->
-      <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts & Tables</span></a>
-      </li>
 
       <!-- Nav Item - Reports -->
       <li class="nav-item">
@@ -248,6 +240,23 @@
                 </thead>
                 <tbody id="reports-location-body"></tbody>
               </table>
+              <h4 class="mt-5 font-weight-bold">User details</h4>
+              <button onclick="generateUsersPdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+              <table class="table display" id="reports-users-table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Telephone</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Company</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-users-body"></tbody>
+              </table>
+              <hr/> 
             </div>
           </div>
 
@@ -299,7 +308,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-  <script type="text/javascript" src="js/datatables.min.js"></script>
+  <script src="js/datatables.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
   <script src="js/fbconf.js"></script>
   <script src="js/search.js"></script>
@@ -308,7 +317,7 @@
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <script src="https://unpkg.com/jspdf-autotable"></script>
-  <script src="js/altum.min.js"></script>
+  <script src="js/altum.js"></script>
   <script src="js/global.js"></script>
   <script src="js/reports.js"></script>
   <script src="js/jspdf.js"></script>

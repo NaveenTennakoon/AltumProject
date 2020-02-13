@@ -32,9 +32,11 @@ ordersRef.once("value").then(function(snapshot){
     if(!total[month]){
       total[month] = 0
     }
+    // Calculate totals for each month
     total[month] += parseInt(childSnapshot.val().Total.replace("$", ""))
   })
 }).then(()=>{
+  // Create the area chart
   let ctx = document.getElementById("myAreaChart")
   let myLineChart = new Chart(ctx, {
     type: 'line',

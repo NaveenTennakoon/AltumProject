@@ -1,6 +1,6 @@
-// Feedback page functions
 let orderArr = []
 let keyArr = []
+// populate orders to the search box
 document.getElementById("order_id").innerHTML = ''
 ordersRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
@@ -27,13 +27,18 @@ ordersRef.once("value").then(function(snapshot){
         text: error.message,
     })
 })
-return orderArr
 
+  // viewing the selected order in modal
   function view(){
       let productArr = []
       let quantityArr = []
+      let salesperson
       let dropdown = document.getElementById("order_id")
       let selected = dropdown.options[dropdown.selectedIndex].value
+      ordersRef.child(selected).once("value").then(function(snapshot){
+        salesperson = snapshot.val().salesperson
+      })
+      // products in order loading to the arrays
       ordersRef.child(selected+"/Products").once("value").then(function(snapshot){
           snapshot.forEach(function(childSnapshot){
               productArr.push(childSnapshot.key)
@@ -41,19 +46,27 @@ return orderArr
           })
       }).then(() => {
           for(let i = 0; i < productArr.length; i++){
-              inventoryRef.once("value").then(function(snapshot){
-                snapshot.forEach(function(childSnapshot){
-                  if(childSnapshot.val().ID == productArr[i]){
-                    document.getElementById("order_content").insertAdjacentHTML(
-                      'beforeend',
-                      "<p>Name : "+childSnapshot.val().Name+"</p>"+
-                      "<p>Product ID : "+childSnapshot.val().ID+"</p>"+
-                      "<b>Quantity : "+quantityArr[i]+"</b><hr/>"
-                  )
-                  }
-                })
+            inventoryRef.once("value").then(function(snapshot){
+              snapshot.forEach(function(childSnapshot){
+                // populating the modal
+                if(childSnapshot.val().ID == productArr[i]){
+                  document.getElementById("order_content").insertAdjacentHTML(
+                    'beforeend',
+                    "<p>Name : "+childSnapshot.val().Name+"</p>"+
+                    "<p>Product ID : "+childSnapshot.val().ID+"</p>"+
+                    "<b>Quantity : "+quantityArr[i]+"</b><hr/>"
+                )
+                }
               })
+            })
           }
+          // get delivery person's name
+          usersRef.child(salesperson).once("value").then(function(snapshot){
+            document.getElementById("order_content").insertAdjacentHTML(
+              'beforeend',
+              "<p><b>Delivery Person : </b>"+snapshot.val().firstName+" "+snapshot.val().lastName+"</p>"
+            )
+          })
           $('#viewfbModal').modal({backdrop: 'static', keyboard: false})
           $('#viewfbModal').modal('show')
       })
@@ -74,6 +87,7 @@ return orderArr
   // 	}) 
   // } 
   
+  // feedback submit
   function submitFeedback() {
       let dropdown = document.getElementById("order_id")
       let selected = dropdown.options[dropdown.selectedIndex].value

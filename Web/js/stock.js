@@ -3,39 +3,44 @@ let itemNo = 0
 
 function loadProducts(){
   let typesArr = []
+  document.getElementById("product-items").innerHTML = ''
+  document.getElementById("product-type").innerHTML = ''
   inventoryRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
-      if(typesArr.length == 0){
-        let item = childSnapshot.val().Type
-        typesArr.push(item)
-      }
-      else{
-        let flag = i = 0
-        while(i<typesArr.length){
-          if(childSnapshot.val().Type == typesArr[i]){
-            flag = 1
-          }
-          i++
-        }
-        if(flag == 0){
+      if(childSnapshot.val().Status == 'active'){
+        if(typesArr.length == 0){
           let item = childSnapshot.val().Type
           typesArr.push(item)
         }
+        else{
+          let flag = i = 0
+          while(i<typesArr.length){
+            if(childSnapshot.val().Type == typesArr[i]){
+              flag = 1
+            }
+            i++
+          }
+          if(flag == 0){
+            let item = childSnapshot.val().Type
+            typesArr.push(item)
+          }
+        }
+        document.getElementById("product-items").insertAdjacentHTML(
+          'beforeend',
+          "<div class='shop-item'>"+
+            "<b class='d-none'>Unique ID: </b>"+
+            "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
+            "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
+            "<div class='shop-item-details'>"+
+              "<div class='form-row'>"+
+                "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
+              "</div>"+
+              "<button class='btn btn-danger delete-item-button float-right ml-2' type='button'>Delete Item</button>"+
+              "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
+              "</div>"+
+          "</div>"
+        )
       }
-      document.getElementById("product-items").insertAdjacentHTML(
-        'beforeend',
-        "<div class='shop-item'>"+
-          "<b class='d-none'>Unique ID: </b>"+
-          "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
-          "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
-          "<div class='shop-item-details'>"+
-            "<div class='form-row'>"+
-              "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
-            "</div>"+
-            "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
-            "</div>"+
-        "</div>"
-      )
     })
     if (document.readyState == 'loading'){
       document.addEventListener('DOMContentLoaded', ready)
@@ -60,20 +65,23 @@ function filterbyType(type){
   if(type == 'all'){
     inventoryRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
-        document.getElementById("product-items").insertAdjacentHTML(
-          'beforeend',
-          "<div class='shop-item'>"+
-            "<b class='d-none'>Unique ID: </b>"+
-            "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
-            "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
-            "<div class='shop-item-details'>"+
-              "<div class='form-row'>"+
-                "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
+        if(childSnapshot.val().Status == 'active'){
+          document.getElementById("product-items").insertAdjacentHTML(
+            'beforeend',
+            "<div class='shop-item'>"+
+              "<b class='d-none'>Unique ID: </b>"+
+              "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
+              "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
+              "<div class='shop-item-details'>"+
+                "<div class='form-row'>"+
+                  "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
+                "</div>"+
+                "<button class='btn btn-danger delete-item-button float-right ml-2' type='button'>Delete Item</button>"+
+                "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
               "</div>"+
-              "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
-            "</div>"+
-          "</div>"
-        )
+            "</div>"
+          )
+        }
       })
       if (document.readyState == 'loading'){
         document.addEventListener('DOMContentLoaded', ready)
@@ -86,7 +94,7 @@ function filterbyType(type){
   else{
     inventoryRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
-        if(childSnapshot.val().Type == type){
+        if(childSnapshot.val().Type == type && childSnapshot.val().Status == 'active'){
           document.getElementById("product-items").insertAdjacentHTML(
             'beforeend',
             "<div class='shop-item'>"+
@@ -97,6 +105,7 @@ function filterbyType(type){
                 "<div class='form-row'>"+
                   "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
                 "</div>"+
+                "<button class='btn btn-danger delete-item-button float-right ml-2' type='button'>Delete Item</button>"+
                 "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
               "</div>"+
             "</div>"
@@ -115,9 +124,14 @@ function filterbyType(type){
 
 function ready() {
   let viewItemButtons = document.getElementsByClassName('view-item-button')
+  let deleteItemButtons = document.getElementsByClassName('delete-item-button')
   for (let i = 0; i < viewItemButtons.length; i++) {
     let button = viewItemButtons[i]
     button.addEventListener('click', viewItemClicked)
+  }
+  for (let i = 0; i < deleteItemButtons.length; i++) {
+    let button = deleteItemButtons[i]
+    button.addEventListener('click', deleteItemClicked)
   }
 }
 
@@ -202,4 +216,35 @@ function update(){
       timer: 3000
     })
   })
+  loadProducts()
+}
+
+function deleteItemClicked(event){
+  let button = event.target
+  let shopItem = button.parentElement.parentElement
+  let title = shopItem.getElementsByClassName('shop-item-title')[0].innerText
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you want to delete the item?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ff0000',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Delete'
+  }).then((result) => {
+    if (result.value) {
+      inventoryRef.child(title).update({
+        Status: 'inactive',
+      }).then(()=>{
+        Swal.fire({
+          position: 'top',
+          icon: 'success',
+          title: 'Product deleted successfully',
+          showConfirmButton: false,
+          timer: 3000
+        })
+      })
+    }
+  })
+  loadProducts()
 }
