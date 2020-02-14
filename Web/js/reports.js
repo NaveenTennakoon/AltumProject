@@ -1,4 +1,3 @@
-// Reports page functions
 let customerIds = []
 let spIds = []
 
@@ -15,9 +14,7 @@ inventoryRef.once("value").then(function(snapshot){
         )
     })
 }).then(() => {
-    $(document).ready(() => {
-        $('#reports-product-table').DataTable()
-    })
+    $('#reports-product-table').DataTable()
 })
 usersRef.once('value').then(function(snapshot){
     $.map(snapshot.val(), function(value, key){
@@ -82,19 +79,30 @@ ordersRef.once("value").then(function(snapshot){
             )
         }
         else{
-        document.getElementById("reports-order-body").insertAdjacentHTML(
-            'beforeend',
-            "<tr>"+
-            "<td>"+childSnapshot.val().orderId+"</td>"+
-            "<td>"+username+"</td>"+
-            "<td>"+childSnapshot.val().Total+"</td>"+
-            "<td>"+childSnapshot.val().orderDate+"</td>"+
-            "<td>"+childSnapshot.val().payment+"</td>"+
-            "<td>"+childSnapshot.val().paymentDate+"</td>"+
-            "<td>"+
-                "<table class='table display'>"+
-                "<tbody id='reports-order-body-products"+childSnapshot.key+"'>"
-        )
+            if(childSnapshot.val().Feedback){
+                document.getElementById("reports-feedback-body").insertAdjacentHTML(
+                    'beforeend',
+                    "<tr>"+
+                    "<td>"+childSnapshot.val().orderId+"</td>"+
+                    "<td>"+childSnapshot.val().deliveryRating+"</td>"+
+                    "<td>"+childSnapshot.val().productRating+"</td>"+
+                    "<td>"+childSnapshot.val().Feedback+"</td>"+ 
+                    "</tr>"
+                )
+            }
+            document.getElementById("reports-order-body").insertAdjacentHTML(
+                'beforeend',
+                "<tr>"+
+                "<td>"+childSnapshot.val().orderId+"</td>"+
+                "<td>"+username+"</td>"+
+                "<td>"+childSnapshot.val().Total+"</td>"+
+                "<td>"+childSnapshot.val().orderDate+"</td>"+
+                "<td>"+childSnapshot.val().payment+"</td>"+
+                "<td>"+childSnapshot.val().paymentDate+"</td>"+
+                "<td>"+
+                    "<table class='table display'>"+
+                    "<tbody id='reports-order-body-products"+childSnapshot.key+"'>"
+            )
         }
         $.map(childSnapshot.val().Products, function(value, key){
         document.getElementById("reports-order-body-products"+childSnapshot.key).insertAdjacentHTML(
@@ -112,9 +120,8 @@ ordersRef.once("value").then(function(snapshot){
         )   
     })
 }).then(() => {
-    $(document).ready(() => {
-        $('#reports-order-table').DataTable()
-    })
+    $('#reports-order-table').DataTable()
+    $('#reports-feedback-table').DataTable()
 })
 
 gpsRef.child('locations').once("value").then(function(snapshot){
@@ -137,7 +144,5 @@ gpsRef.child('locations').once("value").then(function(snapshot){
         )
     })
 }).then(() => {
-    $(document).ready(() => {
-        $('#reports-location-table').DataTable()
-    })
+    $('#reports-location-table').DataTable()
 })

@@ -3,9 +3,9 @@ let products = window.document.getElementById('reports-product-table')
 let orders = window.document.getElementById('reports-order-table')
 let locations = window.document.getElementById('reports-location-table')
 let users = window.document.getElementById('reports-users-table')
+let feedback = window.document.getElementById('reports-feedback-table')
 
-let flag = 0
-let p_filter = o_filter = l_filter = u_filter = ''
+let p_filter = o_filter = l_filter = u_filter = f_filter = ''
 
 //listeners for datatable search boxes
 $('#reports-product-table').on('search.dt', function() {
@@ -20,12 +20,12 @@ $('#reports-location-table').on('search.dt', function() {
 $('#reports-users-table').on('search.dt', function() {
     u_filter = $('.dataTables_filter input')[3].value
 })
+$('#reports-feedback-table').on('search.dt', function() {
+    f_filter = $('.dataTables_filter input')[4].value
+})
 
 // generate product pdf
 function generateProductsPdf(){
-    if(flag == 1)
-        doc.addPage()
-    flag = 1
     doc.setFontSize(20)
     doc.text('Products report', doc.internal.pageSize.getWidth()/2, 10, 'center')
     doc.setFontSize(14)
@@ -57,9 +57,6 @@ function generateOrdersPdf(){
 
 // generate locations pdf
 function generateLocationPdf(){
-    if(flag == 1)
-        doc.addPage()
-    flag = 0
     doc.setFontSize(20)
     doc.text('Locations report', doc.internal.pageSize.getWidth()/2, 10, 'center')
     doc.setFontSize(14)
@@ -74,9 +71,6 @@ function generateLocationPdf(){
 
 // generate users pdf
 function generateUsersPdf(){
-    if(flag == 1)
-        doc.addPage()
-     flag = 0
      doc.setFontSize(20)
      doc.text('Users report', doc.internal.pageSize.getWidth()/2, 10, 'center')
      doc.setFontSize(14)
@@ -86,5 +80,19 @@ function generateUsersPdf(){
          html: users,
          startY: 60,
      })
+    doc.output("dataurl")
+}
+
+// generate feedback pdf
+function generateFeedbackPdf(){
+    doc.setFontSize(20)
+    doc.text('Feedback report', doc.internal.pageSize.getWidth()/2, 10, 'center')
+    doc.setFontSize(14)
+    doc.text('Applied filters: '+f_filter, 10, 20)
+    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30   )
+    doc.autoTable({ 
+        html: feedback,
+        startY: 60,
+    })
     doc.output("dataurl")
 }

@@ -256,6 +256,20 @@
                 </thead>
                 <tbody id="reports-users-body"></tbody>
               </table>
+              <hr/>
+              <h4 class="mt-5 font-weight-bold">Feedback</h4>
+              <button onclick="generateFeedbackPdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+              <table class="table display" id="reports-feedback-table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Delivery Rating(/5)</th>
+                    <th scope="col">Product Rating(/5)</th>
+                    <th scope="col">Feedback</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-feedback-body"></tbody>
+              </table>
               <hr/> 
             </div>
           </div>

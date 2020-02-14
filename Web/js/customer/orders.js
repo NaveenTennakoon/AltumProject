@@ -27,6 +27,30 @@ firebase.auth().onAuthStateChanged(function(user) {
                     )
                 })
             }
+            // load cancelled orders
+            if(childSnapshot.val().Status == 'Cancelled'){   
+                ordersRef.child(childSnapshot.key+"/Products").once("value").then(function(ccSnapshot){
+                    document.getElementById("cancelled").insertAdjacentHTML(
+                    'beforeend',
+                    "<div class='form-row'>"+
+                        "<p><b class='col-lg-3'>Order ID: </b>"+childSnapshot.val().orderId+"</p>"+
+                    "</div>"+
+                    "<div class='form-row'>"+
+                        "<p><b class='col-lg-3'>Total Price: </b>"+childSnapshot.val().Total+"</p>"+
+                    "</div>"
+                    )
+                    ccSnapshot.forEach(function(products){
+                    document.getElementById("cancelled").insertAdjacentHTML(
+                        'beforeend',
+                        "<p><a class='mx-3'>"+products.key+": </a>"+products.val()+"</p>"
+                    )
+                    })
+                    document.getElementById("cancelled").insertAdjacentHTML(
+                    'beforeend',
+                    "<hr/>"
+                    )
+                })
+            }
             // load completed orders
             else if(childSnapshot.val().Status == 'Completed'){
             document.getElementById("completed").insertAdjacentHTML(

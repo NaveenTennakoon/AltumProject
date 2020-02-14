@@ -1,31 +1,46 @@
 let orderArr = []
 let keyArr = []
 // populate orders to the search box
-document.getElementById("order_id").innerHTML = ''
-ordersRef.once("value").then(function(snapshot){
-    snapshot.forEach(function(childSnapshot){
-        if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
-            if(childSnapshot.val().Status == 'Completed' && !childSnapshot.val().Feedback){
-                let item = childSnapshot.val().orderId
-                let key = childSnapshot.key
-                orderArr.push(item)
-                keyArr.push(key)
-            }
-        }
-    })
-    for(let i = 0; i < orderArr.length; i++){
-        document.getElementById("order_id").insertAdjacentHTML(
-            'beforeend',
-            "<option value="+keyArr[i]+">"+orderArr[i]+"</option>"
-        )
-    }
-}).catch(function(error){
-    // Handle Errors here.
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.message,
-    })
+function ordersnapshotToArray(){
+  document.getElementById("order_id").innerHTML = ''
+  ordersRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+          if(childSnapshot.val().Customer == firebase.auth().currentUser.uid){
+              if(childSnapshot.val().Status == 'Completed' && !childSnapshot.val().Feedback){
+                  let item = childSnapshot.val().orderId
+                  let key = childSnapshot.key
+                  orderArr.push(item)
+                  keyArr.push(key)
+              }
+          }
+      })
+      for(let i = 0; i < orderArr.length; i++){
+          document.getElementById("order_id").insertAdjacentHTML(
+              'beforeend',
+              "<option value="+keyArr[i]+">"+orderArr[i]+"</option>"
+          )
+      }
+  }).catch(function(error){
+      // Handle Errors here.
+      Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+      })
+  })
+}
+
+// listeners for the stars
+document.addEventListener('DOMContentLoaded', function(){
+  let d_rating = p_rating = 0 
+  let delivery_stars = document. querySelectorAll('.delivery-star')
+  let product_stars = document. querySelectorAll('.product-star')
+  delivery_stars.forEach(function(star){
+      star.addEventListener('click', setDeliveryRating)
+  })
+  product_stars.forEach(function(star){
+    star.addEventListener('click', setProductRating)
+  })
 })
 
   // viewing the selected order in modal
@@ -76,17 +91,6 @@ ordersRef.once("value").then(function(snapshot){
     document.getElementById("order_content").innerHTML = ''
   }
   
-  // function starRating() {
-  // 	var starRating1 = raterJs( {
-  // 		starSize:32, 
-  // 		element:document.querySelector("#rater"), 
-  // 		rateCallback:function rateCallback(rating, done) {
-  // 			this.setRating(rating) 
-  // 			done() 
-  // 		}
-  // 	}) 
-  // } 
-  
   // feedback submit
   function submitFeedback() {
       let dropdown = document.getElementById("order_id")
@@ -101,7 +105,9 @@ ordersRef.once("value").then(function(snapshot){
         return
       }
       ordersRef.child(selected).update({
-          Feedback: Feedback
+          Feedback: Feedback,
+          deliveryRating: d_rating,
+          productRating: p_rating
       }).then(() => {
         Swal.fire({
           position: 'top',
@@ -121,6 +127,41 @@ ordersRef.once("value").then(function(snapshot){
           })
       })
   }
+
+// set rating
+function setDeliveryRating(event){
+    let span = event.currentTarget
+    let stars = document.querySelectorAll('.delivery-star')
+    let match = false
+    stars.forEach(function(star, index){
+      if(match)
+        star.classList.remove('rated')
+      else
+        star.classList.add('rated')
+      // are we currently looking at the span that was clicked
+      if(star === span){
+        match = true
+        d_rating = index + 1
+      }
+    })
+}
+
+function setProductRating(event){
+  let span = event.currentTarget
+  let stars = document.querySelectorAll('.product-star')
+  let match = false
+  stars.forEach(function(star, index){
+    if(match)
+      star.classList.remove('rated')
+    else
+      star.classList.add('rated')
+    // are we currently looking at the span that was clicked
+    if(star === span){
+      match = true
+      p_rating = index + 1
+    }
+  })
+}
   
   
   
