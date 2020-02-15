@@ -1,7 +1,7 @@
 let typesArr = []
+ // pouplate the types array
 inventoryRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
-      // pouplate the types array
       if(childSnapshot.val().Status == 'active'){
         if(typesArr.length == 0){
             let item = childSnapshot.val().Type
@@ -47,52 +47,6 @@ inventoryRef.once("value").then(function(snapshot){
     x++
     }
 })
-  
-  // populate the edit modal with details of selected item
-  function populateEditModal(){
-    document.getElementById("view-profile-body").innerHTML = ''
-    document.getElementById("edit-profile-title").innerText = firebase.auth().currentUser.email
-    usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
-      document.getElementById("edit-profile-body").insertAdjacentHTML(
-        'beforeend',
-        "<div class='form-row my-3 mx-3'>"+
-          "<div class='col-lg-3'>"+
-            "<a value='Name'><strong>Name</strong></a>"+
-          "</div>"+
-          "<div class='col-lg-9'>"+
-            "<input class='form-control' id='name' value='"+snapshot.val().name+"'>"+
-          "</div>"+
-        "</div>"+
-        "<div class='form-row my-3 mx-3'>"+
-          "<div class='col-lg-3'>"+
-            "<a value='Name'><strong>Company</strong></a>"+
-          "</div>"+
-          "<div class='col-lg-9'>"+
-            "<input class='form-control' id='company' value='"+snapshot.val().company+"'>"+
-          "</div>"+
-        "</div>"+
-        "<div class='form-row my-3 mx-3'>"+
-          "<div class='col-lg-3'>"+
-            "<a value='Name'><strong>Contact Number</strong></a>"+
-          "</div>"+
-          "<div class='col-lg-7'>"+
-            "<input class='form-control' id='tel' value='"+snapshot.val().telephone+"'>"+
-          "</div>"+
-        "</div>"+
-        "<div class='form-row my-3 mx-3'>"+
-          "<div class='col-lg-3'>"+
-            "<a value='Name'><strong>Address</strong></a>"+
-          "</div>"+
-          "<div class='col-lg-9'>"+
-            "<textarea class='form-control' id='address'>"+snapshot.val().address+"</textarea>"+
-          "</div>"+
-        "</div>"
-      )
-    })
-    // show modal
-    $('#editProfileModal').modal({backdrop: 'static', keyboard: false})
-    $('#editProfileModal').modal('show')
-  }
   
   // filtering process
   function filterbyType(type){
@@ -215,6 +169,7 @@ inventoryRef.once("value").then(function(snapshot){
           )
         }
         else{
+          let cart = []
           //generate order id
           let str = firebase.auth().currentUser.uid+date.getTime()
           let hash = Math.abs(str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0))
@@ -238,10 +193,46 @@ inventoryRef.once("value").then(function(snapshot){
             for(let i = 0; i < cartItem.length; i++){
               let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
               let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
+              cart.push({
+                id: cartItemName,
+                quantity: cartItemQuantity
+              })
               ordersRef.child(key+'/Products').update({
                 [cartItemName]: cartItemQuantity,
               })
             }  
+             // generate invoice
+            let doc =  new jsPDF()
+            doc.text('Order invoice', doc.internal.pageSize.getWidth()/2, 20, 'center')
+            doc.setFontSize(12)
+            doc.text('Provided by Altum Engineering Group', doc.internal.pageSize.getWidth()/2, 30, 'center')
+            doc.setFontSize(13)
+            doc.text('Order ID: '+hash.toString(), doc.internal.pageSize.getWidth()/2, 50, 'center')
+            doc.autoTable({
+              styles: {
+                  cellPadding: 0.5,
+                  fontSize: 12
+              },
+              startY: 60,
+              tableLineWidth: 0.5,
+              head: [{id: 'Product ID', quantity: 'Quantity'}],
+              headStyles: {
+                halign: 'center',
+                fontSize: 10,
+                cellPadding: 3,
+              },
+              body: cart,
+              bodyStyles: {
+                fontSize: 10,
+                lineWidth: 0.2,
+                halign: 'center',
+                cellPadding: 1,
+              },
+            })
+            doc.text('Total value of items : '+cartTotal, 10, doc.internal.pageSize.getHeight()-40)
+            doc.text('Payment type : Cash', 10, doc.internal.pageSize.getHeight()-30)
+            doc.text('Order Date : '+date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(), 10, doc.internal.pageSize.getHeight()-20)
+            doc.output("dataurlnewwindow")
             while (cartItems.hasChildNodes()) {
               cartItems.removeChild(cartItems.firstChild)
             }
@@ -362,6 +353,7 @@ inventoryRef.once("value").then(function(snapshot){
     document.getElementsByClassName('cart-total-price')[0].innerText = total
   }
   
+  // clear the view modal
   function clearViewModal(){
     document.getElementById("item-body").innerHTML = ''
   }
@@ -390,6 +382,7 @@ paypal.Buttons({
     let date = new Date();
     let str = firebase.auth().currentUser.uid+date.getTime()
     let hash = Math.abs(str.split('').reduce((a, b) => {a = ((a << 5) - a) + b.charCodeAt(0); return a&a}, 0))
+    // update database
     ordersRef.push({
         Customer: firebase.auth().currentUser.uid,
         Total: cartTotal,
@@ -399,23 +392,60 @@ paypal.Buttons({
         paymentDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(), 
         orderId: hash,
         }).then((snap) => {
+        let cart = []
         const key = snap.key;
         for(let i = 0; i < cartItem.length; i++){
             let cartItemName = document.getElementsByClassName('cart-item-title')[i].innerText
             let cartItemQuantity = document.getElementsByClassName('cart-quantity-input')[i].value
+            cart.push({
+              id: cartItemName,
+              quantity: cartItemQuantity
+            })
             ordersRef.child(key+'/Products').update({
                 [cartItemName]: cartItemQuantity,
             })
         }  
+          // generate invoive after payment
+        let doc =  new jsPDF()
+        doc.text('Order invoice', doc.internal.pageSize.getWidth()/2, 20, 'center')
+        doc.setFontSize(12)
+        doc.text('Provided by Altum Engineering Group', doc.internal.pageSize.getWidth()/2, 30, 'center')
+        doc.setFontSize(13)
+        doc.text('Order ID: '+hash.toString(), doc.internal.pageSize.getWidth()/2, 50, 'center')
+        doc.autoTable({
+          styles: {
+              cellPadding: 0.5,
+              fontSize: 12
+          },
+          startY: 60,
+          tableLineWidth: 0.5,
+          head: [{id: 'Product ID', quantity: 'Quantity'}],
+          headStyles: {
+            halign: 'center',
+            fontSize: 10,
+            cellPadding: 3,
+          },
+          body: cart,
+          bodyStyles: {
+            fontSize: 10,
+            lineWidth: 0.2,
+            halign: 'center',
+            cellPadding: 1,
+          },
+        })
+        doc.text('Total value of items : '+cartTotal, 10, doc.internal.pageSize.getHeight()-40)
+        doc.text('Payment type : Cash', 10, doc.internal.pageSize.getHeight()-30)
+        doc.text('Order Date : '+date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(), 10, doc.internal.pageSize.getHeight()-30)
+        doc.output("dataurlnewwindow")
         while (cartItems.hasChildNodes()) {
-            cartItems.removeChild(cartItems.firstChild)
+          cartItems.removeChild(cartItems.firstChild)
         }
         updateCartTotal()
-    }).catch(function(error){
+      }).catch(function(error){
         // Handle Errors here.
         let errorMessage = error.message;
         window.alert(errorMessage);
-    });
+      });
     
     return actions.order.capture().then(function(details) {
         alert('Transaction completed by ' + details.payer.name.given_name);

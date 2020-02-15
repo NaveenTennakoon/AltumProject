@@ -17,6 +17,7 @@ function userid(){
 
   // view profile of user
   function getProfile(){
+    document.getElementById("view-profile-body").innerHTML = ''
     document.getElementById("view-profile-title").innerText = firebase.auth().currentUser.email
     usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
       document.getElementById("view-profile-body").insertAdjacentHTML(
@@ -59,6 +60,52 @@ function userid(){
     $('#viewProfileModal').modal('show')
   }
 
+  // populate the edit modal for the user
+  function populateEditModal(){
+    document.getElementById("edit-profile-body").innerHTML = ''
+    document.getElementById("edit-profile-title").innerText = firebase.auth().currentUser.email
+    usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
+      document.getElementById("edit-profile-body").insertAdjacentHTML(
+        'beforeend',
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<a value='Name'><strong>Name</strong></a>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<input class='form-control' id='name' value='"+snapshot.val().name+"'>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<a value='Name'><strong>Company</strong></a>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<input class='form-control' id='company' value='"+snapshot.val().company+"'>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<a value='Name'><strong>Contact Number</strong></a>"+
+          "</div>"+
+          "<div class='col-lg-7'>"+
+            "<input class='form-control' id='tel' value='"+snapshot.val().telephone+"'>"+
+          "</div>"+
+        "</div>"+
+        "<div class='form-row my-3 mx-3'>"+
+          "<div class='col-lg-3'>"+
+            "<a value='Name'><strong>Address</strong></a>"+
+          "</div>"+
+          "<div class='col-lg-9'>"+
+            "<textarea class='form-control' id='address'>"+snapshot.val().address+"</textarea>"+
+          "</div>"+
+        "</div>"
+      )
+    })
+    // show modal
+    $('#editProfileModal').modal({backdrop: 'static', keyboard: false})
+    $('#editProfileModal').modal('show')
+  }
+
   // update user profile
   function updateProfile(){
     usersRef.child(firebase.auth().currentUser.uid).update({
@@ -86,16 +133,28 @@ function userid(){
   
   // logout user
   function logout(){
-    firebase.auth().signOut().then(function(){
-      // Sign-out successful.
-      location.href = "index.html"
-    }).catch(function(error) {
-      // An error happened.
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.message,
-      })
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You are logging out of Altum",
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Logout'
+    }).then((result) => {
+      if (result.value) {
+        firebase.auth().signOut().then(function(){
+          // Sign-out successful.
+          location.href = "index.html"
+        }).catch(function(error) {
+          // An error happened.
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+          })
+        })  
+      }
     })
   }
   

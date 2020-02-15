@@ -102,7 +102,7 @@
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
-                <a class="dropdown-item bg-secondary text-white font-weight-bold" href="#" data-toggle="modal" data-target="#logoutModal">
+                <a class="dropdown-item bg-secondary text-white font-weight-bold" type="button" onclick="logout()">
                   <i class="fas fa-sign-out-alt fa-fw mr-2 text-white-600"></i>
                   Logout
                 </a>
@@ -158,12 +158,11 @@
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <div class="dropdown-header">Options:</div>
                       <a class="dropdown-item" onclick="clearOrder()">Clear order</a>
-                      <a class="dropdown-item" >Descriptive view</a>
                     </div>
                   </div>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body overflow-auto" style="height: 300px">
+                <div class="card-body overflow-auto" style="height: 300px" id="aaaaa">
                   <section class="container content-section">
                     <div class="cart-items"></div>
                   </section>
@@ -218,25 +217,6 @@
         <div class="modal-body p-4 text-center">
           <button class="btn btn-primary btn-purchase btn-block" type="button" data-dismiss="modal">Pay on Delivery</button><br/>or
           <div class="mt-3" id="paypal-button-container"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary text-white" onclick="logout()">Logout</a>
         </div>
       </div>
     </div>
@@ -309,11 +289,13 @@
   </div>
 
   <script src="https://www.paypal.com/sdk/js?client-id=AePUB0YxTMfv1U9Dzid9EcVlvnqxYhERqT4FlOpFcigAXGuEwJ8_gCY4JXcaYWtgfpJddfdSLdPbdFUX"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="https://unpkg.com/jspdf-autotable"></script>
   <script src="js/altum.js"></script>
   <script src="js/fbconf.js"></script>
   <script src="js/customer/global.js"></script>

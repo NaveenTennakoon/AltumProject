@@ -173,7 +173,7 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <a class="dropdown-item" type="button" onclick="logout()">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
                 </a>
@@ -257,7 +257,7 @@
                 <tbody id="reports-users-body"></tbody>
               </table>
               <hr/>
-              <h4 class="mt-5 font-weight-bold">Feedback</h4>
+              <h4 class="mt-5 font-weight-bold">Feedback details</h4>
               <button onclick="generateFeedbackPdf()" class="float-right mb-2 d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
               <table class="table display" id="reports-feedback-table">
                 <thead class="thead-dark">

@@ -72,9 +72,9 @@ function loadLocations(){
         let name = ''
         usersRef.once("value").then(function(snapshot){
             snapshot.forEach(function(childSnapshot){
-                if(childSnapshot.val().firstName+" "+childSnapshot.val().lastName == search){
-                name = childSnapshot.key
-                }
+                // console.log(name+" "+childSnapshot.val().firstName+" "+childSnapshot.val().lastName+" "+search)
+                if(childSnapshot.val().firstName+" "+childSnapshot.val().lastName == search)
+                    name = childSnapshot.key
             })
         })
         gpsRef.child("locations").once("value").then(function(snaphot){
@@ -224,31 +224,31 @@ $('#locationModal').modal('show')
 }
 
 function addPastLocationMarker(snapshot){
-usersRef.child(snapshot.val().salesperson).once("value").then(function(snap){
-    let uluru = { lat: snapshot.val().lat, lng: snapshot.val().lng }
-    let marker = new google.maps.Marker({
-    position: uluru,
-    icon: {
-        url: './img/marker.png',
-    },
-    map: map,
-    title: snapshot.key,
+    usersRef.child(snapshot.val().salesperson).once("value").then(function(snap){
+        let uluru = { lat: snapshot.val().lat, lng: snapshot.val().lng }
+        let marker = new google.maps.Marker({
+        position: uluru,
+        icon: {
+            url: './img/marker.png',
+        },
+        map: map,
+        title: snapshot.key,
+        })
+        var contentString = '<div id="content">'+
+                            '<div id="siteNotice">'+
+                            '</div>'+
+                            '<p id="name" class="h4">'+snap.val().firstName+" "+snap.val().lastName+"</p>"+
+                            '<div id="bodyContent"><b>'+snapshot.val().shopname+'</b><br/>'+snapshot.val().customer+"<br/>"+snapshot.val().address+
+                            '</div>'+
+                            '</div>'
+        var infowindow = new google.maps.InfoWindow({
+        content: contentString
+        })
+        google.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(map, marker)
+        })  
+        pastMarkers[snapshot.key] = marker
     })
-    var contentString = '<div id="content">'+
-                        '<div id="siteNotice">'+
-                        '</div>'+
-                        '<p id="name" class="h4">'+snap.val().firstName+" "+snap.val().lastName+"</p>"+
-                        '<div id="bodyContent"><b>'+snapshot.val().shopname+'</b><br/>'+snapshot.val().customer+"<br/>"+snapshot.val().address+
-                        '</div>'+
-                        '</div>'
-    var infowindow = new google.maps.InfoWindow({
-    content: contentString
-    })
-    google.maps.event.addListener(marker, 'click', function() {
-    infowindow.open(map, marker)
-    })
-    pastMarkers[snapshot.key] = marker
-})
 }
   
 function refresh(){
