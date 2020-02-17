@@ -30,24 +30,23 @@ function addSalesperson() {
                     telephone: $("#tel").val(),
                     address: $("#address").val(),
                     type: 'salesperson',
-                    id: id
-                }).then(()=>{
-                    gpsRef.child('live/'+firebase.auth().currentUser.uid).set({
-                        name: $("#fname").val()+" "+$("#lname").val(),
-                        lat: 0,
-                        lng: 0,
-                        status: 'inactive'
-                    }).then(()=>{
-                        Swal.fire({
-                            position: 'top',
-                            icon: 'success',
-                            title: 'Salesperson added successfully',
-                            showConfirmButton: false,
-                            timer: 3000
-                        })
-                        $("#addSalespersonForm").trigger('reset'); 
-                    })
+                    id: id,
+                    status: 'active'
                 })
+                gpsRef.child('live/'+firebase.auth().currentUser.uid).set({
+                    name: $("#fname").val()+" "+$("#lname").val(),
+                    lat: 0,
+                    lng: 0,
+                    status: 'inactive'
+                })
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: 'Salesperson added successfully',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+                $("#addSalespersonForm").trigger('reset')
             }).catch(function(error) {
                 Swal.fire({
                     icon: 'error',

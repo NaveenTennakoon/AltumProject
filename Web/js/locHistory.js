@@ -193,7 +193,7 @@ map = new google.maps.Map(document.getElementById('map'), {
     streetViewControl: false,
     mapTypeControl: false,
     center: {lat: -34.397, lng: 150.644},
-    zoom: 15
+    zoom: 13
 })
 
 if (navigator.geolocation){
@@ -246,7 +246,8 @@ function addPastLocationMarker(snapshot){
         })
         google.maps.event.addListener(marker, 'click', function() {
         infowindow.open(map, marker)
-        })  
+        })
+        map.setCenter(uluru)
         pastMarkers[snapshot.key] = marker
     })
 }

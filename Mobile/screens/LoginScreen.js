@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, Image, TextInput, Text, TouchableOpacity, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import FB from '../components/FB';
@@ -15,19 +15,19 @@ export default class Login extends Component {
       spinner: true,
 		},
     global.username = '';
-    global.pwd = '';
   }
 
   async componentDidMount() {
     let user = FB.auth().currentUser;
-      if (user)
-        this.updateDetails(); 
+      if (user){
+        this.setState({spinner: false})
+        this.props.navigation.navigate('tNav');
+      }
       else
         this.setState({spinner: false});
   }
   
 	login(){
-		const {navigate} = this.props.navigation;
 		let user = this.state.username;
 		let pwd = this.state.password;
 		FB.auth().signInWithEmailAndPassword(user, pwd).then(() => {
@@ -50,7 +50,8 @@ export default class Login extends Component {
       else{
         if(snapshot.val().status == 'active'){
           global.username = snapshot.val().firstName+" "+snapshot.val().lastName;
-          global.pwd = pwd;
+          AsyncStorage.setItem({key: 'password', value: this.state.password});
+          global.pwd = this.state.password;
           alert("Welcome"+" "+snapshot.val().firstName+" "+snapshot.val().lastName);
           this.setState({spinner: false})
           this.props.navigation.navigate('tNav');

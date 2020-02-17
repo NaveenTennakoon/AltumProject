@@ -234,7 +234,7 @@ function deleteItemClicked(event){
     confirmButtonColor: '#ff0000',
     cancelButtonColor: '#3085d6',
     confirmButtonText: 'Delete'
-  }).then((result) => {
+  }).then((result) => {  
     if (result.value) {
       inventoryRef.child(title).update({
         Status: 'inactive',
@@ -247,7 +247,8 @@ function deleteItemClicked(event){
           timer: 3000
         })
       })
-    }
+      loadProducts()
+    }   
   })
-  loadProducts()
+
 }

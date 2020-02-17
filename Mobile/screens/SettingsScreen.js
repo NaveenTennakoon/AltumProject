@@ -34,7 +34,7 @@ export default class SettingsScreen extends Component {
  
   handleSave = () => {
     let user = FB.auth().currentUser;
-    if(this.state.pwd == global.pwd && this.state.newPwd == this.state.cNewPwd){
+    if(this.state.pwd == AsyncStorage.getItem('password') && this.state.newPwd == this.state.cNewPwd){
       user.updatePassword(this.state.newPwd).then(function() {
         alert("Password updated successfully")
       }).catch(function(error) {
@@ -91,6 +91,7 @@ export default class SettingsScreen extends Component {
                 [
                   {text: 'Cancel', onPress: () => {return null}},
                   {text: 'Confirm', onPress: () => {
+                    this.removeLocationUpdates()
                     AsyncStorage.clear();
                     navigate('Login')
                   }},

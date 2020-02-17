@@ -1,4 +1,9 @@
-// global administrator functions
+firebase.auth().onAuthStateChanged(function(user) {
+  if (!user)
+    location.href = "index.html" 
+})
+
+
 function logout(){
   Swal.fire({
     title: 'Are you sure?',
