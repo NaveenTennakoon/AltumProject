@@ -244,7 +244,7 @@ function deleteItemClicked(event){
           timer: 3000
         })
       })
+      loadProducts()
     }
   })
-  loadProducts()
 }

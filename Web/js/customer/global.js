@@ -1,19 +1,20 @@
-function userid(){
-    firebase.auth().onAuthStateChanged(function(user){
-      if(user){
-        usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
-          let uid = snapshot.val().name
-          document.getElementById("uid").innerHTML = uid 
-        }).catch(function(error){
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: error.message,
-          })
+  firebase.auth().onAuthStateChanged(function(user){
+    if(user){
+      usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
+        let uid = snapshot.val().name
+        document.getElementById("uid").innerHTML = uid 
+      }).catch(function(error){
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
         })
-      }
-    })
-  }
+      })
+    }
+    else{
+      location.href = "index.html" 
+    }
+  })
 
   // view profile of user
   function getProfile(){
@@ -160,6 +161,7 @@ function userid(){
   
   // account deleting
   async function signout(){
+    modalLoading.init(true)
     $('#signoutModal').modal('hide')
     // get authentication credentials
     const { value: formValues } = await Swal.fire({
@@ -182,6 +184,8 @@ function userid(){
         }).then(() => {
           // delete user
           firebase.auth().currentUser.delete().then(() => {
+            let element = document.getElementById("openModalLoading")
+            element.parentNode.removeChild(element) 
             Swal.fire({
               position: 'top',
               icon: 'success',
@@ -190,12 +194,6 @@ function userid(){
               timer: 3000
             })
             location.href = 'index.html'
-          }).catch(function(error){
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: error.message,
-            })
           })
         })
       }).catch(function(error) {
@@ -204,7 +202,13 @@ function userid(){
           title: 'Oops...',
           text: error.message,
         })
+        let element = document.getElementById("openModalLoading")
+        element.parentNode.removeChild(element)
       })
+    }
+    else{
+      let element = document.getElementById("openModalLoading")
+      element.parentNode.removeChild(element)
     }
   }
   

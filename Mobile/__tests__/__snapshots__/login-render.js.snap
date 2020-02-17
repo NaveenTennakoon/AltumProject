@@ -1,0 +1,264 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  behaviour="padding"
+  onLayout={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#DCDCDC",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <Image
+    source={
+      Object {
+        "uri": "https://cdn2.f-cdn.com/contestentries/68791/9261050/5337f7fab2996_thumb900.jpg",
+      }
+    }
+    style={
+      Object {
+        "flex": 1,
+        "height": "100%",
+        "justifyContent": "center",
+        "position": "absolute",
+        "width": "100%",
+      }
+    }
+  />
+  <View
+    style={
+      Object {
+        "justifyContent": "center",
+        "marginBottom": 120,
+      }
+    }
+  >
+    <Image
+      source={
+        Object {
+          "testUri": "../../../img/logo.png",
+        }
+      }
+      style={
+        Object {
+          "height": 120,
+          "width": 200,
+        }
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 30,
+        "elevation": 5,
+        "flexDirection": "row",
+        "height": 50,
+        "marginBottom": 25,
+        "shadowColor": "#808080",
+        "shadowOffset": Object {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.25,
+        "shadowRadius": 3.84,
+        "width": 340,
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      autoCapitalize="none"
+      autoCorrect={false}
+      keyboardType="email-address"
+      onChangeText={[Function]}
+      onSubmitEditing={[Function]}
+      placeholder="Email"
+      rejectResponderTermination={true}
+      returnKeyType="next"
+      style={
+        Object {
+          "borderBottomColor": "#FFFFFF",
+          "flex": 1,
+          "height": 45,
+          "marginLeft": 16,
+        }
+      }
+      underlineColorAndroid="transparent"
+    />
+    <Image
+      source={
+        Object {
+          "uri": "https://img.icons8.com/nolan/64/000000/filled-message.png",
+        }
+      }
+      style={
+        Object {
+          "height": 30,
+          "justifyContent": "center",
+          "marginRight": 15,
+          "width": 30,
+        }
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 30,
+        "elevation": 5,
+        "flexDirection": "row",
+        "height": 50,
+        "marginBottom": 25,
+        "shadowColor": "#808080",
+        "shadowOffset": Object {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.25,
+        "shadowRadius": 3.84,
+        "width": 340,
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      onChangeText={[Function]}
+      placeholder="Password"
+      rejectResponderTermination={true}
+      returnKeyType="go"
+      secureTextEntry={true}
+      style={
+        Object {
+          "borderBottomColor": "#FFFFFF",
+          "flex": 1,
+          "height": 45,
+          "marginLeft": 16,
+        }
+      }
+      underlineColorAndroid="transparent"
+    />
+    <View
+      accessible={true}
+      clickable={true}
+      isTVSelectable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "opacity": 1,
+        }
+      }
+    >
+      <Image
+        source={
+          Object {
+            "uri": "https://img.icons8.com/nolan/64/000000/sleepy-eyes.png",
+          }
+        }
+        style={
+          Object {
+            "height": 30,
+            "justifyContent": "center",
+            "marginRight": 15,
+            "width": 30,
+          }
+        }
+      />
+    </View>
+  </View>
+  <View
+    accessible={true}
+    clickable={true}
+    isTVSelectable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "flex-end",
+        "backgroundColor": "transparent",
+        "flexDirection": "row",
+        "height": 15,
+        "justifyContent": "flex-end",
+        "marginBottom": 10,
+        "opacity": 1,
+        "width": 300,
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "color": "white",
+          "fontSize": 15,
+        }
+      }
+    >
+      Forgot your password?
+    </Text>
+  </View>
+  <View
+    accessible={true}
+    clickable={true}
+    isTVSelectable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#000000",
+        "borderRadius": 30,
+        "elevation": 19,
+        "flexDirection": "row",
+        "height": 50,
+        "justifyContent": "center",
+        "marginBottom": 20,
+        "opacity": 1,
+        "shadowColor": "#808080",
+        "shadowOffset": Object {
+          "height": 9,
+          "width": 0,
+        },
+        "shadowOpacity": 0.5,
+        "shadowRadius": 12.35,
+        "width": 340,
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "color": "white",
+          "fontSize": 16,
+          "fontWeight": "700",
+        }
+      }
+    >
+      Login
+    </Text>
+  </View>
+</View>
+`;

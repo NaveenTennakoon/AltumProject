@@ -86,8 +86,8 @@ function initTrackMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       streetViewControl: false,
       mapTypeControl: false,
-      center: {lat: -34.397, lng: 150.644},
-      zoom: 15
+      center: {lat: 6.883239, lng: 79.8984583},
+      zoom: 14
     })
     locationButton(map)
   

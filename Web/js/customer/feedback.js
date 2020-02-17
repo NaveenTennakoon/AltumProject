@@ -1,7 +1,7 @@
-let orderArr = []
-let keyArr = []
 // populate orders to the search box
 function ordersnapshotToArray(){
+  let orderArr = []
+  let keyArr = []
   document.getElementById("order_id").innerHTML = ''
   ordersRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){

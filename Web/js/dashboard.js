@@ -46,23 +46,23 @@ ordersRef.once("value").then(function(snapshot){
 }).then(() => {
     // populate overall orders view
     document.getElementById('overall-body').innerHTML =
-                '<h4 class="small font-weight-bold">Cancelled <span class="float-right">'+parseInt((cancelled/totalOrders)*100)+'%</span></h4>'+
+                '<h4 class="small font-weight-bold">Cancelled from Total <span class="float-right">'+parseInt((cancelled/totalOrders)*100)+'%</span></h4>'+
                 '<div class="progress mb-4">'+
                     '<div class="progress-bar bg-danger" role="progressbar" style="width: '+parseInt((cancelled/totalOrders)*100)+'%" aria-valuenow="'+parseInt((cancelled/totalOrders)*100)+'" aria-valuemin="0" aria-valuemax="100"></div>'+
                 '</div>'+
-                '<h4 class="small font-weight-bold">Pending <span class="float-right">'+parseInt((pending/totalOrders)*100)+'%</span></h4>'+
+                '<h4 class="small font-weight-bold">Pending from Total <span class="float-right">'+parseInt((pending/totalOrders)*100)+'%</span></h4>'+
                 '<div class="progress mb-4">'+
                     '<div class="progress-bar bg-warning" role="progressbar" style="width: '+parseInt((pending/totalOrders)*100)+'%" aria-valuenow="'+parseInt((pending/totalOrders)*100)+'" aria-valuemin="0" aria-valuemax="100"></div>'+
                 '</div>'+
-                '<h4 class="small font-weight-bold">Assigned <span class="float-right">'+parseInt((assigned/totalOrders)*100)+'%</span></h4>'+
+                '<h4 class="small font-weight-bold">Assigned from Total <span class="float-right">'+parseInt((assigned/totalOrders)*100)+'%</span></h4>'+
                 '<div class="progress mb-4">'+
                     '<div class="progress-bar" role="progressbar" style="width: '+parseInt((assigned/totalOrders)*100)+'%" aria-valuenow="'+parseInt((assigned/totalOrders)*100)+'" aria-valuemin="0" aria-valuemax="100"></div>'+
                 '</div>'+
-                '<h4 class="small font-weight-bold">Completed <span class="float-right">'+parseInt((completed/totalOrders)*100)+'%</span></h4>'+
+                '<h4 class="small font-weight-bold">Completed from Total <span class="float-right">'+parseInt((completed/totalOrders)*100)+'%</span></h4>'+
                 '<div class="progress mb-4">'+
                     '<div class="progress-bar bg-info" role="progressbar" style="width: '+parseInt((completed/totalOrders)*100)+'%" aria-valuenow="'+parseInt((completed/totalOrders)*100)+'" aria-valuemin="0" aria-valuemax="100"></div>'+
                 '</div>'+
-                '<h4 class="small font-weight-bold">Completed with Feedback <span class="float-right">'+parseInt((completed_f/totalOrders)*100)+'%</span></h4>'+
+                '<h4 class="small font-weight-bold">Completed with Feedback from Total <span class="float-right">'+parseInt((completed_f/totalOrders)*100)+'%</span></h4>'+
                 '<div class="progress mb-4">'+
                     '<div class="progress-bar bg-success" role="progressbar" style="width: '+parseInt((completed_f/totalOrders)*100)+'%" aria-valuenow="'+parseInt((completed_f/totalOrders)*100)+'" aria-valuemin="0" aria-valuemax="100"></div>'+
                 '</div>'

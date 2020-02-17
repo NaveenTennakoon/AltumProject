@@ -1,29 +1,33 @@
-let customerArr = []
+window.onload = loadCustomers()
 
-// populate customer ids to customer array
-usersRef.once("value").then(function(snapshot){
-    snapshot.forEach(function(childSnapshot) {
-    if(childSnapshot.val().type == 'customer' && childSnapshot.val().status == 'active'){
-        let item = childSnapshot.val().name
-        customerArr.push(item) 
-    }
-    })
-}).catch(function(error){
-    // Handle Errors here.
-    Swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    text: error.message,
-    })
-})
-autocomplete(document.getElementById("customer-search"), customerArr)
+function loadCustomers(){
+  let customerArr = []
+  // populate customer ids to customer array
+  usersRef.once("value").then(function(snapshot){
+      snapshot.forEach(function(childSnapshot) {
+        if(childSnapshot.val().type == 'customer' && childSnapshot.val().status == 'active'){
+            let item = childSnapshot.val().name
+            customerArr.push(item) 
+        }
+      })
+  }).catch(function(error){
+      // Handle Errors here.
+      Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+      })
+  })
+  autocomplete(document.getElementById("customer-search"), customerArr)
+}
 
 // load customer details with search
 function customerDetails(){
+  $('#customerForm').trigger('reset')
     let userName = document.getElementById("customer-search").value
     usersRef.once("value").then(function(snapshot){
       snapshot.forEach(function(childSnapshot){
-        if(childSnapshot.val().name == userName){
+        if(childSnapshot.val().name == userName && childSnapshot.val().status == 'active'){
           document.getElementById("name").value = childSnapshot.val().name
           document.getElementById("company").value = childSnapshot.val().company
           document.getElementById("email").value = childSnapshot.val().email
@@ -79,6 +83,9 @@ function deleteCustomer(){
               }
             })
           })
+          loadCustomers()
+          $('#searchbox').trigger('reset')
+          $('#customerForm').trigger('reset')
         }
       })
     }

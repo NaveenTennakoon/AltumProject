@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image, AsyncStorage } from 'react-native';
 import Dialog from "react-native-dialog";
 
 import FB from '../components/FB';
@@ -74,8 +74,8 @@ export default class ProfileScreen extends Component {
         name = userSnap.val().company;
       });
       FB.database().ref('orders/'+id+"/Products").once('value', function(snapshot){
+        tempProducts = [];
         snapshot.forEach(function(childSnapshot){
-          tempProducts = [];
           tempProducts.push({
             id: childSnapshot.key,
             amount: childSnapshot.val(),
@@ -91,6 +91,8 @@ export default class ProfileScreen extends Component {
     };
 
     handleSave = (id) => {
+      const value = AsyncStorage.getItem('password');
+      alert(this.state.pwd+" "+value)
       if(this.state.pwd == global.pwd){
         FB.database().ref('orders/').child(id).update({
           Status: 'Completed',
@@ -119,7 +121,8 @@ export default class ProfileScreen extends Component {
         });
       }
       else{
-        alert("Password incorrect");
+        alert(this.state.pwd+" and "+global.pwd)
+        // alert("Password incorrect");
       }
       this.setState({ dialogVisible: false });
     };

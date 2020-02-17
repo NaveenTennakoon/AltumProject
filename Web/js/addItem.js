@@ -98,6 +98,14 @@ function additem(){
           })
           i++
         }
+        Swal.fire({
+          position: 'top',
+          icon: 'success',
+          title: 'Product added successfully',
+          showConfirmButton: false,
+          timer: 3000
+      })
+      $("#addItemForm").trigger('reset')
       }).catch(function(error){
         // Handle Errors here.
         Swal.fire({

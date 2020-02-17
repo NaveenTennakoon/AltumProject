@@ -28,12 +28,17 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 let total = {}
 ordersRef.once("value").then(function(snapshot){
   snapshot.forEach(function(childSnapshot){
-    let month = childSnapshot.val().orderDate.split("/")[1]
-    if(!total[month]){
-      total[month] = 0
+    if(childSnapshot.val().paymentDate){
+      let year = childSnapshot.val().paymentDate.split("/")[0]
+      let month = childSnapshot.val().paymentDate.split("/")[1]
+      if(date.getFullYear() == year){
+        if(!total[month]){
+          total[month] = 0
+        }
+        // Calculate totals for each month
+        total[month] += parseInt(childSnapshot.val().Total.replace("$", ""))
+      }
     }
-    // Calculate totals for each month
-    total[month] += parseInt(childSnapshot.val().Total.replace("$", ""))
   })
 }).then(()=>{
   // Create the area chart
