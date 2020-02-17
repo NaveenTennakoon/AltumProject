@@ -30,10 +30,12 @@ function loadProducts(){
           "<div class='shop-item'>"+
             "<b class='d-none'>Unique ID: </b>"+
             "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
-            "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
+            "<b class='ml-0'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
             "<div class='shop-item-details'>"+
               "<div class='form-row'>"+
-                "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
+                "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a>"+
+                "<a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a>"+
+                "<a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
               "</div>"+
               "<button class='btn btn-danger delete-item-button float-right ml-2' type='button'>Delete Item</button>"+
               "<button class='btn btn-primary view-item-button float-right' type='button'>Edit Item</button><hr class='mt-5'/>"+
@@ -71,7 +73,7 @@ function filterbyType(type){
             "<div class='shop-item'>"+
               "<b class='d-none'>Unique ID: </b>"+
               "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
-              "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
+              "<b class='ml-0'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
               "<div class='shop-item-details'>"+
                 "<div class='form-row'>"+
                   "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
@@ -100,7 +102,7 @@ function filterbyType(type){
             "<div class='shop-item'>"+
               "<b class='d-none'>Unique ID: </b>"+
               "<span class='shop-item-title d-none'>"+childSnapshot.key+"</span>"+
-              "<b class='ml-5'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
+              "<b class='ml-0'>Product ID: </b><a class='shop-item-id'>"+childSnapshot.val().ID+"</a>"+
               "<div class='shop-item-details'>"+
                 "<div class='form-row'>"+
                   "<a class='col-lg-4'><b>Name : </b>"+childSnapshot.val().Name+"</a><a class='col-lg-2'><b>Price : </b>"+childSnapshot.val().Price+"</a><a class='col-lg-2'><b>Quantity : </b>"+childSnapshot.val().Quantity+"</a><br/>"+
@@ -186,6 +188,7 @@ function viewItemClicked(event) {
       itemNo++
     })
   })
+
   document.getElementById("item-id").innerHTML = title
   document.getElementById("item-title").innerHTML = shopItem.getElementsByClassName('shop-item-id')[0].innerText
   $('#viewModal').modal({backdrop: 'static', keyboard: false})

@@ -1,5 +1,5 @@
 let typesArr = []
- // pouplate the types array
+ // populate the types array
 inventoryRef.once("value").then(function(snapshot){
     snapshot.forEach(function(childSnapshot){
       if(childSnapshot.val().Status == 'active'){
@@ -24,7 +24,8 @@ inventoryRef.once("value").then(function(snapshot){
         document.getElementById("product-items").insertAdjacentHTML(
             'beforeend',
             "<div class='shop-item'>"+
-            "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a><b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
+            "<p><b>Product ID: </b><a class='shop-item-title'>"+childSnapshot.val().ID+"</a>"+
+            "<b class='ml-3'>Unique ID: </b><a>"+childSnapshot.key+"</a></p>"+
             "<div class='shop-item-details'>"+
             "<b>Name : </b>"+childSnapshot.val().Name+"<br/>"+
             "<b>Price : </b>"+"<a class='shop-item-price'>"+childSnapshot.val().Price+"</a><br/>"+
@@ -274,7 +275,7 @@ inventoryRef.once("value").then(function(snapshot){
   }
   
   // viewing an item
-  function viewItemClicked(event) {
+  function viewItemClicked(event) { 
     let button = event.target
     let shopItem = button.parentElement.parentElement
     let title = shopItem.getElementsByClassName('shop-item-title')[0].innerText
@@ -369,7 +370,7 @@ paypal.Buttons({
         }
         }],
         application_context: {
-        shipping_preference: 'NO_SHIPPING'
+        shipping_preference: 'NO_SHIPPING',
         }
         
     });

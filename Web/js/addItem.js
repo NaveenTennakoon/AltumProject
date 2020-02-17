@@ -45,7 +45,14 @@ function addInput(divName){
   counter++
   let newdiv = document.createElement('div')
   newdiv.setAttribute('id', 'div_' + counter)
-  newdiv.innerHTML = "<div class='form-row my-3'><div class='col-lg-4'><input class='form-control' id='addedkey"+counter+"' placeholder='Enter key field'> </div><div class='col-lg-8'><input class='form-control' id='addedval"+counter+"' placeholder='Value of key'></div></div>"           
+  newdiv.innerHTML = "<div class='form-row my-3'>"+
+                        "<div class='col-lg-4'>"+
+                          "<input class='form-control' id='addedkey"+counter+"' placeholder='Enter key field'>"+
+                        "</div>"+
+                        "<div class='col-lg-8'>"+
+                          "<input class='form-control' id='addedval"+counter+"' placeholder='Value of key'>"+
+                        "</div>"+
+                      "</div>"           
   document.getElementById(divName).appendChild(newdiv)     
 }
 
@@ -98,6 +105,7 @@ function additem(){
           })
           i++
         }
+        $("#addItemForm").trigger('reset'); 
       }).catch(function(error){
         // Handle Errors here.
         Swal.fire({

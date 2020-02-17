@@ -12,12 +12,23 @@ function loadOrders(){
               "<span class='view-order-id'>"+childSnapshot.val().orderId+"</span>"+
               "<div class='view-order-details'>"+
               "<b>Total Price : </b>"+childSnapshot.val().Total+"<br/></br/>"+
-              "<button class='btn btn-primary view-order-button float-right ml-3' type='button'>Assign</button>"+
-              "<button class='btn btn-danger reject-order-button float-right' type='button'>Reject Order</button><hr class='mt-5'/>"+
-              "</div"+
-          "</div>"
+              "<button class='btn btn-primary view-order-button float-right ml-3' type='button'>Assign</button>"
           )
-      }
+          if (childSnapshot.val().payment == 'Cash'){
+            document.getElementById("pending-orders").insertAdjacentHTML(
+            'beforeend',
+            "<button class='btn btn-danger reject-order-button float-right' type='button'>Reject Order</button><hr class='mt-5'/>"+
+            "</div>"
+            )      
+          }
+          else{
+            document.getElementById("pending-orders").insertAdjacentHTML(
+              'beforeend',
+              "<button class='btn btn-danger reject-order-button float-right' type='button' disabled>Reject Order</button><hr class='mt-5'/>"+
+              "</div>"
+              )        
+          }
+        }
       })
       populateProducts()
   })
