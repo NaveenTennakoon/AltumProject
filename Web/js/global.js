@@ -1,10 +1,10 @@
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(function (user) {
   if (!user)
-    location.href = "index.html" 
+    location.href = "index.html"
 })
 
 
-function logout(){
+function logout() {
   Swal.fire({
     title: 'Are you sure?',
     text: "You are logging out of Altum",
@@ -15,17 +15,17 @@ function logout(){
     confirmButtonText: 'Logout'
   }).then((result) => {
     if (result.value) {
-      firebase.auth().signOut().then(function(){
+      firebase.auth().signOut().then(function () {
         // Sign-out successful.
         location.href = "index.html"
-      }).catch(function(error) {
+      }).catch(function (error) {
         // An error happened.
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: error.message,
         })
-      })  
+      })
     }
   })
 }

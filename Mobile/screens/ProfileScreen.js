@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
+import ValidationComponent from 'react-native-form-validator';
 import { StyleSheet, ScrollView, Text, View, TouchableOpacity, TextInput, Alert, PermissionsAndroid, ToastAndroid, Platform, KeyboardAvoidingView } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; 
+import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFetchBlob from 'react-native-fetch-blob'
 import { Avatar } from 'react-native-elements';
@@ -11,76 +12,93 @@ import FB from '../components/FB';
 const Fetch = RNFetchBlob.polyfill.Fetch
 // replace built-in fetch
 window.fetch = new Fetch({
-    auto : true,
-    binaryContentTypes : [
-        'image/',
-        'video/',
-        'audio/',
-        'foo/',
-    ]
+  auto: true,
+  binaryContentTypes: [
+    'image/',
+    'video/',
+    'audio/',
+    'foo/',
+  ]
 }).build()
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 
-export default class ProfileScreen extends Component {
+export default class ProfileScreen extends ValidationComponent {
 
-    constructor(props){
-      super(props)
-      this.state = {
-        telephone: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        address: '',
-        avatarSource: 'empty',
-        visible: false,
-        editable: false,
-      }
-      this.toggleEditable = this.toggleEditable.bind(this)
+  constructor(props) {
+    super(props)
+    // state variables
+    this.state = {
+      telephone: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      address: '',
+      avatarSource: 'empty',
+      visible: false,
+      editable: false,
     }
-    
-  async componentWillMount(){
-    const ref = FB.storage().ref('profilePics/'+FB.auth().currentUser.uid)
+    this.toggleEditable = this.toggleEditable.bind(this)
+  }
+
+  async componentWillMount() {
+    // set profile picture
+    const ref = FB.storage().ref('profilePics/' + FB.auth().currentUser.uid)
     const url = await ref.getDownloadURL()
     this.setState({ avatarSource: url })
     let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
     userdetails.once('value').then((snapshot) => {
-        if (snapshot.val().type != 'salesperson'){
-            alert("This email is not registered to a Salesperson");
-        }
-        else{
-          this.setState({telephone: snapshot.val().telephone})
-          this.setState({firstName: snapshot.val().firstName})
-          this.setState({lastName: snapshot.val().lastName})
-          this.setState({address: snapshot.val().address})
-          this.setState({email: snapshot.val().email})
-        }	
+      if (snapshot.val().type != 'salesperson') {
+        alert("This email is not registered to a Salesperson");
+      }
+      // get account details and set to state
+      else {
+        this.setState({ telephone: snapshot.val().telephone })
+        this.setState({ firstName: snapshot.val().firstName })
+        this.setState({ lastName: snapshot.val().lastName })
+        this.setState({ address: snapshot.val().address })
+        this.setState({ email: snapshot.val().email })
+      }
     });
   }
 
+  _onSubmit() {
+    // Call ValidationComponent validate method
+    const validation = this.validate({
+      telephone: { numbers: true, minlength: 10, maxlength: 10, required: true },
+      email: { email: true, required: true },
+      address: { required: true }
+    });
+    if (validation) this.updateDetails()
+    else alert(this.getErrorMessages())
+  }
+
+  // toggle editable
   toggleEditable() {
     this.setState({
       editable: !this.state.editable
     })
   }
 
+  // upload image to the database
   uploadImage(uri, mime = 'image/jpeg') {
     return new Promise((resolve, reject) => {
-      this.setState({visible:true});
+      this.setState({ visible: true });
       const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
       let uploadBlob = null
       const uid = FB.auth().currentUser.uid
       const imageRef = FB.storage().ref('profilePics').child(uid)
 
+      // create a blob and upload the blob to the database and return a URL
       fs.readFile(uploadUri, 'base64')
         .then((data) => {
           return Blob.build(data, { type: `${mime};BASE64` })
         })
         .then((blob) => {
           uploadBlob = blob
-          return imageRef.put(blob, { contentType: mime })      
+          return imageRef.put(blob, { contentType: mime })
         })
         .then(() => {
           uploadBlob.close()
@@ -92,10 +110,11 @@ export default class ProfileScreen extends Component {
         })
         .catch((error) => {
           reject(error)
-      })
+        })
     })
   }
 
+  // pick an image from the gallery for the profile image and upload
   async pickImage() {
     const hasLibraryPermission = await this.hasLibraryPermission();
     if (!hasLibraryPermission) return;
@@ -106,13 +125,15 @@ export default class ProfileScreen extends Component {
       freeStyleCropEnabled: true,
       mediaType: 'photo'
     }).then(image => {
+      // call the upload function
       this.uploadImage(image.path)
     });
   }
 
+  // get library permission from the user for the image picking
   hasLibraryPermission = async () => {
     if (Platform.OS === 'ios' ||
-        (Platform.OS === 'android' && Platform.Version < 23)) {
+      (Platform.OS === 'android' && Platform.Version < 23)) {
       return true;
     }
 
@@ -135,119 +156,124 @@ export default class ProfileScreen extends Component {
 
     return false;
   }
-    
-    render(){
-      const {navigate} = this.props.navigation;
-        return (
-          <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="height" enabled keyboardVerticalOffset={20}>
-            <ScrollView>
-            <View style={styles.header}></View>
-            <Avatar
-              style={styles.avatar}
-              rounded
-              size={120}
-              containerStyle={{
-                  marginTop: 50,
-                  marginBottom: 50,
-                  borderWidth: 4,
-                  borderColor: "#fff"
-              }}
-              source={{ uri: this.state.avatarSource }}
-              editButton={{
-                  name: "camera",
-                  type: "material-community",
-                  underlayColor: "#4ac959",
-                  iconStyle: { fontSize: 30 },
-                  color: "#000"
-              }}
-              onEditPress={() => {
-                  this.pickImage();
-              }}
-              showEditButton
-            />
-            <View style={styles.body}>
-              <View style={styles.bodyContent}>
-                <Text style={styles.name}>{this.state.firstName+' '+this.state.lastName}</Text>
-                <Text style={styles.info}>Salesperson</Text>
-                <TouchableOpacity style={styles.editButton} onPress={this.toggleEditable}>
-                  <Icon style={styles.editIcon} size={25} name={'ios-create'}/> 
-                  <Text style={styles.btnText} >{this.state.editable ? 'Cancel' : 'Edit'}</Text>  
-                </TouchableOpacity> 
-                <View style={[styles.inputContainer, { backgroundColor: this.state.editable ? '#ffffff' : '#eeeeee' }]}>
-                  <Icon style={styles.inputIcon} size={25} name={'ios-call'}/> 
-                    <TextInput style={styles.inputs}
-                      placeholder="Telephone"
-                      underlineColorAndroid='transparent'
-                      onChangeText={(telephone) => this.setState({telephone})}
-                      value={this.state.telephone}
-                      editable={this.state.editable}
-                    />
-                </View>
-                <View style={[styles.inputContainer, { backgroundColor: this.state.editable ? '#ffffff' : '#eeeeee' }]}>
-                  <Icon style={styles.inputIcon} size={25} name={'ios-mail'}/> 
-                    <TextInput style={styles.inputs}
-                      placeholder="Email"
-                      underlineColorAndroid='transparent'
-                      onChangeText={(email) => this.setState({email})}
-                      value={this.state.email}
-                      editable={this.state.editable}
-                    />
-                </View>   
-                <View style={[styles.inputContainer, { backgroundColor: this.state.editable ? '#ffffff' : '#eeeeee' }]}>
-                  <Icon style={styles.inputIcon} size={25} name={'ios-home'}/> 
-                    <TextInput style={styles.inputs}
-                      placeholder="Address"
-                      underlineColorAndroid='transparent'
-                      onChangeText={(address) => this.setState({address})}
-                      value={this.state.address}
-                      editable={this.state.editable}
-                    />
-                </View>    
-                <TouchableOpacity 
-                style={[styles.buttonContainer, { backgroundColor: this.state.editable ? '#000000' : '#999999' }]} 
-                activeOpacity = { .5 } 
+
+  updateDetails() {
+    let telephone = this.state.telephone;
+    let email = this.state.email;
+    let address = this.state.address;
+    let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
+    userdetails.update({
+      telephone: telephone,
+      email: email,
+      address: address,
+    }).then(() => {
+      this.setState({ editable: !this.state.editable })
+      alert("Profile updated successfully")
+    }).catch(function (error) {
+      let errorMessage = error.message;
+      alert(errorMessage);
+    })
+  }
+
+  render() {
+    return (
+      <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', }} behavior="height" enabled keyboardVerticalOffset={20}>
+        <ScrollView>
+          <View style={styles.header}></View>
+          <Avatar
+            style={styles.avatar}
+            rounded
+            size={120}
+            containerStyle={{
+              marginTop: 50,
+              marginBottom: 50,
+              borderWidth: 4,
+              borderColor: "#fff"
+            }}
+            source={{ uri: this.state.avatarSource }}
+            editButton={{
+              name: "camera",
+              type: "material-community",
+              underlayColor: "#4ac959",
+              iconStyle: { fontSize: 30 },
+              color: "#000"
+            }}
+            onEditPress={() => {
+              this.pickImage();
+            }}
+            showEditButton
+          />
+          <View style={styles.body}>
+            <View style={styles.bodyContent}>
+              <Text style={styles.name}>{this.state.firstName + ' ' + this.state.lastName}</Text>
+              <Text style={styles.info}>Salesperson</Text>
+              <TouchableOpacity style={styles.editButton} onPress={this.toggleEditable}>
+                <Icon style={styles.editIcon} size={25} name={'ios-create'} />
+                <Text style={styles.btnText} >{this.state.editable ? 'Cancel' : 'Edit'}</Text>
+              </TouchableOpacity>
+              <View style={[styles.inputContainer, { backgroundColor: this.state.editable ? '#ffffff' : '#eeeeee' }]}>
+                <Icon style={styles.inputIcon} size={25} name={'ios-call'} />
+                <TextInput style={styles.inputs}
+                  placeholder="Telephone"
+                  underlineColorAndroid='transparent'
+                  onChangeText={(telephone) => this.setState({ telephone })}
+                  value={this.state.telephone}
+                  editable={this.state.editable}
+                />
+              </View>
+              <View style={[styles.inputContainer, { backgroundColor: this.state.editable ? '#ffffff' : '#eeeeee' }]}>
+                <Icon style={styles.inputIcon} size={25} name={'ios-mail'} />
+                <TextInput style={styles.inputs}
+                  placeholder="Email"
+                  underlineColorAndroid='transparent'
+                  onChangeText={(email) => this.setState({ email })}
+                  value={this.state.email}
+                  editable={this.state.editable}
+                />
+              </View>
+              <View style={[styles.inputContainer, { backgroundColor: this.state.editable ? '#ffffff' : '#eeeeee' }]}>
+                <Icon style={styles.inputIcon} size={25} name={'ios-home'} />
+                <TextInput style={styles.inputs}
+                  placeholder="Address"
+                  underlineColorAndroid='transparent'
+                  onChangeText={(address) => this.setState({ address })}
+                  value={this.state.address}
+                  editable={this.state.editable}
+                />
+              </View>
+
+              {/* save button to call saving of profile information */}
+              <TouchableOpacity
+                style={[styles.buttonContainer, { backgroundColor: this.state.editable ? '#000000' : '#999999' }]}
+                activeOpacity={.5}
                 disabled={!this.state.editable}
-                onPress={() => 
+                onPress={() =>
                   Alert.alert(
                     'Confirm',
                     'Do you want to update the profile?',
                     [
-                      {text: 'Cancel', onPress: () => {return null}},
-                      {text: 'Confirm', onPress: () => {
-                        let telephone = this.state.telephone;
-                        let email = this.state.email;
-                        let address = this.state.address;
-                        let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
-                        userdetails.update({
-                          telephone: telephone,
-                          email: email,
-                          address: address,
-                        }).then(()=>{
-                          this.setState({editable: !this.state.editable })
-                          alert("Profile updated successfully")
-                        }).catch(function(error){
-                          let errorMessage = error.message;
-                          alert(errorMessage);
-                        })
-                        }
+                      { text: 'Cancel', onPress: () => { return null } },
+                      {
+                        text: 'Confirm', onPress: () => { this._onSubmit() }
                       },
                     ],
                     { cancelable: false }
-                  )} 
-                >
-                  <Text style={styles.btnText}>Save Profile</Text>  
-                </TouchableOpacity>
-                 
-              </View>            
+                  )}
+              >
+                <Text style={styles.btnText}>Save Profile</Text>
+              </TouchableOpacity>
+
             </View>
-            </ScrollView>
-          </KeyboardAvoidingView> 
-        );
-    }
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    );
+  }
 }
 
+// styles for the components in the render screen
 const styles = StyleSheet.create({
-  header:{
+  header: {
     backgroundColor: "#000000",
     height: 130,
   },
@@ -257,12 +283,12 @@ const styles = StyleSheet.create({
     borderRadius: 120,
     borderWidth: 5,
     borderColor: "white",
-    marginBottom:10,
-    alignSelf:'center',
+    marginBottom: 10,
+    alignSelf: 'center',
     position: 'absolute',
     marginTop: 60
   },
-  body:{
+  body: {
     marginTop: 40,
   },
   bodyContent: {
@@ -270,12 +296,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 30,
   },
-  name:{
+  name: {
     fontSize: 28,
     color: "#555555",
     fontWeight: "700"
   },
-  info:{
+  info: {
     fontSize: 17,
     color: "#999999",
     marginTop: 10,
@@ -299,26 +325,26 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     backgroundColor: '#FFFFFF',
-    borderRadius:30,
-    width:340,
-    height:50,
-    marginBottom:15,
+    borderRadius: 30,
+    width: 340,
+    height: 50,
+    marginBottom: 15,
     flexDirection: 'row',
-    alignItems:'center'
+    alignItems: 'center'
   },
-  inputs:{
-      height:45,
-      marginLeft:16,
-      flex:1,
-      color: "#555555"
+  inputs: {
+    height: 45,
+    marginLeft: 16,
+    flex: 1,
+    color: "#555555"
   },
-  inputIcon:{
-    width:30,
-    height:30,
-    marginLeft:15,
+  inputIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 15,
     justifyContent: 'center'
   },
-  editButton:{
+  editButton: {
     height: 45,
     flexDirection: 'row',
     alignSelf: 'flex-end',
@@ -329,9 +355,9 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: "#000000",
   },
-  editIcon:{
-    width:30,
-    height:30,
+  editIcon: {
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     color: '#ffffff'
   }

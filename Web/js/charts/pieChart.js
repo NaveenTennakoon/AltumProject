@@ -2,32 +2,32 @@ Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,Bli
 Chart.defaults.global.defaultFontColor = '#858796'
 
 let selling = {}
-ordersRef.once("value").then(function(snapshot){
-  snapshot.forEach(function(childSnapshot){
+ordersRef.once("value").then(function (snapshot) {
+  snapshot.forEach(function (childSnapshot) {
     // Getting the total of sold items each
-    for(let key in Object.keys(childSnapshot.val().Products)){
-      if(!selling[Object.keys(childSnapshot.val().Products)[key]]){
+    for (let key in Object.keys(childSnapshot.val().Products)) {
+      if (!selling[Object.keys(childSnapshot.val().Products)[key]]) {
         selling[Object.keys(childSnapshot.val().Products)[key]] = 0
       }
       selling[Object.keys(childSnapshot.val().Products)[key]] += parseInt(Object.values(childSnapshot.val().Products)[key])
     }
   })
-}).then(()=>{
+}).then(() => {
   let sellKeys = []
-  for(let key in selling) { 
+  for (let key in selling) {
     sellKeys[sellKeys.length] = key
   }
-  let sellValues = []     
-  for(let i = 0; i < sellKeys.length; i++) {
-    sellValues[sellValues.length] = selling[sellKeys [i]]
+  let sellValues = []
+  for (let i = 0; i < sellKeys.length; i++) {
+    sellValues[sellValues.length] = selling[sellKeys[i]]
   }
   // Sort and select the top 3 sold items
   let sortedValues = sellValues.sort(sortNumber)
-  document.getElementById("best1").innerText = " "+sellKeys[0]
-  document.getElementById("best2").innerText = " "+sellKeys[1]
-  document.getElementById("best3").innerText = " "+sellKeys[2]
+  document.getElementById("best1").innerText = " " + sellKeys[0]
+  document.getElementById("best2").innerText = " " + sellKeys[1]
+  document.getElementById("best3").innerText = " " + sellKeys[2]
 
-  function sortNumber(a,b) {
+  function sortNumber(a, b) {
     return b - a
   }
 

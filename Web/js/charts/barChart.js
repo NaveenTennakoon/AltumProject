@@ -10,7 +10,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
     dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
     s = '',
-    toFixedFix = function(n, prec) {
+    toFixedFix = function (n, prec) {
       var k = Math.pow(10, prec)
       return '' + Math.round(n * k) / k;
     };
@@ -28,29 +28,29 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 let today = new Date()
 let year1 = year2 = year3 = year4 = year5 = 0
-ordersRef.once("value").then(function(snapshot){
-  snapshot.forEach(function(childSnapshot){
+ordersRef.once("value").then(function (snapshot) {
+  snapshot.forEach(function (childSnapshot) {
     // calculate yearly income
-    if(childSnapshot.val().paymentDate){
-      if(childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear())
+    if (childSnapshot.val().paymentDate) {
+      if (childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear())
         year1 += parseFloat(childSnapshot.val().Total)
-      else if(childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear()-1)
+      else if (childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear() - 1)
         year2 += parseFloat(childSnapshot.val().Total)
-      else if(childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear()-2)
+      else if (childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear() - 2)
         year3 += parseFloat(childSnapshot.val().Total)
-      else if(childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear()-3)
+      else if (childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear() - 3)
         year4 += parseFloat(childSnapshot.val().Total)
-      else if(childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear()-4)
+      else if (childSnapshot.val().paymentDate.split("/")[0] == today.getFullYear() - 4)
         year5 += parseFloat(childSnapshot.val().Total)
     }
   })
-}).then(()=>{
+}).then(() => {
   // Create the bar chart
   let ctx = document.getElementById("annual-income");
-  let myBarChart = new Chart(ctx, { 
+  let myBarChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: [today.getFullYear(), today.getFullYear()-1, today.getFullYear()-2, today.getFullYear()-3, today.getFullYear()-4],
+      labels: [today.getFullYear(), today.getFullYear() - 1, today.getFullYear() - 2, today.getFullYear() - 3, today.getFullYear() - 4],
       datasets: [{
         label: "Revenue",
         backgroundColor: "#4e73df",
@@ -89,7 +89,7 @@ ordersRef.once("value").then(function(snapshot){
             maxTicksLimit: 5,
             padding: 10,
             // Include a dollar sign in the ticks
-            callback: function(value, index, values) {
+            callback: function (value, index, values) {
               return '$' + number_format(value)
             }
           },
@@ -118,7 +118,7 @@ ordersRef.once("value").then(function(snapshot){
         displayColors: false,
         caretPadding: 10,
         callbacks: {
-          label: function(tooltipItem, chart) {
+          label: function (tooltipItem, chart) {
             var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || ''
             return datasetLabel + ': $' + number_format(tooltipItem.yLabel)
           }

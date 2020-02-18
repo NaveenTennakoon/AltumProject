@@ -8,30 +8,30 @@ let feedback = window.document.getElementById('reports-feedback-table')
 let p_filter = o_filter = l_filter = u_filter = f_filter = ''
 
 //listeners for datatable search boxes
-$('#reports-product-table').on('search.dt', function() {
+$('#reports-product-table').on('search.dt', function () {
     p_filter = $('.dataTables_filter input')[0].value
 })
-$('#reports-order-table').on('search.dt', function() {
+$('#reports-order-table').on('search.dt', function () {
     o_filter = $('.dataTables_filter input')[1].value
 })
-$('#reports-location-table').on('search.dt', function() {
+$('#reports-location-table').on('search.dt', function () {
     l_filter = $('.dataTables_filter input')[2].value
 })
-$('#reports-users-table').on('search.dt', function() {
+$('#reports-users-table').on('search.dt', function () {
     u_filter = $('.dataTables_filter input')[3].value
 })
-$('#reports-feedback-table').on('search.dt', function() {
+$('#reports-feedback-table').on('search.dt', function () {
     f_filter = $('.dataTables_filter input')[4].value
 })
 
 // generate product pdf
-function generateProductsPdf(){
+function generateProductsPdf() {
     doc.setFontSize(20)
-    doc.text('Products report', doc.internal.pageSize.getWidth()/2, 10, 'center')
+    doc.text('Products report', doc.internal.pageSize.getWidth() / 2, 10, 'center')
     doc.setFontSize(14)
-    doc.text('Applied filters: '+p_filter, 10, 20)
-    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30   )
-    doc.autoTable({ 
+    doc.text('Applied filters: ' + p_filter, 10, 20)
+    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30)
+    doc.autoTable({
         html: products,
         startY: 60,
     })
@@ -39,16 +39,16 @@ function generateProductsPdf(){
 }
 
 // generate orders pdf
-function generateOrdersPdf(){
-    if(flag == 1)
+function generateOrdersPdf() {
+    if (flag == 1)
         doc.addPage()
     flag = 0
     doc.setFontSize(20)
-    doc.text('Orders report', doc.internal.pageSize.getWidth()/2, 10, 'center')
+    doc.text('Orders report', doc.internal.pageSize.getWidth() / 2, 10, 'center')
     doc.setFontSize(14)
-    doc.text('Applied filters: '+o_filter, 10, 20)
-    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30   )
-    doc.autoTable({ 
+    doc.text('Applied filters: ' + o_filter, 10, 20)
+    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30)
+    doc.autoTable({
         html: orders,
         startY: 60,
     })
@@ -56,13 +56,13 @@ function generateOrdersPdf(){
 }
 
 // generate locations pdf
-function generateLocationPdf(){
+function generateLocationPdf() {
     doc.setFontSize(20)
-    doc.text('Locations report', doc.internal.pageSize.getWidth()/2, 10, 'center')
+    doc.text('Locations report', doc.internal.pageSize.getWidth() / 2, 10, 'center')
     doc.setFontSize(14)
-    doc.text('Applied filters: '+l_filter, 10, 20)
-    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30   )
-    doc.autoTable({ 
+    doc.text('Applied filters: ' + l_filter, 10, 20)
+    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30)
+    doc.autoTable({
         html: locations,
         startY: 60,
     })
@@ -70,27 +70,27 @@ function generateLocationPdf(){
 }
 
 // generate users pdf
-function generateUsersPdf(){
-     doc.setFontSize(20)
-     doc.text('Users report', doc.internal.pageSize.getWidth()/2, 10, 'center')
-     doc.setFontSize(14)
-     doc.text('Applied filters: '+u_filter, 10, 20)
-     doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30   )
-     doc.autoTable({ 
-         html: users,
-         startY: 60,
-     })
+function generateUsersPdf() {
+    doc.setFontSize(20)
+    doc.text('Users report', doc.internal.pageSize.getWidth() / 2, 10, 'center')
+    doc.setFontSize(14)
+    doc.text('Applied filters: ' + u_filter, 10, 20)
+    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30)
+    doc.autoTable({
+        html: users,
+        startY: 60,
+    })
     doc.output("dataurl")
 }
 
 // generate feedback pdf
-function generateFeedbackPdf(){
+function generateFeedbackPdf() {
     doc.setFontSize(20)
-    doc.text('Feedback report', doc.internal.pageSize.getWidth()/2, 10, 'center')
+    doc.text('Feedback report', doc.internal.pageSize.getWidth() / 2, 10, 'center')
     doc.setFontSize(14)
-    doc.text('Applied filters: '+f_filter, 10, 20)
-    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30   )
-    doc.autoTable({ 
+    doc.text('Applied filters: ' + f_filter, 10, 20)
+    doc.text('These reports are taken from the original Altum engineering site and are true and correct\r\n\r\n\r\n---------------------', 10, 30)
+    doc.autoTable({
         html: feedback,
         startY: 60,
     })

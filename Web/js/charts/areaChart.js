@@ -2,14 +2,14 @@ Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,Bli
 Chart.defaults.global.defaultFontColor = '#858796'
 
 function number_format(number, decimals, dec_point, thousands_sep) {
-  
+
   number = (number + '').replace(',', '').replace(' ', '')
   let n = !isFinite(+number) ? 0 : +number,
     prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
     sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
     dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
     s = '',
-    toFixedFix = function(n, prec) {
+    toFixedFix = function (n, prec) {
       var k = Math.pow(10, prec)
       return '' + Math.round(n * k) / k
     }
@@ -26,13 +26,13 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 let total = {}
-ordersRef.once("value").then(function(snapshot){
-  snapshot.forEach(function(childSnapshot){
-    if(childSnapshot.val().paymentDate){
+ordersRef.once("value").then(function (snapshot) {
+  snapshot.forEach(function (childSnapshot) {
+    if (childSnapshot.val().paymentDate) {
       let year = childSnapshot.val().paymentDate.split("/")[0]
       let month = childSnapshot.val().paymentDate.split("/")[1]
-      if(date.getFullYear() == year){
-        if(!total[month]){
+      if (date.getFullYear() == year) {
+        if (!total[month]) {
           total[month] = 0
         }
         // Calculate totals for each month
@@ -40,7 +40,7 @@ ordersRef.once("value").then(function(snapshot){
       }
     }
   })
-}).then(()=>{
+}).then(() => {
   // Create the area chart
   let ctx = document.getElementById("myAreaChart")
   let myLineChart = new Chart(ctx, {
@@ -91,7 +91,7 @@ ordersRef.once("value").then(function(snapshot){
             maxTicksLimit: 5,
             padding: 10,
             // Include a dollar sign in the ticks
-            callback: function(value, index, values) {
+            callback: function (value, index, values) {
               return '$' + number_format(value)
             }
           },
@@ -122,7 +122,7 @@ ordersRef.once("value").then(function(snapshot){
         mode: 'index',
         caretPadding: 10,
         callbacks: {
-          label: function(tooltipItem, chart) {
+          label: function (tooltipItem, chart) {
             let datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || ''
             return datasetLabel + ': $' + number_format(tooltipItem.yLabel)
           }

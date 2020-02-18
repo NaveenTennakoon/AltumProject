@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import MapView from 'react-native-maps';
 
 import FB from '../components/FB';
 
@@ -8,18 +8,20 @@ let items = [];
 
 export default class Locations extends Component {
 
-    constructor(props){
-		super(props)
-		this.state = {
+    constructor(props) {
+        super(props)
+        // state variables
+        this.state = {
             markers: [],
             search: '',
-		}
+        }
     }
 
-    componentDidMount(){
-        FB.database().ref("tracking/locations").once("value").then(function(snapshot){
-            snapshot.forEach(function(childSnapshot){
-                if(childSnapshot.val().salesperson == FB.auth().currentUser.uid){
+    componentDidMount() {
+        // get locations relevant to the salesperson and push to array
+        FB.database().ref("tracking/locations").once("value").then(function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                if (childSnapshot.val().salesperson == FB.auth().currentUser.uid) {
                     items.push({
                         title: childSnapshot.val().shopname,
                         latlng: {
@@ -30,70 +32,81 @@ export default class Locations extends Component {
                     });
                 }
             });
-        }).then(()=>{
+        }).then(() => {
+            // set state with the created array
             this.setState({ markers: items });
         });
     }
 
     fitToMarkersToMap() {
-        const {markers} = this.state;
-        this.map.fitToSuppliedMarkers(markers.map(marker => marker.id), { edgePadding: 
+        const { markers } = this.state;
+        // fit the markers added to the map with provided formatting
+        this.map.fitToSuppliedMarkers(markers.map(marker => marker.id), {
+            edgePadding:
             {
                 top: 100,
                 right: 120,
                 bottom: 140,
                 left: 120
             }
-          });
+        });
     }
-    
-    render(){
+
+    render() {
         return (
-        <View style={styles.container}>
-            <MapView 
-            style = {styles.map}
-            ref={ref => {this.map = ref;}}
-                initialRegion = {{
-                latitude: 6.8632038,
-                longitude: 79.8944871,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            }}>
-                {this.state.markers.map(marker => (
-                    <MapView.Marker 
-                    coordinate = {marker.latlng}
-                    key = {marker.id}
-                    identifier = {marker.id}
-                    title = {marker.title}
-                    pinColor = {'linen'}
-                    >
-                        <MapView.Callout onPress={() => 
-                        FB.database().ref("tracking/locations/"+marker.id).once("value").then(function(snapshot){
-                            Alert.alert(
-                                snapshot.val().customer,
-                                snapshot.val().shopname+"\n"+snapshot.val().address+"\n"+snapshot.val().timestamp,
-                                [{text: 'OK'}],
-                                {cancelable: false},
-                            )
-                        })
+            <View style={styles.container}>
+
+                {/* create the map */}
+                <MapView
+                    style={styles.map}
+                    ref={ref => { this.map = ref; }}
+                    initialRegion={{
+                        latitude: 6.8632038,
+                        longitude: 79.8944871,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}>
+
+                    {/* create marker for each object in state variable */}
+                    {this.state.markers.map(marker => (
+                        <MapView.Marker
+                            coordinate={marker.latlng}
+                            key={marker.id}
+                            identifier={marker.id}
+                            title={marker.title}
+                            pinColor={'linen'}
+                        >
+                            {/* popup for on press on markers */}
+                            <MapView.Callout onPress={() =>
+                                FB.database().ref("tracking/locations/" + marker.id).once("value").then(function (snapshot) {
+                                    Alert.alert(
+                                        snapshot.val().customer,
+                                        snapshot.val().shopname + "\n" + snapshot.val().address + "\n" + snapshot.val().timestamp,
+                                        [{ text: 'OK' }],
+                                        { cancelable: false },
+                                    )
+                                })
                             }>
-                        </MapView.Callout>
-                    </MapView.Marker>
-                ))}
-            </MapView>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    onPress={() => this.fitToMarkersToMap()}
-                    style={[styles.bubble, styles.button]}
-                >
-                    <Text style={styles.btnText}>Fit Locations in Map</Text>
-                </TouchableOpacity>
+                            </MapView.Callout>
+                        </MapView.Marker>
+                    ))}
+                </MapView>
+                
+                {/* fit to map button */}
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        onPress={() => this.fitToMarkersToMap()}
+                        style={[styles.bubble, styles.button]}
+                    >
+                        <Text style={styles.btnText}>Fit Locations in Map</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
         );
     }
 }
 
+// styles for the components in the render screen
 const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
@@ -127,4 +140,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '700',
     }
-  });
+});

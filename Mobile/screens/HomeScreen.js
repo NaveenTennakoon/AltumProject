@@ -7,132 +7,142 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class ProfileScreen extends Component {
 
-    constructor(props){
-      super(props)
-
-      this.state = {
-        items: [],
-        dialogVisible: false,
-        selectedID: '',
-        selectedCustomer: '',
-        selectedProducts: [],
-        pwd: '',
-        avatarSource: 'empty',
-      },
+  constructor(props) {
+    super(props)
+    // state variables
+    this.state = {
+      items: [],
+      dialogVisible: false,
+      selectedID: '',
+      selectedCustomer: '',
+      selectedProducts: [],
+      pwd: '',
+      avatarSource: 'empty',
+    },
       global.firstname = '';
-      global.lastname = '';
-    }
-    
-    async componentDidMount(){
-      let tempItems = [];
-      let tempProducts = [];
-      let date = new Date();
-      const ref = FB.storage().ref('profilePics/'+FB.auth().currentUser.uid)
-      const url = await ref.getDownloadURL()
-      this.setState({ avatarSource: url })
-      let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
-      userdetails.on('value', function(snapshot) {
-        if (snapshot.val().type != 'salesperson'){
-          alert("This email is not registered to a Salesperson");
-        }
-        else{
-          global.firstname = snapshot.val().firstName;
-          global.lastname = snapshot.val().lastName;
-        }	
-      });
-        
-      FB.database().ref("orders").once('value', function(snapshot) {
-        snapshot.forEach(function (childSnapshot){
-          if (childSnapshot.val().salesperson == FB.auth().currentUser.uid && childSnapshot.val().Status == 'Assigned') {
-            tempItems.push({
-              id: childSnapshot.key,
-              orderId: childSnapshot.val().orderId,
-              customer: childSnapshot.val().Customer,
-              total: childSnapshot.val().Total,
-              orderDate: childSnapshot.val().orderDate,
-            });
-          }
-        });
-      }).then(() => {
-        this.setState({ items: tempItems });
-      });
-    }
+    global.lastname = '';
+  }
 
-    ListEmpty = () => {
-      return (
-        //View to show when list is empty
-        <View style={styles.container}>
-          <Text style={styles.noData}>No Orders Pending</Text>
-        </View>
-      );
-    };
+  async componentDidMount() {
+    let tempItems = [];
+    // get profile image
+    const ref = FB.storage().ref('profilePics/' + FB.auth().currentUser.uid)
+    const url = await ref.getDownloadURL()
+    this.setState({ avatarSource: url })
+    let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
+    userdetails.on('value', function (snapshot) {
+      if (snapshot.val().type != 'salesperson') {
+        alert("This email is not registered to a Salesperson");
+      }
+      else {
+        global.firstname = snapshot.val().firstName;
+        global.lastname = snapshot.val().lastName;
+      }
+    });
 
-    showDialog = (id, customer) => {
-      this.setState({ dialogVisible: true, selectedID: id});
-      let name;
-      FB.database().ref('users/'+customer).once('value', function(userSnap){
-        name = userSnap.val().company;
-      });
-      FB.database().ref('orders/'+id+"/Products").once('value', function(snapshot){
-        tempProducts = [];
-        snapshot.forEach(function(childSnapshot){
-          tempProducts.push({
+    // get orders related to the user and push to array
+    FB.database().ref("orders").once('value', function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        if (childSnapshot.val().salesperson == FB.auth().currentUser.uid && childSnapshot.val().Status == 'Assigned') {
+          tempItems.push({
             id: childSnapshot.key,
-            amount: childSnapshot.val(),
+            orderId: childSnapshot.val().orderId,
+            customer: childSnapshot.val().Customer,
+            total: childSnapshot.val().Total,
+            orderDate: childSnapshot.val().orderDate,
           });
-        });
-      }).then(() => {
-          this.setState({ selectedCustomer: name, selectedProducts: tempProducts });
-        })
-    };
-   
-    handleCancel = () => {
-      this.setState({ dialogVisible: false });
-    };
+        }
+      });
+    }).then(() => {
+      // set orders to state variable
+      this.setState({ items: tempItems });
+    });
+  }
 
-    handleSave = (id) => {
-      const value = AsyncStorage.getItem('password');
-      alert(this.state.pwd+" "+value)
-      if(this.state.pwd == global.pwd){
-        FB.database().ref('orders/').child(id).update({
-          Status: 'Completed',
-          paymentDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
-        }).then(() => {
-          FB.database().ref("orders").once('value', function(snapshot) {
-            snapshot.forEach(function (childSnapshot){
-              if (childSnapshot.val().salesperson == FB.auth().currentUser.uid && childSnapshot.val().Status == 'Assigned') {
-                tempItems = [];
-                tempItems.push({
-                  id: childSnapshot.key,
-                  orderId: childSnapshot.val().orderId,
-                  customer: childSnapshot.val().Customer,
-                  total: childSnapshot.val().Total,
-                  orderDate: childSnapshot.val().orderDate,
-                });
-              }
-            });
-          }).then(() => {
-            this.setState({ items: tempItems });
-          });
-          alert("Correct Password. Transaction completed successfully")
-        }).catch(function(error){
-          // Handle Errors here.
-          alert(error);
+  // show if no orders available
+  ListEmpty = () => {
+    return (
+      //View to show when list is empty
+      <View style={styles.container}>
+        <Text style={styles.noData}>No Orders Pending</Text>
+      </View>
+    );
+  };
+
+  // show dialog with order details
+  showDialog = (id, customer) => {
+    this.setState({ dialogVisible: true, selectedID: id });
+    let name;
+    // get company of the order
+    FB.database().ref('users/' + customer).once('value', function (userSnap) {
+      name = userSnap.val().company;
+    });
+    // get products in the order
+    FB.database().ref('orders/' + id + "/Products").once('value', function (snapshot) {
+      tempProducts = []
+      snapshot.forEach(function (childSnapshot) {
+        tempProducts.push({
+          id: childSnapshot.key,
+          amount: childSnapshot.val(),
         });
-      }
-      else{
-        alert(this.state.pwd+" and "+global.pwd)
-        // alert("Password incorrect");
-      }
-      this.setState({ dialogVisible: false });
-    };
-    
-    render(){
-      return (
+      });
+    }).then(() => {
+      // set to state
+      this.setState({ selectedCustomer: name, selectedProducts: tempProducts });
+    })
+  };
+
+  // Cancelling out of the dialog
+  handleCancel = () => {
+    this.setState({ dialogVisible: false });
+  };
+
+  handleSave = async (id) => {
+    let date = new Date()
+    // get password variable from async storage
+    const value = await AsyncStorage.getItem('password');
+    // if password match update the order as complete
+    if (this.state.pwd == value) {
+      FB.database().ref('orders/').child(id).update({
+        Status: 'Completed',
+        paymentDate: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
+      }).then(() => {
+        // reload the orders for the salesperson
+        FB.database().ref("orders").once('value', function (snapshot) {
+          tempItems = [];
+          snapshot.forEach(function (childSnapshot) {
+            if (childSnapshot.val().salesperson == FB.auth().currentUser.uid && childSnapshot.val().Status == 'Assigned') {
+              tempItems.push({
+                id: childSnapshot.key,
+                orderId: childSnapshot.val().orderId,
+                customer: childSnapshot.val().Customer,
+                total: childSnapshot.val().Total,
+                orderDate: childSnapshot.val().orderDate,
+              });
+            }
+          });
+        }).then(() => {
+          this.setState({ items: tempItems });
+        });
+        // success alert
+        alert("Correct Password. Transaction completed successfully")
+      }).catch(function (error) {
+        // Handle Errors here.
+        alert(error);
+      });
+    }
+    else {
+      alert("Password incorrect");
+    }
+    this.setState({ dialogVisible: false });
+  };
+
+  render() {
+    return (
       <View style={styles.container}>
         <View style={styles.header}>
-        <Image style={styles.avatar} source={{uri: this.state.avatarSource}}/>
-        <Text style={styles.name}>{global.username}</Text>
+          <Image style={styles.avatar} source={{ uri: this.state.avatarSource }} />
+          <Text style={styles.name}>{global.username}</Text>
           <Text style={styles.info}>Salesperson</Text>
         </View>
         <Text style={styles.heading}>Pending Orders</Text>
@@ -165,6 +175,8 @@ export default class ProfileScreen extends Component {
           keyExtractor={item => item.id}
           ListEmptyComponent={this.ListEmpty}
         />
+
+        {/* Dialog for handling of transaction completion */}
         <View>
           <Dialog.Container visible={this.state.dialogVisible}>
             <Dialog.Title style={styles.popupHead}>Customer: {this.state.selectedCustomer}</Dialog.Title>
@@ -173,10 +185,10 @@ export default class ProfileScreen extends Component {
             </Dialog.Description>
             {
               this.state.selectedProducts.map((item, index) => (
-              <Text style={styles.productTxt}>{item.id} : {item.amount}</Text>             
+                <Text style={styles.productTxt}>{item.id} : {item.amount}</Text>
               ))
             }
-            <Dialog.Input style={styles.popupInput} placeholder="Your password" wrapperStyle="password" onChangeText={(pwd) => this.setState({pwd})}/>
+            <Dialog.Input style={styles.popupInput} placeholder="Your password" wrapperStyle="password" onChangeText={(pwd) => this.setState({ pwd })} />
             <Dialog.Button label="Cancel" onPress={this.handleCancel} />
             <Dialog.Button label="Save" onPress={() => this.handleSave(this.state.selectedID)} />
           </Dialog.Container>
@@ -186,10 +198,11 @@ export default class ProfileScreen extends Component {
   }
 }
 
+// styles for the components in the render screen
 const styles = StyleSheet.create({
-  header:{
+  header: {
     backgroundColor: "#000000",
-    height:100,
+    height: 100,
     alignItems: 'center',
     padding: 20,
   },
@@ -204,46 +217,46 @@ const styles = StyleSheet.create({
     borderRadius: 63,
     borderWidth: 4,
     borderColor: "white",
-    marginBottom:10,
-    alignSelf:'flex-start',
+    marginBottom: 10,
+    alignSelf: 'flex-start',
     position: 'absolute',
-    margin:10
+    margin: 10
   },
   heading: {
-    fontSize:19,
-    color:"#000000",
-    fontWeight:'700',
+    fontSize: 19,
+    color: "#000000",
+    fontWeight: '700',
     marginVertical: 5,
     marginHorizontal: 15,
   },
-  name:{
-    fontSize:24,
-    color:"#FFFFFF",
-    fontWeight:'700',
+  name: {
+    fontSize: 24,
+    color: "#FFFFFF",
+    fontWeight: '700',
     marginLeft: 70,
   },
   noData: {
-    textAlign: 'center', 
-    marginTop: 100, 
-    color:"#aaaaaa", 
+    textAlign: 'center',
+    marginTop: 100,
+    color: "#aaaaaa",
     fontSize: 20,
     fontWeight: '600',
-  },  
-  body:{
-    marginTop:10,
+  },
+  body: {
+    marginTop: 10,
   },
   bodyContent: {
     flex: 1,
     alignItems: 'center',
-    padding:30,
+    padding: 30,
   },
-  info:{
-    fontSize:18,
+  info: {
+    fontSize: 18,
     color: "#AAAAAA",
     fontWeight: '700',
   },
-  description:{
-    fontSize:16,
+  description: {
+    fontSize: 16,
     color: "#FFF",
     marginTop: 3,
     textAlign: 'center'
@@ -288,7 +301,7 @@ const styles = StyleSheet.create({
     },
     height: 50,
     flexDirection: 'row',
-    justifyContent: 'center',    
+    justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
     shadowOpacity: 0.50,
@@ -302,7 +315,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
-  popupHead:{
+  popupHead: {
     fontWeight: '700',
     marginBottom: 15,
   },
@@ -312,18 +325,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontWeight: '700',
   },
-  popupInput:{
+  popupInput: {
     marginTop: 15,
     borderBottomWidth: 1,
     borderColor: "#009988",
   },
-  customerHead:{
+  customerHead: {
     margin: 10,
     marginBottom: 0,
     fontSize: 16,
     fontWeight: '700',
   },
-  customerName:{
+  customerName: {
     paddingTop: 0,
     padding: 12,
     fontSize: 22,

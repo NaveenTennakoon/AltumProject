@@ -1,13 +1,13 @@
 // login user
-function login(){
+function login() {
   modalLoading.init(true)
   let user = document.getElementById("Email").value
   let pwd = document.getElementById("Password").value
 
-  firebase.auth().signInWithEmailAndPassword(user, pwd).then(function(){
-    usersRef.child(firebase.auth().currentUser.uid).once("value").then(function(snapshot){
+  firebase.auth().signInWithEmailAndPassword(user, pwd).then(function () {
+    usersRef.child(firebase.auth().currentUser.uid).once("value").then(function (snapshot) {
       // email not verified
-      if(!firebase.auth().currentUser.emailVerified){
+      if (!firebase.auth().currentUser.emailVerified) {
         Swal.fire(
           'Your email has not yet been verified. Please verify and try again',
           '',
@@ -16,13 +16,13 @@ function login(){
         let element = document.getElementById("openModalLoading")
         element.parentNode.removeChild(element)
       }
-      else{
-        if(snapshot.val().type == 'customer'){
+      else {
+        if (snapshot.val().type == 'customer') {
           // customer login
-          if(snapshot.val().status == 'active'){
-            location.href="cus_dashboard.html"
+          if (snapshot.val().status == 'active') {
+            location.href = "cus_dashboard.html"
           }
-          else{
+          else {
             // user deactivated
             let element = document.getElementById("openModalLoading")
             element.parentNode.removeChild(element)
@@ -34,31 +34,31 @@ function login(){
           }
         }
         // admin login
-        else if(snapshot.val().type == 'admin'){
-          location.href="dashboard.html";
+        else if (snapshot.val().type == 'admin') {
+          location.href = "dashboard.html";
         }
       }
     })
-  }).catch(function(error){
-      // Handle Errors here.
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.message,
-      })
-      let element = document.getElementById("openModalLoading")
-      element.parentNode.removeChild(element)
+  }).catch(function (error) {
+    // Handle Errors here.
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message,
+    })
+    let element = document.getElementById("openModalLoading")
+    element.parentNode.removeChild(element)
   })
 }
 
 // password reset
-function resetMail(){
+function resetMail() {
   let email = document.getElementById("Email").value
-  firebase.auth().sendPasswordResetEmail(email).then(function() {
+  firebase.auth().sendPasswordResetEmail(email).then(function () {
     // Email sent.
     window.alert("Reset link was sent to your email address. Go check it!")
     location.href = "index.html";
-  }).catch(function(error) {
+  }).catch(function (error) {
     // An error happened.
     Swal.fire({
       icon: 'error',
