@@ -14,8 +14,7 @@ export default class Login extends Component {
       password: '',
       hidePassword: true,
       spinner: true,
-    },
-      global.username = '';
+    }
   }
 
   async componentDidMount() {
@@ -58,7 +57,8 @@ export default class Login extends Component {
           // set password to async storage
           await AsyncStorage.setItem('password', this.state.password.toString());
 
-          global.username = snapshot.val().firstName + " " + snapshot.val().lastName;
+          let username = snapshot.val().firstName + " " + snapshot.val().lastName;
+          await AsyncStorage.setItem('username', username.toString());
           alert("Welcome" + " " + snapshot.val().firstName + " " + snapshot.val().lastName);
           this.setState({ spinner: false })
           this.props.navigation.navigate('tNav');

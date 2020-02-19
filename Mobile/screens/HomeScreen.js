@@ -18,6 +18,7 @@ export default class ProfileScreen extends Component {
       selectedProducts: [],
       pwd: '',
       avatarSource: 'empty',
+      username: ''
     },
       global.firstname = '';
     global.lastname = '';
@@ -29,6 +30,9 @@ export default class ProfileScreen extends Component {
     const ref = FB.storage().ref('profilePics/' + FB.auth().currentUser.uid)
     const url = await ref.getDownloadURL()
     this.setState({ avatarSource: url })
+
+    let username = await AsyncStorage.getItem('username')
+    this.setState({ username: username })
     let userdetails = FB.database().ref('users/' + FB.auth().currentUser.uid);
     userdetails.on('value', function (snapshot) {
       if (snapshot.val().type != 'salesperson') {
@@ -142,7 +146,7 @@ export default class ProfileScreen extends Component {
       <View style={styles.container}>
         <View style={styles.header}>
           <Image style={styles.avatar} source={{ uri: this.state.avatarSource }} />
-          <Text style={styles.name}>{global.username}</Text>
+          <Text style={styles.name}>{this.state.username}</Text>
           <Text style={styles.info}>Salesperson</Text>
         </View>
         <Text style={styles.heading}>Pending Orders</Text>

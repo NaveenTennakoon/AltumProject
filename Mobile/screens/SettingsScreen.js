@@ -127,6 +127,18 @@ export default class SettingsScreen extends Component {
     }
   }
 
+  signOut = async () => {
+    const { navigate } = this.props.navigation;
+    FB.auth().signOut().then(async function () {
+      // Sign-out successful.
+      await AsyncStorage.clear();
+      navigate('Login')
+    }).catch(function (error) {
+      // An error happened.
+      alert(error.message)
+    })
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -175,10 +187,9 @@ export default class SettingsScreen extends Component {
                 [
                   { text: 'Cancel', onPress: () => { return null } },
                   {
-                    text: 'Confirm', onPress: () => {
+                    text: 'Confirm', onPress: async () => {
                       this.removeLocationUpdates()
-                      AsyncStorage.clear();
-                      navigate('Login')
+                      this.signOut()
                     }
                   },
                 ],
